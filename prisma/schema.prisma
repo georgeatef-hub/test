@@ -1,0 +1,114 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum AuthProvider {
+  CREDENTIALS
+  GOOGLE
+}
+
+enum ItemStatus {
+  AVAILABLE
+  IN_TRADE
+  TRADED
+}
+
+enum TradeCycleStatus {
+  PENDING    // Found by algorithm, waiting for all participants to confirm
+  CONFIRMED  // All confirmed
+  COMPLETED  // Trade executed
+  CANCELLED  // Someone declined
+}
+
+model User {
+  id            String   @id @default(cuid())
+  name          String
+  email         String   @unique
+  passwordHash  String?
+  image         String?
+  provider      AuthProvider @default(CREDENTIALS)
+  latitude      Float?
+  longitude     Float?
+  city          String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  items         Item[]
+  wants         Want[]
+  tradeMembers  TradeMember[]
+}
+
+model Category {
+  id    String @id @default(cuid())
+  name  String @unique
+  icon  String? // emoji
+  items Item[]
+}
+
+model Item {
+  id          String     @id @default(cuid())
+  userId      String
+  categoryId  String?
+  title       String
+  description String?
+  images      String[]   // URLs
+  status      ItemStatus @default(AVAILABLE)
+  condition   String?    // "New", "Like New", "Good", "Fair"
+  createdAt   DateTime   @default(now())
+
+  user        User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  category    Category?  @relation(fields: [categoryId], references: [id])
+  wantedBy    Want[]
+  givenInTrades TradeMember[] @relation("GivenItem")
+  receivedInTrades TradeMember[] @relation("ReceivedItem")
+
+  @@index([userId])
+  @@index([categoryId])
+  @@index([status])
+}
+
+model Want {
+  id        String   @id @default(cuid())
+  userId    String   // the user who wants this item
+  itemId    String   // the item they want
+  createdAt DateTime @default(now())
+
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  item      Item     @relation(fields: [itemId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, itemId])
+  @@index([userId])
+  @@index([itemId])
+}
+
+model TradeCycle {
+  id        String           @id @default(cuid())
+  status    TradeCycleStatus @default(PENDING)
+  score     Float            @default(0) // algorithm quality score
+  createdAt DateTime         @default(now())
+  updatedAt DateTime         @updatedAt
+
+  members   TradeMember[]
+}
+
+model TradeMember {
+  id           String @id @default(cuid())
+  cycleId      String
+  userId       String
+  givesItemId  String  // item this user gives
+  receivesItemId String // item this user receives
+  confirmed    Boolean @default(false)
+
+  cycle        TradeCycle @relation(fields: [cycleId], references: [id], onDelete: Cascade)
+  user         User       @relation(fields: [userId], references: [id])
+  givesItem    Item       @relation("GivenItem", fields: [givesItemId], references: [id])
+  receivesItem Item       @relation("ReceivedItem", fields: [receivesItemId], references: [id])
+
+  @@unique([cycleId, userId])
+  @@index([userId])
+}
