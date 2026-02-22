@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import Link from 'next/link'
 
 interface TradeMember {
   id: string
@@ -60,6 +61,7 @@ export default function MatchesPage() {
   const [matches, setMatches] = useState<TradeMatch[]>([])
   const [loading, setLoading] = useState(true)
   const [actionLoading, setActionLoading] = useState<string | null>(null)
+  const [showCelebration, setShowCelebration] = useState(false)
 
   useEffect(() => {
     loadMatches()
@@ -71,6 +73,12 @@ export default function MatchesPage() {
       if (response.ok) {
         const data = await response.json()
         setMatches(data)
+        
+        // Show celebration if there are confirmed matches
+        if (data.some((match: TradeMatch) => match.cycle.status === 'CONFIRMED')) {
+          setShowCelebration(true)
+          setTimeout(() => setShowCelebration(false), 5000)
+        }
       }
     } catch (error) {
       console.error('Error loading matches:', error)
@@ -131,21 +139,6 @@ export default function MatchesPage() {
     }
   }
 
-  const getStatusBadge = (status: string) => {
-    const colors = {
-      PENDING: 'bg-yellow-500',
-      CONFIRMED: 'bg-green-500',
-      COMPLETED: 'bg-blue-500',
-      CANCELLED: 'bg-red-500'
-    }
-
-    return (
-      <span className={`px-2 py-1 text-xs rounded-full text-white ${colors[status as keyof typeof colors] || 'bg-gray-500'}`}>
-        {status.toLowerCase()}
-      </span>
-    )
-  }
-
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-64">
@@ -154,176 +147,213 @@ export default function MatchesPage() {
     )
   }
 
+  const confirmedMatches = matches.filter(match => match.cycle.status === 'CONFIRMED')
+
   return (
-    <div className="space-y-8">
+    <div className="space-y-8 relative">
+      {/* Confetti Animation */}
+      {showCelebration && (
+        <div className="fixed inset-0 pointer-events-none z-50 overflow-hidden">
+          <div className="confetti">
+            {[...Array(50)].map((_, i) => (
+              <div
+                key={i}
+                className="confetti-piece"
+                style={{
+                  left: `${Math.random() * 100}%`,
+                  animationDelay: `${Math.random() * 3}s`,
+                  backgroundColor: ['#22c55e', '#ef4444', '#f59e0b', '#3b82f6', '#a855f7'][Math.floor(Math.random() * 5)]
+                }}
+              />
+            ))}
+          </div>
+        </div>
+      )}
+
       {/* Header */}
-      <div>
+      <div className="text-center">
         <h1 className="text-3xl font-bold text-white">Your Matches</h1>
-        <p className="text-gray-400 mt-2">Trade cycles found by the matching algorithm</p>
+        <p className="text-gray-400 mt-2">Trade circles found by the matching algorithm</p>
       </div>
 
-      {/* Matches */}
-      {matches.length === 0 ? (
-        <div className="text-center py-16">
-          <div className="text-gray-400 text-lg mb-4">No matches found yet</div>
-          <p className="text-gray-500 mb-6">
-            Make sure you have items to offer and items you want, then run the matching algorithm from your dashboard.
-          </p>
-          <a
-            href="/dashboard"
-            className="inline-block bg-green-500 text-white px-6 py-3 rounded-lg hover:bg-green-600 transition-colors"
-          >
-            Go to Dashboard
-          </a>
-        </div>
-      ) : (
-        <div className="space-y-6">
-          {matches.map((match) => (
-            <div key={match.id} className="card p-6">
-              {/* Status and Score */}
-              <div className="flex justify-between items-center mb-6">
-                <div className="flex items-center space-x-3">
-                  <h2 className="text-xl font-bold text-white">
-                    {match.cycle.members.length}-Way Trade
-                  </h2>
-                  {getStatusBadge(match.cycle.status)}
-                </div>
-                <div className="text-right">
-                  <div className="text-sm text-gray-400">Match Score</div>
-                  <div className="text-lg font-bold text-green-500">
-                    {Math.round(match.cycle.score)}
+      {/* Celebration View for Active Match */}
+      {confirmedMatches.length > 0 && (
+        <div className="card p-8 text-center bg-gradient-to-br from-green-500/10 to-green-600/10 border-green-500/30">
+          <div className="text-6xl mb-4 animate-bounce">🎉</div>
+          <h2 className="text-4xl font-bold text-white mb-4">IT&apos;S A MATCH!</h2>
+          
+          {confirmedMatches.map((match) => (
+            <div key={match.id} className="mb-8">
+              {/* Trade Circle Visual */}
+              <div className="relative max-w-md mx-auto mb-6">
+                <div className="flex items-center justify-center space-x-4">
+                  <div className="text-center">
+                    <div className="w-16 h-16 bg-[#111a11] border-2 border-green-500 rounded-full flex items-center justify-center mb-2">
+                      <span className="text-2xl">{match.givesItem.category?.icon || '📦'}</span>
+                    </div>
+                    <p className="text-sm text-gray-300">You give</p>
+                    <p className="text-white font-semibold">{match.givesItem.title}</p>
+                  </div>
+                  
+                  <div className="flex flex-col items-center">
+                    <div className="text-3xl text-green-500 mb-2">→</div>
+                    <div className="text-3xl text-green-500 mb-2">→</div>
+                  </div>
+                  
+                  <div className="text-center">
+                    <div className="w-16 h-16 bg-[#111a11] border-2 border-green-500 rounded-full flex items-center justify-center mb-2">
+                      <span className="text-2xl">{match.receivesItem.category?.icon || '📦'}</span>
+                    </div>
+                    <p className="text-sm text-gray-300">You get</p>
+                    <p className="text-white font-semibold">{match.receivesItem.title}</p>
                   </div>
                 </div>
               </div>
 
+              <div className="flex justify-center space-x-4">
+                <button
+                  onClick={() => declineTrade(match.cycle.id)}
+                  disabled={actionLoading === match.cycle.id}
+                  className="px-6 py-3 border border-red-500 text-red-500 rounded-lg hover:bg-red-500 hover:text-white transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {actionLoading === match.cycle.id ? 'Processing...' : 'Decline'}
+                </button>
+                <button
+                  onClick={() => confirmTrade(match.cycle.id)}
+                  disabled={actionLoading === match.cycle.id || match.confirmed}
+                  className="px-8 py-3 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-lg font-semibold"
+                >
+                  {match.confirmed 
+                    ? '✓ Confirmed' 
+                    : actionLoading === match.cycle.id 
+                      ? 'Processing...' 
+                      : 'Confirm Trade!'
+                  }
+                </button>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {/* All Matches List */}
+      {matches.length === 0 ? (
+        /* Empty State */
+        <div className="text-center py-16">
+          <div className="text-6xl mb-6">🎣</div>
+          <h2 className="text-2xl font-bold text-white mb-4">No matches yet. Keep swiping!</h2>
+          <p className="text-gray-400 mb-8">
+            Cast more bait and keep swiping to increase your chances of finding the perfect trade circle.
+          </p>
+          
+          {/* Fishing Animation */}
+          <div className="mb-8">
+            <div className="text-4xl animate-bounce">🎣</div>
+            <div className="text-2xl mt-2 animate-pulse">~~~</div>
+          </div>
+
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <Link
+              href="/dashboard/add-item"
+              className="bg-green-500 text-white px-6 py-3 rounded-lg hover:bg-green-600 transition-colors"
+            >
+              Add More Bait 🎣
+            </Link>
+            <Link
+              href="/swipe"
+              className="border border-green-500 text-green-500 px-6 py-3 rounded-lg hover:bg-green-500 hover:text-white transition-colors"
+            >
+              Start Swiping →
+            </Link>
+          </div>
+        </div>
+      ) : (
+        /* Matches List */
+        <div className="space-y-6">
+          <h3 className="text-xl font-semibold text-white">All Matches</h3>
+          
+          {matches.map((match) => (
+            <div key={match.id} className="card p-6">
+              {/* Status Badge */}
+              <div className="flex justify-between items-center mb-4">
+                <div className="flex items-center space-x-3">
+                  <h3 className="text-lg font-bold text-white">
+                    {match.cycle.members.length}-Way Trade
+                  </h3>
+                  <span className={`px-2 py-1 text-xs rounded-full text-white ${
+                    match.cycle.status === 'CONFIRMED' ? 'bg-green-500' :
+                    match.cycle.status === 'PENDING' ? 'bg-yellow-500' :
+                    match.cycle.status === 'CANCELLED' ? 'bg-red-500' : 'bg-gray-500'
+                  }`}>
+                    {match.cycle.status.toLowerCase()}
+                  </span>
+                </div>
+                <div className="text-sm text-gray-400">
+                  Score: <span className="text-green-500 font-semibold">{Math.round(match.cycle.score)}</span>
+                </div>
+              </div>
+
               {/* Your Trade */}
-              <div className="bg-[#0a0f0a] border border-[#1a2a1a] rounded-lg p-4 mb-6">
-                <h3 className="font-semibold text-white mb-4">Your Part of the Trade</h3>
-                <div className="grid md:grid-cols-2 gap-6">
+              <div className="bg-[#0a0f0a] border border-[#1a2a1a] rounded-lg p-4 mb-4">
+                <div className="grid md:grid-cols-2 gap-4">
                   <div>
-                    <div className="text-sm text-gray-400 mb-2">You Give</div>
+                    <div className="text-sm text-gray-400 mb-1">You Give</div>
                     <div className="flex items-center space-x-2">
                       {match.givesItem.category?.icon && (
                         <span>{match.givesItem.category.icon}</span>
                       )}
                       <span className="text-white font-medium">{match.givesItem.title}</span>
                     </div>
-                    {match.givesItem.category && (
-                      <div className="text-xs text-gray-500 mt-1">
-                        {match.givesItem.category.name}
-                      </div>
-                    )}
                   </div>
                   <div>
-                    <div className="text-sm text-gray-400 mb-2">You Receive</div>
+                    <div className="text-sm text-gray-400 mb-1">You Receive</div>
                     <div className="flex items-center space-x-2">
                       {match.receivesItem.category?.icon && (
                         <span>{match.receivesItem.category.icon}</span>
                       )}
                       <span className="text-white font-medium">{match.receivesItem.title}</span>
                     </div>
-                    {match.receivesItem.category && (
-                      <div className="text-xs text-gray-500 mt-1">
-                        {match.receivesItem.category.name}
-                      </div>
-                    )}
                   </div>
-                </div>
-              </div>
-
-              {/* Trade Chain */}
-              <div className="mb-6">
-                <h3 className="font-semibold text-white mb-4">Complete Trade Chain</h3>
-                <div className="space-y-3">
-                  {match.cycle.members.map((member, index) => {
-                    const nextIndex = (index + 1) % match.cycle.members.length
-                    const nextMember = match.cycle.members[nextIndex]
-                    
-                    return (
-                      <div key={member.id} className="flex items-center space-x-4 text-sm">
-                        <div className="flex items-center space-x-2">
-                          <div className={`w-3 h-3 rounded-full ${member.confirmed ? 'bg-green-500' : 'bg-gray-500'}`}></div>
-                          <span className="text-gray-300">{member.user.name}</span>
-                          {member.user.city && (
-                            <span className="text-gray-500">({member.user.city})</span>
-                          )}
-                        </div>
-                        <span className="text-gray-400">gives</span>
-                        <span className="text-white">{member.givesItem.title}</span>
-                        <span className="text-gray-400">→</span>
-                        <span className="text-gray-300">{nextMember.user.name}</span>
-                      </div>
-                    )
-                  })}
                 </div>
               </div>
 
               {/* Confirmation Status */}
-              <div className="mb-6">
-                <h3 className="font-semibold text-white mb-3">Confirmation Status</h3>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center space-x-2 text-sm">
+                  <span className="text-gray-400">Status:</span>
                   {match.cycle.members.map((member) => (
-                    <div key={member.id} className="flex items-center space-x-3">
-                      <div className={`w-4 h-4 rounded-full ${member.confirmed ? 'bg-green-500' : 'bg-gray-500'}`}></div>
-                      <span className="text-gray-300">{member.user.name}</span>
-                      <span className={`text-xs ${member.confirmed ? 'text-green-500' : 'text-gray-500'}`}>
-                        {member.confirmed ? '✓ Confirmed' : 'Pending'}
-                      </span>
+                    <div key={member.id} className="flex items-center space-x-1">
+                      <div className={`w-2 h-2 rounded-full ${member.confirmed ? 'bg-green-500' : 'bg-gray-500'}`}></div>
                     </div>
                   ))}
+                  <span className="text-gray-400">
+                    ({match.cycle.members.filter(m => m.confirmed).length}/{match.cycle.members.length} confirmed)
+                  </span>
                 </div>
-              </div>
-
-              {/* Actions */}
-              {match.cycle.status === 'PENDING' && (
-                <div className="flex justify-end space-x-4">
-                  <button
-                    onClick={() => declineTrade(match.cycle.id)}
-                    disabled={actionLoading === match.cycle.id}
-                    className="px-6 py-2 border border-red-500 text-red-500 rounded hover:bg-red-500 hover:text-white transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                  >
-                    {actionLoading === match.cycle.id ? 'Processing...' : 'Decline'}
-                  </button>
-                  <button
-                    onClick={() => confirmTrade(match.cycle.id)}
-                    disabled={actionLoading === match.cycle.id || match.confirmed}
-                    className="px-6 py-2 bg-green-500 text-white rounded hover:bg-green-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                  >
-                    {match.confirmed 
-                      ? '✓ Confirmed' 
-                      : actionLoading === match.cycle.id 
-                        ? 'Processing...' 
-                        : 'Confirm Trade'
-                    }
-                  </button>
+                <div className="text-xs text-gray-500">
+                  {new Date(match.cycle.createdAt).toLocaleDateString()}
                 </div>
-              )}
-
-              {match.cycle.status === 'CONFIRMED' && (
-                <div className="bg-green-500 bg-opacity-10 border border-green-500 text-green-400 p-4 rounded">
-                  <div className="flex items-center space-x-2">
-                    <span>🎉</span>
-                    <span>Trade confirmed! All participants have agreed. Coordinate with other members to execute the trade.</span>
-                  </div>
-                </div>
-              )}
-
-              {match.cycle.status === 'CANCELLED' && (
-                <div className="bg-red-500 bg-opacity-10 border border-red-500 text-red-400 p-4 rounded">
-                  <div className="flex items-center space-x-2">
-                    <span>❌</span>
-                    <span>This trade was cancelled by one of the participants.</span>
-                  </div>
-                </div>
-              )}
-
-              <div className="text-xs text-gray-500 mt-4">
-                Created {new Date(match.cycle.createdAt).toLocaleDateString()}
               </div>
             </div>
           ))}
         </div>
       )}
+
+      <style jsx>{`
+        .confetti-piece {
+          position: absolute;
+          width: 10px;
+          height: 10px;
+          background: #22c55e;
+          animation: confetti-fall 3s linear infinite;
+        }
+        
+        @keyframes confetti-fall {
+          to {
+            transform: translateY(100vh) rotate(360deg);
+          }
+        }
+      `}</style>
     </div>
   )
 }

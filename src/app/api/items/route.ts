@@ -14,6 +14,7 @@ export async function GET(request: NextRequest) {
     const { searchParams } = new URL(request.url)
     const categoryId = searchParams.get('categoryId')
     const excludeOwn = searchParams.get('excludeOwn') === 'true'
+    const mode = searchParams.get('mode') // 'swipe' mode
 
     const where: any = {
       status: ItemStatus.AVAILABLE,
@@ -26,6 +27,16 @@ export async function GET(request: NextRequest) {
     if (excludeOwn) {
       where.userId = {
         not: session.user.id
+      }
+    }
+
+    // For swipe mode: exclude items already wanted by this user
+    if (mode === 'swipe') {
+      where.userId = { not: session.user.id } // Always exclude own items in swipe
+      where.wantedBy = {
+        none: {
+          userId: session.user.id
+        }
       }
     }
 
@@ -44,14 +55,25 @@ export async function GET(request: NextRequest) {
           where: {
             userId: session.user.id
           }
+        },
+        _count: {
+          select: {
+            wantedBy: true
+          }
         }
       },
-      orderBy: {
-        createdAt: 'desc'
-      }
+      orderBy: mode === 'swipe' 
+        ? [{ createdAt: 'desc' }] // Random-ish for swipe mode - could implement true randomization
+        : { createdAt: 'desc' }
     })
 
-    return NextResponse.json(items)
+    // Add wantCount to each item for easier access
+    const itemsWithWantCount = items.map(item => ({
+      ...item,
+      wantCount: item._count.wantedBy
+    }))
+
+    return NextResponse.json(itemsWithWantCount)
 
   } catch (error) {
     console.error("Error fetching items:", error)

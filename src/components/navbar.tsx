@@ -34,24 +34,26 @@ export default function Navbar() {
               Dashboard
             </Link>
             <Link
-              href="/browse"
+              href="/swipe"
               className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${
-                isActive('/browse')
+                isActive('/swipe')
                   ? 'bg-green-500 text-white'
                   : 'text-gray-300 hover:text-green-500'
               }`}
             >
-              Browse
+              Swipe
             </Link>
             <Link
               href="/matches"
-              className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${
+              className={`relative px-3 py-2 rounded-md text-sm font-medium transition-colors ${
                 isActive('/matches')
                   ? 'bg-green-500 text-white'
                   : 'text-gray-300 hover:text-green-500'
               }`}
             >
               Matches
+              {/* Notification badge (hardcoded for now) */}
+              <span className="absolute -top-1 -right-1 w-3 h-3 bg-green-500 rounded-full animate-pulse"></span>
             </Link>
           </div>
 
@@ -99,38 +101,42 @@ export default function Navbar() {
           </div>
         </div>
 
-        {/* Mobile Navigation */}
-        <div className="md:hidden">
-          <div className="px-2 pt-2 pb-3 space-y-1 border-t border-[#1a2a1a]">
+        {/* Mobile Navigation - Bottom Tab Style */}
+        <div className="md:hidden fixed bottom-0 left-0 right-0 bg-[#111a11] border-t border-[#1a2a1a] z-50">
+          <div className="grid grid-cols-3">
             <Link
               href="/dashboard"
-              className={`block px-3 py-2 rounded-md text-base font-medium transition-colors ${
+              className={`flex flex-col items-center py-3 px-2 text-xs transition-colors ${
                 isActive('/dashboard')
-                  ? 'bg-green-500 text-white'
-                  : 'text-gray-300 hover:text-green-500'
+                  ? 'text-green-500'
+                  : 'text-gray-400'
               }`}
             >
+              <span className="text-lg mb-1">📊</span>
               Dashboard
             </Link>
             <Link
-              href="/browse"
-              className={`block px-3 py-2 rounded-md text-base font-medium transition-colors ${
-                isActive('/browse')
-                  ? 'bg-green-500 text-white'
-                  : 'text-gray-300 hover:text-green-500'
+              href="/swipe"
+              className={`flex flex-col items-center py-3 px-2 text-xs transition-colors ${
+                isActive('/swipe')
+                  ? 'text-green-500'
+                  : 'text-gray-400'
               }`}
             >
-              Browse
+              <span className="text-lg mb-1">👆</span>
+              Swipe
             </Link>
             <Link
               href="/matches"
-              className={`block px-3 py-2 rounded-md text-base font-medium transition-colors ${
+              className={`relative flex flex-col items-center py-3 px-2 text-xs transition-colors ${
                 isActive('/matches')
-                  ? 'bg-green-500 text-white'
-                  : 'text-gray-300 hover:text-green-500'
+                  ? 'text-green-500'
+                  : 'text-gray-400'
               }`}
             >
+              <span className="text-lg mb-1">🎉</span>
               Matches
+              <span className="absolute top-1 right-3 w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
             </Link>
           </div>
         </div>

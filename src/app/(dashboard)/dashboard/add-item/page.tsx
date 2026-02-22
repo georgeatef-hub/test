@@ -58,10 +58,11 @@ export default function AddItemPage() {
       })
 
       if (response.ok) {
-        router.push('/dashboard')
+        // Success! Redirect with a positive message
+        router.push('/dashboard?added=true')
       } else {
         const data = await response.json()
-        setError(data.error || 'Error creating item')
+        setError(data.error || 'Error adding bait')
       }
     } catch (err) {
       setError('Something went wrong. Please try again.')
@@ -81,8 +82,8 @@ export default function AddItemPage() {
             ← Back to Dashboard
           </Link>
         </div>
-        <h1 className="text-3xl font-bold text-white mt-4">Add New Item</h1>
-        <p className="text-gray-400 mt-2">Share something you no longer need</p>
+        <h1 className="text-3xl font-bold text-white mt-4">Add Bait 🎣</h1>
+        <p className="text-gray-400 mt-2">More bait = more chances to catch something great!</p>
       </div>
 
       <div className="card p-8">
@@ -190,7 +191,7 @@ export default function AddItemPage() {
               disabled={loading}
               className="btn-primary disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              {loading ? 'Adding...' : 'Add Item'}
+              {loading ? 'Casting Bait...' : 'Add Bait 🎣'}
             </button>
           </div>
         </form>
