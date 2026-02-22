@@ -1,299 +1,259 @@
-'use client'
+'use client';
 
-import { useState, useEffect } from 'react'
-import { useSession } from 'next-auth/react'
-import Link from 'next/link'
-
-interface Item {
-  id: string
-  title: string
-  description: string | null
-  condition: string | null
-  images: string[]
-  createdAt: string
-  category: {
-    name: string
-    icon: string | null
-  } | null
-}
-
-interface Want {
-  id: string
-  createdAt: string
-  item: Item & {
-    user: {
-      id: string
-      name: string
-      city: string | null
-    }
-  }
-}
+import { useEffect, useState } from 'react';
+import { useSession } from 'next-auth/react';
+import Link from 'next/link';
+import { DashboardData, Circle, Item } from '@/types';
 
 export default function DashboardPage() {
-  const { data: session } = useSession()
-  const [userItems, setUserItems] = useState<Item[]>([])
-  const [userWants, setUserWants] = useState<Want[]>([])
-  const [loading, setLoading] = useState(true)
+  const { data: session } = useSession();
+  const [dashboardData, setDashboardData] = useState<DashboardData | null>(null);
+  const [items, setItems] = useState<Item[]>([]);
+  const [circles, setCircles] = useState<Circle[]>([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    loadData()
-  }, [])
+    if (session) {
+      fetchDashboardData();
+    }
+  }, [session]);
 
-  const loadData = async () => {
+  const fetchDashboardData = async () => {
     try {
-      // Load user's items
-      const itemsResponse = await fetch('/api/items')
-      if (itemsResponse.ok) {
-        const items = await itemsResponse.json()
-        setUserItems(items.filter((item: Item & { userId: string }) => item.userId === session?.user?.id))
+      // Fetch dashboard stats
+      const dashboardRes = await fetch('/api/dashboard', {
+        credentials: 'include'
+      });
+      if (dashboardRes.ok) {
+        const dashboard = await dashboardRes.json();
+        setDashboardData(dashboard);
       }
 
-      // Load user's wants
-      const wantsResponse = await fetch('/api/wants')
-      if (wantsResponse.ok) {
-        const wants = await wantsResponse.json()
-        setUserWants(wants)
+      // Fetch user items
+      const itemsRes = await fetch('/api/items', {
+        credentials: 'include'
+      });
+      if (itemsRes.ok) {
+        const userItems = await itemsRes.json();
+        setItems(userItems);
+      }
+
+      // Fetch circles
+      const circlesRes = await fetch('/api/circles', {
+        credentials: 'include'
+      });
+      if (circlesRes.ok) {
+        const userCircles = await circlesRes.json();
+        setCircles(userCircles);
       }
     } catch (error) {
-      console.error('Error loading data:', error)
+      console.error('Error fetching dashboard data:', error);
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
-
-  const removeItem = async (itemId: string) => {
-    if (!confirm('Are you sure you want to remove this item?')) return
-
-    try {
-      const response = await fetch(`/api/items/${itemId}`, {
-        method: 'DELETE',
-      })
-
-      if (response.ok) {
-        setUserItems(userItems.filter(item => item.id !== itemId))
-      } else {
-        alert('Error removing item')
-      }
-    } catch (error) {
-      console.error('Error removing item:', error)
-      alert('Error removing item')
-    }
-  }
-
-  const removeWant = async (wantId: string) => {
-    try {
-      const response = await fetch(`/api/wants/${wantId}`, {
-        method: 'DELETE',
-      })
-
-      if (response.ok) {
-        setUserWants(userWants.filter(want => want.id !== wantId))
-      } else {
-        alert('Error removing want')
-      }
-    } catch (error) {
-      console.error('Error removing want:', error)
-      alert('Error removing want')
-    }
-  }
-
-  // Helper functions for bait score
-  const getBaitLevel = (itemCount: number) => {
-    if (itemCount === 0) return { text: "No Bait Yet 🪝", color: "text-gray-500" }
-    if (itemCount <= 2) return { text: "Beginner Fisher 🐟", color: "text-blue-400" }
-    if (itemCount <= 5) return { text: "Getting Hooked 🎣", color: "text-green-400" }
-    if (itemCount <= 10) return { text: "Master Angler 🐋", color: "text-purple-400" }
-    return { text: "Fishing Legend 👑", color: "text-yellow-400" }
-  }
-
-  const getProgressPercentage = (itemCount: number) => {
-    if (itemCount === 0) return 0
-    if (itemCount <= 2) return (itemCount / 2) * 25
-    if (itemCount <= 5) return 25 + ((itemCount - 2) / 3) * 25
-    if (itemCount <= 10) return 50 + ((itemCount - 5) / 5) * 25
-    return 75 + Math.min((itemCount - 10) / 10, 1) * 25
-  }
-
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const getWantStatus = (_want: Want) => {
-    // For now, return placeholder status since we don't have cycle analysis
-    const random = Math.random()
-    if (random < 0.3) return { text: "MATCHED!", color: "text-green-400", icon: "🟢" }
-    if (random < 0.6) return { text: "Almost there! 2 connections away", color: "text-yellow-400", icon: "🟡" }
-    return { text: "No cycle yet", color: "text-red-400", icon: "🔴" }
-  }
+  };
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-64">
-        <div className="text-white text-lg">Loading...</div>
+      <div className="min-h-screen bg-[#0a0f0a] flex items-center justify-center">
+        <div className="text-[#22c55e] text-lg">Loading your fishing stats...</div>
       </div>
-    )
+    );
   }
 
-  const baitLevel = getBaitLevel(userItems.length)
-  const progressPercentage = getProgressPercentage(userItems.length)
+  // Find most active circle for "Start Swiping" button
+  const mostActiveCircle = circles.reduce((prev, current) => 
+    (current.itemCount > prev.itemCount) ? current : prev
+  , circles[0]);
 
   return (
-    <div className="space-y-8">
-      {/* Header */}
-      <div>
-        <h1 className="text-3xl font-bold text-white">
-          Welcome back, {session?.user?.name}!
-        </h1>
-        <p className="text-gray-400 mt-1">Cast your bait and start catching great trades</p>
-      </div>
-
-      {/* Bait Score Section */}
-      <div className="card p-8">
-        <div className="text-center mb-6">
-          <div className="text-6xl font-bold text-green-500 mb-2">{userItems.length}</div>
-          <div className="text-xl text-white mb-1">Bait in the Water</div>
-          <div className={`text-lg font-semibold ${baitLevel.color}`}>
-            {baitLevel.text}
-          </div>
+    <div className="min-h-screen bg-[#0a0f0a] px-4 py-6 md:px-8">
+      <div className="max-w-6xl mx-auto">
+        {/* Header */}
+        <div className="mb-8">
+          <h1 className="text-3xl font-bold text-white mb-2">
+            Welcome back, {session?.user?.name}! 🎣
+          </h1>
+          <p className="text-[#8a9a8a]">Ready to make some trades?</p>
         </div>
 
-        {/* Progress Bar */}
-        <div className="mb-6">
-          <div className="flex justify-between text-sm text-gray-400 mb-2">
-            <span>Add more bait to increase your chances! 🎣</span>
-            <span>{Math.round(progressPercentage)}%</span>
-          </div>
-          <div className="w-full bg-[#0a0f0a] rounded-full h-3 border border-[#1a2a1a]">
-            <div 
-              className="bg-gradient-to-r from-green-500 to-green-400 h-full rounded-full transition-all duration-500"
-              style={{ width: `${progressPercentage}%` }}
-            />
-          </div>
-        </div>
-
-        <Link
-          href="/dashboard/add-item"
-          className="block w-full text-center bg-green-500 text-white py-3 rounded-lg hover:bg-green-600 transition-colors font-medium"
-        >
-          + Add Bait 🎣
-        </Link>
-      </div>
-
-      {/* Your Bait - Horizontal Scroll */}
-      <div className="card p-6">
-        <h2 className="text-2xl font-bold text-white mb-6 flex items-center">
-          <span className="mr-2">🎣</span> Your Bait
-        </h2>
-
-        {userItems.length === 0 ? (
-          <div className="text-center py-8 text-gray-400">
-            <div className="text-4xl mb-4">🪝</div>
-            <p>No bait in the water yet!</p>
-            <p className="text-sm mt-1">Add your first item to start attracting trades</p>
-          </div>
-        ) : (
-          <div className="flex space-x-4 overflow-x-auto pb-4">
-            {userItems.map((item) => (
-              <div key={item.id} className="flex-shrink-0 w-48 bg-[#0a0f0a] border border-[#1a2a1a] rounded-lg p-4">
-                <div className="h-32 bg-[#1a2a1a] rounded-lg mb-3 flex items-center justify-center">
-                  {item.images.length > 0 ? (
-                    <img
-                      src={item.images[0]}
-                      alt={item.title}
-                      className="w-full h-full object-cover rounded-lg"
-                    />
-                  ) : (
-                    <span className="text-2xl">{item.category?.icon || '📦'}</span>
-                  )}
-                </div>
-                <h3 className="font-semibold text-white text-sm mb-1 line-clamp-2">{item.title}</h3>
-                <div className="flex items-center justify-between">
-                  {item.category && (
-                    <span className="text-xs text-gray-500">
-                      {item.category.icon} {item.category.name}
-                    </span>
-                  )}
-                  <button
-                    onClick={() => removeItem(item.id)}
-                    className="text-red-500 hover:text-red-400 text-xs"
-                  >
-                    Remove
-                  </button>
-                </div>
-              </div>
-            ))}
-          </div>
-        )}
-      </div>
-
-      {/* Your Catches */}
-      <div className="card p-6">
-        <h2 className="text-2xl font-bold text-white mb-6 flex items-center">
-          <span className="mr-2">🎯</span> Your Catches
-        </h2>
-
-        {userWants.length === 0 ? (
-          <div className="text-center py-8 text-gray-400">
-            <div className="text-4xl mb-4">🎯</div>
-            <p>No catches yet!</p>
-            <p className="text-sm mt-1">Start swiping to catch items you want</p>
-          </div>
-        ) : (
-          <div className="space-y-4">
-            {userWants.map((want) => {
-              const status = getWantStatus(want)
-              return (
-                <div key={want.id} className="bg-[#0a0f0a] border border-[#1a2a1a] rounded-lg p-4">
-                  <div className="flex items-start justify-between">
-                    <div className="flex-1">
-                      <h3 className="font-semibold text-white">{want.item.title}</h3>
-                      <p className="text-gray-400 text-sm mt-1">
-                        by {want.item.user.name}
-                        {want.item.user.city && ` • ${want.item.user.city}`}
-                      </p>
-                      <div className={`text-sm mt-2 flex items-center ${status.color}`}>
-                        <span className="mr-2">{status.icon}</span>
-                        {status.text}
-                      </div>
-                    </div>
-                    <button
-                      onClick={() => removeWant(want.id)}
-                      className="text-red-500 hover:text-red-400 text-sm"
-                    >
-                      Remove
-                    </button>
+        {/* Bait Score Section */}
+        <div className="mb-8">
+          <div className="bg-[#111a11] rounded-xl border border-[#1a2a1a] p-6">
+            <div className="flex items-center justify-between mb-4">
+              <div>
+                <div className="flex items-center space-x-3 mb-2">
+                  <span className="text-4xl">{dashboardData?.levelEmoji || '🐟'}</span>
+                  <div>
+                    <h2 className="text-2xl font-bold text-[#22c55e]">
+                      {dashboardData?.fishingLevel || 'Rookie Fisher'}
+                    </h2>
+                    <p className="text-[#8a9a8a]">
+                      {items.length} items as bait
+                    </p>
                   </div>
                 </div>
-              )
-            })}
+                
+                {/* Progress Bar */}
+                <div className="w-full bg-[#1a2a1a] rounded-full h-2 mb-2">
+                  <div 
+                    className="bg-[#22c55e] h-2 rounded-full transition-all duration-500"
+                    style={{ 
+                      width: `${Math.min((dashboardData?.baitScore || 0) % 100, 100)}%` 
+                    }}
+                  ></div>
+                </div>
+                <p className="text-xs text-[#4a5a4a]">
+                  {100 - ((dashboardData?.baitScore || 0) % 100)} points to next level
+                </p>
+              </div>
+              
+              <Link
+                href="/dashboard/add-item"
+                className="bg-[#22c55e] text-white px-4 py-2 rounded-lg font-medium hover:bg-green-600 transition-colors"
+              >
+                + Add Bait
+              </Link>
+            </div>
+          </div>
+        </div>
+
+        {/* Your Circles Section */}
+        <div className="mb-8">
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-xl font-bold text-white">Your Circles</h2>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {circles.map((circle) => (
+              <Link
+                key={circle.id}
+                href={`/circles/${circle.id}`}
+                className="bg-[#111a11] border border-[#1a2a1a] rounded-xl p-4 hover:bg-[#1a2a1a] transition-colors group"
+              >
+                <div className="flex items-start justify-between mb-3">
+                  <h3 className="font-semibold text-white group-hover:text-[#22c55e] transition-colors">
+                    {circle.name}
+                  </h3>
+                  <div className="text-[#8a9a8a] group-hover:text-[#22c55e] transition-colors">
+                    →
+                  </div>
+                </div>
+                
+                <div className="space-y-1 text-sm text-[#8a9a8a]">
+                  <p>{circle.memberCount} members</p>
+                  <p>{circle.itemCount} items</p>
+                  {circle.itemCount > 0 && (
+                    <span className="inline-block bg-[#22c55e] bg-opacity-20 text-[#22c55e] px-2 py-1 rounded text-xs">
+                      New items available!
+                    </span>
+                  )}
+                </div>
+              </Link>
+            ))}
+            
+            {/* Create Circle Card */}
+            <button className="bg-[#111a11] border border-[#1a2a1a] border-dashed rounded-xl p-4 hover:bg-[#1a2a1a] transition-colors group text-center">
+              <div className="text-3xl text-[#22c55e] mb-2 group-hover:scale-110 transition-transform">
+                +
+              </div>
+              <p className="text-[#8a9a8a] group-hover:text-white transition-colors">
+                Create Circle
+              </p>
+            </button>
+          </div>
+        </div>
+
+        {/* Your Bait Section */}
+        <div className="mb-8">
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-xl font-bold text-white">Your Bait</h2>
+            <Link
+              href="/dashboard/add-item"
+              className="text-[#22c55e] text-sm hover:text-green-400 transition-colors"
+            >
+              + Add more
+            </Link>
+          </div>
+          
+          {items.length > 0 ? (
+            <div className="flex space-x-4 overflow-x-auto pb-2">
+              {items.map((item) => (
+                <div
+                  key={item.id}
+                  className="flex-shrink-0 bg-[#111a11] border border-[#1a2a1a] rounded-xl p-3 w-40"
+                >
+                  <div className="w-full h-24 bg-[#1a2a1a] rounded-lg mb-2 flex items-center justify-center">
+                    {item.images.length > 0 ? (
+                      <img
+                        src={item.images[0]}
+                        alt={item.title}
+                        className="w-full h-full object-cover rounded-lg"
+                      />
+                    ) : (
+                      <span className="text-2xl">📦</span>
+                    )}
+                  </div>
+                  <h3 className="font-medium text-sm text-white truncate mb-1">
+                    {item.title}
+                  </h3>
+                  {item.wantCount > 0 && (
+                    <p className="text-xs text-[#f59e0b]">
+                      🔥 {item.wantCount} want this
+                    </p>
+                  )}
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="bg-[#111a11] border border-[#1a2a1a] border-dashed rounded-xl p-8 text-center">
+              <div className="text-4xl mb-4">🎣</div>
+              <p className="text-[#8a9a8a] mb-4">No bait cast yet!</p>
+              <Link
+                href="/dashboard/add-item"
+                className="bg-[#22c55e] text-white px-6 py-2 rounded-lg font-medium hover:bg-green-600 transition-colors"
+              >
+                Cast Your First Bait
+              </Link>
+            </div>
+          )}
+        </div>
+
+        {/* Quick Stats */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+          <div className="bg-[#111a11] rounded-xl border border-[#1a2a1a] p-4 text-center">
+            <div className="text-2xl font-bold text-[#22c55e]">{items.length}</div>
+            <div className="text-sm text-[#8a9a8a]">Items</div>
+          </div>
+          <div className="bg-[#111a11] rounded-xl border border-[#1a2a1a] p-4 text-center">
+            <div className="text-2xl font-bold text-[#f59e0b]">{dashboardData?.catchesCount || 0}</div>
+            <div className="text-sm text-[#8a9a8a]">Catches</div>
+          </div>
+          <div className="bg-[#111a11] rounded-xl border border-[#1a2a1a] p-4 text-center">
+            <div className="text-2xl font-bold text-[#22c55e]">{dashboardData?.tradesCompleted || 0}</div>
+            <div className="text-sm text-[#8a9a8a]">Trades</div>
+          </div>
+          <div className="bg-[#111a11] rounded-xl border border-[#1a2a1a] p-4 text-center">
+            <div className="text-2xl font-bold text-[#22c55e]">{dashboardData?.streakDays || 0}</div>
+            <div className="text-sm text-[#8a9a8a]">Day Streak</div>
+          </div>
+        </div>
+
+        {/* Start Swiping CTA */}
+        {mostActiveCircle && (
+          <div className="text-center">
+            <Link
+              href={`/circles/${mostActiveCircle.id}/swipe`}
+              className="inline-block bg-[#22c55e] text-white px-8 py-3 rounded-xl text-lg font-bold hover:bg-green-600 transition-colors shadow-lg"
+            >
+              Start Swiping →
+            </Link>
+            <p className="text-[#8a9a8a] text-sm mt-2">
+              {mostActiveCircle.itemCount} items waiting in {mostActiveCircle.name}
+            </p>
           </div>
         )}
       </div>
-
-      {/* Quick Stats */}
-      <div className="grid grid-cols-3 gap-6">
-        <div className="card p-6 text-center">
-          <div className="text-2xl font-bold text-green-500">{userItems.length}</div>
-          <div className="text-gray-400 text-sm">Items offered</div>
-        </div>
-        <div className="card p-6 text-center">
-          <div className="text-2xl font-bold text-green-500">{userWants.length}</div>
-          <div className="text-gray-400 text-sm">Items wanted</div>
-        </div>
-        <div className="card p-6 text-center">
-          <div className="text-2xl font-bold text-green-500">
-            {userWants.filter(w => getWantStatus(w).text === "MATCHED!").length}
-          </div>
-          <div className="text-gray-400 text-sm">Matches found</div>
-        </div>
-      </div>
-
-      {/* Start Swiping CTA */}
-      <div className="text-center">
-        <Link
-          href="/swipe"
-          className="inline-block bg-green-500 text-white px-8 py-4 text-lg rounded-lg hover:bg-green-600 transition-colors font-medium"
-        >
-          Start Swiping →
-        </Link>
-      </div>
     </div>
-  )
+  );
 }

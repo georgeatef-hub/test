@@ -13,16 +13,29 @@ enum AuthProvider {
 }
 
 enum ItemStatus {
-  AVAILABLE
-  IN_TRADE
+  ACTIVE
   TRADED
+  REMOVED
 }
 
-enum TradeCycleStatus {
-  PENDING    // Found by algorithm, waiting for all participants to confirm
-  CONFIRMED  // All confirmed
-  COMPLETED  // Trade executed
-  CANCELLED  // Someone declined
+enum ItemCondition {
+  NEW
+  LIKE_NEW
+  GOOD
+  FAIR
+  FOR_PARTS
+}
+
+enum TradeStatus {
+  MATCHED
+  IN_PROGRESS
+  COMPLETED
+  STALE
+}
+
+enum SwipeDirection {
+  RIGHT
+  LEFT
 }
 
 model User {
@@ -32,83 +45,121 @@ model User {
   passwordHash  String?
   image         String?
   provider      AuthProvider @default(CREDENTIALS)
-  latitude      Float?
-  longitude     Float?
-  city          String?
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
+  lastActiveAt  DateTime @default(now())
+  streakDays    Int      @default(0)
+  streakLastDate DateTime?
 
-  items         Item[]
-  wants         Want[]
-  tradeMembers  TradeMember[]
+  items           Item[]
+  swipes          Swipe[]
+  tradeMembers    TradeMember[]
+  circlesCreated  Circle[]       @relation("CircleAdmin")
+  circleMemberships CircleMember[]
 }
 
-model Category {
-  id    String @id @default(cuid())
-  name  String @unique
-  icon  String? // emoji
-  items Item[]
+model Circle {
+  id          String   @id @default(cuid())
+  name        String
+  description String?
+  inviteCode  String   @unique
+  adminId     String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  admin       User     @relation("CircleAdmin", fields: [adminId], references: [id])
+  members     CircleMember[]
+  swipes      Swipe[]
+  trades      Trade[]
+
+  @@index([inviteCode])
+}
+
+model CircleMember {
+  id        String   @id @default(cuid())
+  circleId  String
+  userId    String
+  joinedAt  DateTime @default(now())
+  invitedBy String?
+
+  circle    Circle   @relation(fields: [circleId], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([circleId, userId])
+  @@index([userId])
+  @@index([circleId])
 }
 
 model Item {
-  id          String     @id @default(cuid())
+  id          String       @id @default(cuid())
   userId      String
-  categoryId  String?
   title       String
   description String?
-  images      String[]   // URLs
-  status      ItemStatus @default(AVAILABLE)
-  condition   String?    // "New", "Like New", "Good", "Fair"
-  createdAt   DateTime   @default(now())
+  condition   ItemCondition?
+  tags        String[]
+  images      String[]
+  status      ItemStatus   @default(ACTIVE)
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+  tradedAt    DateTime?
 
-  user        User       @relation(fields: [userId], references: [id], onDelete: Cascade)
-  category    Category?  @relation(fields: [categoryId], references: [id])
-  wantedBy    Want[]
-  givenInTrades TradeMember[] @relation("GivenItem")
+  user        User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  swipes      Swipe[]
+  givenInTrades  TradeMember[] @relation("GivenItem")
   receivedInTrades TradeMember[] @relation("ReceivedItem")
 
   @@index([userId])
-  @@index([categoryId])
   @@index([status])
 }
 
-model Want {
-  id        String   @id @default(cuid())
-  userId    String   // the user who wants this item
-  itemId    String   // the item they want
-  createdAt DateTime @default(now())
+model Swipe {
+  id        String         @id @default(cuid())
+  userId    String
+  itemId    String
+  circleId  String
+  direction SwipeDirection
+  undone    Boolean        @default(false)
+  createdAt DateTime       @default(now())
 
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  item      Item     @relation(fields: [itemId], references: [id], onDelete: Cascade)
+  user      User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  item      Item           @relation(fields: [itemId], references: [id], onDelete: Cascade)
+  circle    Circle         @relation(fields: [circleId], references: [id], onDelete: Cascade)
 
-  @@unique([userId, itemId])
-  @@index([userId])
+  @@unique([userId, itemId, circleId])
+  @@index([userId, circleId])
   @@index([itemId])
 }
 
-model TradeCycle {
-  id        String           @id @default(cuid())
-  status    TradeCycleStatus @default(PENDING)
-  score     Float            @default(0) // algorithm quality score
-  createdAt DateTime         @default(now())
-  updatedAt DateTime         @updatedAt
+model Trade {
+  id          String      @id @default(cuid())
+  circleId    String
+  status      TradeStatus @default(MATCHED)
+  cycleLength Int
+  score       Float       @default(0)
+  matchedAt   DateTime    @default(now())
+  completedAt DateTime?
+  deadline    DateTime
 
-  members   TradeMember[]
+  circle      Circle      @relation(fields: [circleId], references: [id])
+  members     TradeMember[]
+
+  @@index([circleId])
+  @@index([status])
 }
 
 model TradeMember {
-  id           String @id @default(cuid())
-  cycleId      String
-  userId       String
-  givesItemId  String  // item this user gives
-  receivesItemId String // item this user receives
-  confirmed    Boolean @default(false)
+  id             String    @id @default(cuid())
+  tradeId        String
+  userId         String
+  givesItemId    String
+  receivesItemId String
+  completedAt    DateTime?
 
-  cycle        TradeCycle @relation(fields: [cycleId], references: [id], onDelete: Cascade)
-  user         User       @relation(fields: [userId], references: [id])
-  givesItem    Item       @relation("GivenItem", fields: [givesItemId], references: [id])
-  receivesItem Item       @relation("ReceivedItem", fields: [receivesItemId], references: [id])
+  trade          Trade     @relation(fields: [tradeId], references: [id], onDelete: Cascade)
+  user           User      @relation(fields: [userId], references: [id])
+  givesItem      Item      @relation("GivenItem", fields: [givesItemId], references: [id])
+  receivesItem   Item      @relation("ReceivedItem", fields: [receivesItemId], references: [id])
 
-  @@unique([cycleId, userId])
+  @@unique([tradeId, userId])
   @@index([userId])
 }

@@ -1,45 +1,35 @@
-'use client'
+'use client';
 
-import { useSession } from 'next-auth/react'
-import { useRouter } from 'next/navigation'
-import { useEffect } from 'react'
-import Navbar from '@/components/navbar'
+import { useSession } from 'next-auth/react';
+import { redirect } from 'next/navigation';
+import { ReactNode } from 'react';
+import Navbar from '@/components/navbar';
 
-export default function DashboardLayout({
-  children,
-}: {
-  children: React.ReactNode
-}) {
-  const { data: session, status } = useSession()
-  const router = useRouter()
+interface DashboardLayoutProps {
+  children: ReactNode;
+}
 
-  useEffect(() => {
-    if (status === 'loading') return // Still loading
-
-    if (!session) {
-      router.push('/login')
-      return
-    }
-  }, [session, status, router])
+export default function DashboardLayout({ children }: DashboardLayoutProps) {
+  const { data: session, status } = useSession();
 
   if (status === 'loading') {
     return (
       <div className="min-h-screen bg-[#0a0f0a] flex items-center justify-center">
-        <div className="text-white text-lg">Loading...</div>
+        <div className="text-[#22c55e] text-lg">Loading...</div>
       </div>
-    )
+    );
   }
 
   if (!session) {
-    return null // Will redirect to login
+    redirect('/login');
   }
 
   return (
-    <div className="min-h-screen bg-[#0a0f0a]">
+    <div className="min-h-screen bg-[#0a0f0a] text-white">
       <Navbar />
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 pb-20 md:pb-8">
+      <main className="pb-20 md:pb-0">
         {children}
       </main>
     </div>
-  )
+  );
 }

@@ -1,5 +1,4 @@
 import { prisma } from './prisma'
-import { ItemStatus, TradeCycleStatus } from '@prisma/client'
 
 interface TradeEdge {
   fromUserId: string
@@ -18,28 +17,17 @@ interface AdjacencyList {
 }
 
 /**
- * Calculate distance between two points using Haversine formula
- * Returns distance in kilometers
+ * Build adjacency list from RIGHT swipes within a circle
+ * Edge A→B exists if: A has an item that B swiped RIGHT on in this circle
  */
-function calculateDistance(lat1: number, lon1: number, lat2: number, lon2: number): number {
-  const R = 6371 // Earth's radius in kilometers
-  const dLat = (lat2 - lat1) * Math.PI / 180
-  const dLon = (lon2 - lon1) * Math.PI / 180
-  const a = 
-    Math.sin(dLat/2) * Math.sin(dLat/2) +
-    Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * 
-    Math.sin(dLon/2) * Math.sin(dLon/2)
-  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a))
-  return R * c
-}
-
-/**
- * Build adjacency list from Want records
- * Edge A→B exists if: A has an item that B wants
- */
-async function buildGraph(): Promise<{ adjacencyList: AdjacencyList, userLocations: Map<string, {lat: number, lon: number}> }> {
-  // Get all wants with item and user information
-  const wants = await prisma.want.findMany({
+async function buildGraph(circleId: string): Promise<AdjacencyList> {
+  // Get all RIGHT swipes in this circle
+  const swipes = await prisma.swipe.findMany({
+    where: {
+      circleId,
+      direction: 'RIGHT',
+      undone: false
+    },
     include: {
       item: {
         include: {
@@ -51,50 +39,48 @@ async function buildGraph(): Promise<{ adjacencyList: AdjacencyList, userLocatio
   })
 
   const adjacencyList: AdjacencyList = {}
-  const userLocations = new Map<string, {lat: number, lon: number}>()
 
-  // Initialize adjacency list for all users and collect locations
-  const allUsers = await prisma.user.findMany()
-  for (const user of allUsers) {
-    adjacencyList[user.id] = []
-    if (user.latitude && user.longitude) {
-      userLocations.set(user.id, { lat: user.latitude, lon: user.longitude })
-    }
+  // Initialize adjacency list for all circle members
+  const circleMembers = await prisma.circleMember.findMany({
+    where: { circleId }
+  })
+
+  for (const member of circleMembers) {
+    adjacencyList[member.userId] = []
   }
 
-  // Build edges: if user B wants item from user A, create edge A→B
-  for (const want of wants) {
-    const itemOwnerId = want.item.userId
-    const wantingUserId = want.userId
+  // Build edges: if user B swiped RIGHT on item from user A, create edge A→B
+  for (const swipe of swipes) {
+    const itemOwnerId = swipe.item.userId
+    const swipingUserId = swipe.userId
     
-    // Skip if item is not available
-    if (want.item.status !== ItemStatus.AVAILABLE) {
+    // Skip if item is not ACTIVE
+    if (swipe.item.status !== 'ACTIVE') {
       continue
     }
 
-    // Skip self-wants (shouldn't happen but be safe)
-    if (itemOwnerId === wantingUserId) {
+    // Skip self-swipes (shouldn't happen but be safe)
+    if (itemOwnerId === swipingUserId) {
       continue
     }
 
-    // Create edge from item owner to wanting user
+    // Create edge from item owner to swiping user
     if (!adjacencyList[itemOwnerId]) {
       adjacencyList[itemOwnerId] = []
     }
 
     adjacencyList[itemOwnerId].push({
       fromUserId: itemOwnerId,
-      toUserId: wantingUserId,
-      itemId: want.itemId
+      toUserId: swipingUserId,
+      itemId: swipe.itemId
     })
   }
 
-  return { adjacencyList, userLocations }
+  return adjacencyList
 }
 
 /**
  * Find all elementary cycles in the graph using DFS
- * Simplified version of Johnson's algorithm
  */
 function findCycles(adjacencyList: AdjacencyList): TradeCycle[] {
   const cycles: TradeCycle[] = []
@@ -121,7 +107,7 @@ function findCycles(adjacencyList: AdjacencyList): TradeCycle[] {
     for (const edge of adjacencyList[currentUser] || []) {
       const nextUser = edge.toUserId
       
-      // Found a cycle back to start with at least 2 edges
+      // Found a cycle back to start with at least 2 edges (minimum cycle length = 2)
       if (nextUser === startUser && edges.length >= 1) {
         cycles.push({
           users: [...path],  // path doesn't include startUser again
@@ -145,47 +131,13 @@ function findCycles(adjacencyList: AdjacencyList): TradeCycle[] {
 }
 
 /**
- * Score a cycle based on:
- * - Shorter cycles are better (easier to coordinate)
- * - Location proximity bonus
+ * Score a cycle based on cycle length (shorter cycles are better)
+ * No location scoring since circles are the geographic proxy
  */
-function scoreCycle(cycle: TradeCycle, userLocations: Map<string, {lat: number, lon: number}>): number {
-  let score = 0
-
+function scoreCycle(cycle: TradeCycle): number {
   // Base score inversely proportional to cycle length
   // Prefer shorter cycles: 2-user cycles get 1000, 3-user get 500, etc.
-  score += Math.max(100, 1000 / cycle.users.length)
-
-  // Location proximity bonus
-  let totalDistance = 0
-  let locationPairs = 0
-
-  for (let i = 0; i < cycle.users.length; i++) {
-    const currentUserId = cycle.users[i]
-    const nextUserId = cycle.users[(i + 1) % cycle.users.length]
-    
-    const currentLocation = userLocations.get(currentUserId)
-    const nextLocation = userLocations.get(nextUserId)
-    
-    if (currentLocation && nextLocation) {
-      const distance = calculateDistance(
-        currentLocation.lat, currentLocation.lon,
-        nextLocation.lat, nextLocation.lon
-      )
-      totalDistance += distance
-      locationPairs++
-    }
-  }
-
-  // Add proximity bonus: closer users get higher scores
-  if (locationPairs > 0) {
-    const avgDistance = totalDistance / locationPairs
-    // Bonus inversely proportional to distance (max 100 bonus for 0km, decreases as distance increases)
-    const proximityBonus = Math.max(0, 100 - avgDistance)
-    score += proximityBonus
-  }
-
-  return score
+  return Math.max(100, 1000 / cycle.users.length)
 }
 
 /**
@@ -218,47 +170,54 @@ function selectOptimalCycles(cycles: TradeCycle[]): TradeCycle[] {
 }
 
 /**
- * Main matching algorithm
- * Finds optimal trade cycles and creates TradeCycle + TradeMember records
+ * Circle-scoped matching algorithm
+ * Finds optimal trade cycles within a circle and creates Trade + TradeMember records
  */
-export async function runMatchingAlgorithm(): Promise<{ 
+export async function runMatchingAlgorithm(circleId: string): Promise<{ 
   cyclesFound: number, 
-  cyclesCreated: number,
-  totalParticipants: number 
+  tradesCreated: number,
+  participants: number 
 }> {
-  console.log('🔄 Starting matching algorithm...')
+  console.log(`🔄 Starting matching algorithm for circle ${circleId}...`)
 
-  // Step 1: Build the graph
-  const { adjacencyList, userLocations } = await buildGraph()
-  console.log(`📊 Built graph with ${Object.keys(adjacencyList).length} users`)
+  // Step 1: Build the graph from RIGHT swipes in this circle
+  const adjacencyList = await buildGraph(circleId)
+  const userCount = Object.keys(adjacencyList).length
+  console.log(`📊 Built graph with ${userCount} users`)
 
   // Step 2: Find all elementary cycles
   const allCycles = findCycles(adjacencyList)
   console.log(`🔍 Found ${allCycles.length} potential cycles`)
 
   if (allCycles.length === 0) {
-    return { cyclesFound: 0, cyclesCreated: 0, totalParticipants: 0 }
+    return { cyclesFound: 0, tradesCreated: 0, participants: 0 }
   }
 
-  // Step 3: Score each cycle
+  // Step 3: Score each cycle (shorter is better)
   for (const cycle of allCycles) {
-    cycle.score = scoreCycle(cycle, userLocations)
+    cycle.score = scoreCycle(cycle)
   }
 
   // Step 4: Select optimal non-overlapping cycles
   const selectedCycles = selectOptimalCycles(allCycles)
   console.log(`✨ Selected ${selectedCycles.length} optimal cycles`)
 
-  // Step 5: Create TradeCycle and TradeMember records
-  let cyclesCreated = 0
+  // Step 5: Create Trade and TradeMember records
+  let tradesCreated = 0
   let totalParticipants = 0
+
+  const deadline = new Date()
+  deadline.setDate(deadline.getDate() + 7) // 7 days from now
 
   for (const cycle of selectedCycles) {
     try {
-      const tradeCycle = await prisma.tradeCycle.create({
+      const trade = await prisma.trade.create({
         data: {
-          status: TradeCycleStatus.PENDING,
+          circleId,
+          status: 'MATCHED',
+          cycleLength: cycle.users.length,
           score: cycle.score,
+          deadline
         }
       })
 
@@ -272,29 +231,39 @@ export async function runMatchingAlgorithm(): Promise<{
 
         await prisma.tradeMember.create({
           data: {
-            cycleId: tradeCycle.id,
+            tradeId: trade.id,
             userId: userId,
             givesItemId: givesEdge.itemId,
-            receivesItemId: receivesEdge.itemId,
-            confirmed: false,
+            receivesItemId: receivesEdge.itemId
           }
         })
       }
 
-      cyclesCreated++
+      // Mark matched items as IN_TRADE status (though the enum doesn't have this, let's use TRADED for now)
+      const itemIds = cycle.edges.map(edge => edge.itemId)
+      await prisma.item.updateMany({
+        where: {
+          id: { in: itemIds }
+        },
+        data: {
+          status: 'TRADED' // Using TRADED status to indicate items are in a trade
+        }
+      })
+
+      tradesCreated++
       totalParticipants += cycle.users.length
-      console.log(`✅ Created cycle with ${cycle.users.length} participants (score: ${cycle.score.toFixed(2)})`)
+      console.log(`✅ Created trade with ${cycle.users.length} participants (score: ${cycle.score.toFixed(2)})`)
 
     } catch (error) {
-      console.error('❌ Error creating trade cycle:', error)
+      console.error('❌ Error creating trade:', error)
     }
   }
 
-  console.log(`🎉 Matching complete! Created ${cyclesCreated} cycles with ${totalParticipants} total participants`)
+  console.log(`🎉 Matching complete! Created ${tradesCreated} trades with ${totalParticipants} total participants`)
 
   return {
     cyclesFound: allCycles.length,
-    cyclesCreated,
-    totalParticipants
+    tradesCreated,
+    participants: totalParticipants
   }
 }

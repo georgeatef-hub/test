@@ -5,7 +5,7 @@ import { AuthProvider } from "@prisma/client"
 
 export async function POST(request: NextRequest) {
   try {
-    const { email, password, name, city } = await request.json()
+    const { email, password, name } = await request.json()
 
     if (!email || !password || !name) {
       return NextResponse.json(
@@ -35,8 +35,7 @@ export async function POST(request: NextRequest) {
         email,
         name,
         passwordHash: hashedPassword,
-        provider: AuthProvider.CREDENTIALS,
-        city: city || null,
+        provider: AuthProvider.CREDENTIALS
       }
     })
 

@@ -1,133 +1,88 @@
 import { NextRequest, NextResponse } from "next/server"
-import { getServerSession } from "next-auth/next"
+import { getServerSession } from "next-auth"
 import { authOptions } from "@/lib/auth"
 import { prisma } from "@/lib/prisma"
-import { ItemStatus } from "@prisma/client"
+import { ItemCondition } from "@prisma/client"
 
-export async function GET(request: NextRequest) {
-  try {
-    const session = await getServerSession(authOptions)
-    if (!session?.user?.id) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
-    }
-
-    const { searchParams } = new URL(request.url)
-    const categoryId = searchParams.get('categoryId')
-    const excludeOwn = searchParams.get('excludeOwn') === 'true'
-    const mode = searchParams.get('mode') // 'swipe' mode
-
-    const where: Record<string, unknown> = {
-      status: ItemStatus.AVAILABLE,
-    }
-
-    if (categoryId) {
-      where.categoryId = categoryId
-    }
-
-    if (excludeOwn) {
-      where.userId = {
-        not: session.user.id
-      }
-    }
-
-    // For swipe mode: exclude items already wanted by this user
-    if (mode === 'swipe') {
-      where.userId = { not: session.user.id } // Always exclude own items in swipe
-      where.wantedBy = {
-        none: {
-          userId: session.user.id
-        }
-      }
-    }
-
-    const items = await prisma.item.findMany({
-      where,
-      include: {
-        category: true,
-        user: {
-          select: {
-            id: true,
-            name: true,
-            city: true,
-          }
-        },
-        wantedBy: {
-          where: {
-            userId: session.user.id
-          }
-        },
-        _count: {
-          select: {
-            wantedBy: true
-          }
-        }
-      },
-      orderBy: mode === 'swipe' 
-        ? [{ createdAt: 'desc' }] // Random-ish for swipe mode - could implement true randomization
-        : { createdAt: 'desc' }
-    })
-
-    // Add wantCount to each item for easier access
-    const itemsWithWantCount = items.map(item => ({
-      ...item,
-      wantCount: item._count.wantedBy
-    }))
-
-    return NextResponse.json(itemsWithWantCount)
-
-  } catch (error) {
-    console.error("Error fetching items:", error)
-    return NextResponse.json(
-      { error: "Internal server error" },
-      { status: 500 }
-    )
-  }
-}
-
+// POST /api/items - Create item (bait)
 export async function POST(request: NextRequest) {
+  const session = await getServerSession(authOptions)
+  if (!session?.user?.id) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
+  }
+
   try {
-    const session = await getServerSession(authOptions)
-    if (!session?.user?.id) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
+    const body = await request.json()
+    const { title, description, condition, tags, images } = body
+
+    if (!title || typeof title !== 'string') {
+      return NextResponse.json({ error: "Title is required" }, { status: 400 })
     }
 
-    const { title, description, categoryId, condition, images } = await request.json()
-
-    if (!title) {
-      return NextResponse.json(
-        { error: "Title is required" },
-        { status: 400 }
-      )
+    if (!images || !Array.isArray(images) || images.length === 0) {
+      return NextResponse.json({ error: "At least one image is required" }, { status: 400 })
     }
 
     const item = await prisma.item.create({
       data: {
+        userId: session.user.id,
         title,
         description: description || null,
-        categoryId: categoryId || null,
-        condition: condition || null,
-        images: images || [],
-        userId: session.user.id,
+        condition: condition as ItemCondition || null,
+        tags: tags || [],
+        images
       },
       include: {
-        category: true,
         user: {
-          select: {
-            id: true,
-            name: true,
-            city: true,
-          }
+          select: { id: true, name: true, image: true }
         }
       }
     })
 
     return NextResponse.json(item)
-
   } catch (error) {
     console.error("Error creating item:", error)
-    return NextResponse.json(
-      { error: "Internal server error" },
-      { status: 500 }
-    )
+    return NextResponse.json({ error: "Internal server error" }, { status: 500 })
+  }
+}
+
+// GET /api/items - List my items
+export async function GET() {
+  const session = await getServerSession(authOptions)
+  if (!session?.user?.id) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
+  }
+
+  try {
+    const items = await prisma.item.findMany({
+      where: {
+        userId: session.user.id,
+        status: 'ACTIVE'
+      },
+      include: {
+        user: {
+          select: { id: true, name: true, image: true }
+        },
+        _count: {
+          select: {
+            swipes: {
+              where: { direction: 'RIGHT' }
+            }
+          }
+        }
+      },
+      orderBy: { createdAt: 'desc' }
+    })
+
+    const itemsWithSwipeCount = items.map(item => ({
+      ...item,
+      _count: item._count.swipes
+    }))
+
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    return NextResponse.json(itemsWithSwipeCount.map(({ _count, ...item }) => item))
+  } catch (error) {
+    console.error("Error fetching items:", error)
+    return NextResponse.json({ error: "Internal server error" }, { status: 500 })
   }
 }

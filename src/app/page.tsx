@@ -1,241 +1,170 @@
-'use client'
+'use client';
 
-import Link from 'next/link'
-import { useState, useEffect } from 'react'
+import Link from 'next/link';
+import { motion } from 'framer-motion';
 
 export default function HomePage() {
-  const [animationStep, setAnimationStep] = useState(0)
-
-  // Animate card stack on load
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setAnimationStep((prev) => (prev + 1) % 3)
-    }, 2000)
-    return () => clearInterval(timer)
-  }, [])
-
   return (
-    <div className="min-h-screen bg-[#0a0f0a]">
-      {/* Header */}
-      <header className="px-6 py-4 border-b border-[#1a2a1a]">
-        <nav className="max-w-7xl mx-auto flex justify-between items-center">
-          <div className="text-2xl font-bold text-white">
-            Bar<span className="text-green-500">tera</span>
-          </div>
-          <div className="space-x-4">
-            <Link 
-              href="/login" 
-              className="text-white hover:text-green-500 transition-colors"
-            >
-              Login
-            </Link>
-            <Link 
-              href="/register" 
-              className="bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600 transition-colors"
-            >
-              Sign Up
-            </Link>
-          </div>
-        </nav>
-      </header>
+    <div className="min-h-screen bg-[#0a0f0a] text-white">
+      {/* Navigation */}
+      <nav className="p-6 flex justify-between items-center">
+        <div className="text-xl font-bold text-[#22c55e]">
+          Bartera 🎣
+        </div>
+        <div className="space-x-4">
+          <Link 
+            href="/login"
+            className="px-4 py-2 text-[#8a9a8a] hover:text-white transition-colors"
+          >
+            Login
+          </Link>
+          <Link 
+            href="/register"
+            className="px-6 py-2 bg-[#22c55e] text-white rounded-xl font-medium hover:bg-green-600 transition-colors"
+          >
+            Sign Up
+          </Link>
+        </div>
+      </nav>
 
       {/* Hero Section */}
-      <section className="px-6 py-20">
-        <div className="max-w-7xl mx-auto">
-          <div className="grid lg:grid-cols-2 gap-16 items-center">
-            {/* Text Content */}
-            <div className="text-center lg:text-left">
-              <h1 className="text-6xl font-bold text-white mb-6">
-                <span className="text-green-500">Swipe</span>. Match.{' '}
-                <span className="text-green-500">Trade</span>.
-              </h1>
-              <p className="text-xl text-gray-300 mb-12">
-                The smartest way to trade items with your community. 
-                Just swipe, get matched, and trade in perfect circles.
-              </p>
-              <Link 
-                href="/register" 
-                className="inline-block bg-green-500 text-white px-8 py-4 text-lg rounded-lg hover:bg-green-600 transition-colors"
+      <section className="text-center px-6 py-20">
+        <motion.h1 
+          className="text-6xl md:text-8xl font-bold mb-6"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8 }}
+        >
+          <span className="text-[#22c55e]">Swipe.</span>
+          <br />
+          <span className="text-[#22c55e]">Match.</span>
+          <br />
+          <span className="text-[#22c55e]">Trade.</span>
+        </motion.h1>
+        
+        <motion.p 
+          className="text-xl md:text-2xl text-[#8a9a8a] mb-12 max-w-2xl mx-auto"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, delay: 0.2 }}
+        >
+          Trade items with friends through trusted circles. No money needed.
+        </motion.p>
+
+        {/* Animated Cards Visual */}
+        <motion.div 
+          className="relative mx-auto mb-16 w-80 h-96"
+          initial={{ opacity: 0, scale: 0.8 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.8, delay: 0.4 }}
+        >
+          {/* Card Stack */}
+          <div className="absolute inset-0">
+            {[0, 1, 2].map((i) => (
+              <motion.div
+                key={i}
+                className="absolute w-full h-full bg-[#111a11] rounded-xl border border-[#1a2a1a] shadow-lg"
+                style={{
+                  zIndex: 3 - i,
+                  transform: `translateY(${i * 8}px) scale(${1 - i * 0.05})`,
+                }}
+                animate={{
+                  x: i === 0 ? [0, 20, -20, 0] : 0,
+                  rotate: i === 0 ? [0, 5, -5, 0] : 0,
+                }}
+                transition={{
+                  duration: 4,
+                  repeat: Infinity,
+                  delay: i * 0.5,
+                }}
               >
-                Start Trading
-              </Link>
-            </div>
-
-            {/* Animated Card Stack */}
-            <div className="relative h-96 flex items-center justify-center">
-              <div className="relative w-64 h-80">
-                {/* Card stack background cards */}
-                <div className="absolute inset-0 bg-[#111a11] border border-[#1a2a1a] rounded-xl transform rotate-3 opacity-30"></div>
-                <div className="absolute inset-0 bg-[#111a11] border border-[#1a2a1a] rounded-xl transform rotate-1 opacity-60"></div>
-                
-                {/* Active card */}
-                <div 
-                  className={`absolute inset-0 bg-[#111a11] border-2 border-green-500 rounded-xl p-6 transition-transform duration-500 ${
-                    animationStep === 1 ? 'translate-x-24 rotate-12 opacity-0' : 
-                    animationStep === 2 ? '-translate-x-24 -rotate-12 opacity-0' : 
-                    'translate-x-0 rotate-0'
-                  }`}
-                >
-                  <div className="h-full flex flex-col">
-                    <div className="bg-[#0a0f0a] h-32 rounded-lg mb-4 flex items-center justify-center text-4xl">
-                      📚
+                <div className="p-6 h-full flex flex-col">
+                  <div className="w-full h-48 bg-[#1a2a1a] rounded-lg mb-4 flex items-center justify-center">
+                    <span className="text-4xl">📱</span>
+                  </div>
+                  <h3 className="text-lg font-semibold mb-2">iPhone 12</h3>
+                  <div className="flex gap-2 mb-2">
+                    <span className="px-2 py-1 bg-[#22c55e] bg-opacity-20 text-[#22c55e] text-xs rounded-lg">
+                      electronics
+                    </span>
+                  </div>
+                  <div className="mt-auto flex items-center justify-between">
+                    <div className="flex items-center space-x-2">
+                      <div className="w-6 h-6 bg-[#22c55e] rounded-full"></div>
+                      <span className="text-sm text-[#8a9a8a]">Alice</span>
                     </div>
-                    <h3 className="text-xl font-bold text-white mb-2">Programming Book</h3>
-                    <p className="text-gray-400 text-sm mb-3">React &amp; Next.js guide</p>
-                    <div className="flex items-center justify-between text-xs">
-                      <span className="text-green-500">📚 Books</span>
-                      <span className="text-gray-500">Like New</span>
-                    </div>
-                    <div className="mt-auto pt-4">
-                      <div className="text-xs text-gray-400 mb-2">By Sarah • NYC</div>
-                      <div className="text-xs text-amber-400">🔥 12 people want this</div>
-                    </div>
+                    <span className="text-sm text-[#f59e0b]">🔥 3 want this</span>
                   </div>
                 </div>
-
-                {/* Swipe indicators */}
-                <div className={`absolute -right-8 top-1/2 transform -translate-y-1/2 text-6xl transition-opacity duration-300 ${animationStep === 1 ? 'opacity-100' : 'opacity-0'}`}>
-                  <div className="bg-green-500 rounded-full p-2">
-                    <span className="text-white text-2xl">✓</span>
-                  </div>
-                </div>
-                <div className={`absolute -left-8 top-1/2 transform -translate-y-1/2 text-6xl transition-opacity duration-300 ${animationStep === 2 ? 'opacity-100' : 'opacity-0'}`}>
-                  <div className="bg-red-500 rounded-full p-2">
-                    <span className="text-white text-2xl">✗</span>
-                  </div>
-                </div>
-              </div>
-            </div>
+              </motion.div>
+            ))}
           </div>
-        </div>
-      </section>
+        </motion.div>
 
-      {/* How It Works */}
-      <section className="px-6 py-20 bg-[#111a11]">
-        <div className="max-w-7xl mx-auto">
-          <h2 className="text-4xl font-bold text-center text-white mb-16">
-            How It Works
-          </h2>
-          
-          <div className="grid md:grid-cols-3 gap-12">
-            <div className="text-center">
-              <div className="w-20 h-20 bg-green-500 rounded-full flex items-center justify-center text-3xl mx-auto mb-6">
-                🎣
-              </div>
-              <h3 className="text-2xl font-bold text-white mb-4">Cast your bait</h3>
-              <p className="text-gray-300">
-                List items you don&apos;t need anymore. Your &quot;bait&quot; attracts others to trade with you.
-              </p>
-            </div>
-            
-            <div className="text-center">
-              <div className="w-20 h-20 bg-green-500 rounded-full flex items-center justify-center text-3xl mx-auto mb-6">
-                👆
-              </div>
-              <h3 className="text-2xl font-bold text-white mb-4">Swipe to catch</h3>
-              <p className="text-gray-300">
-                Swipe right on items you want. Build your wishlist by catching what interests you.
-              </p>
-            </div>
-            
-            <div className="text-center">
-              <div className="w-20 h-20 bg-green-500 rounded-full flex items-center justify-center text-3xl mx-auto mb-6">
-                🎉
-              </div>
-              <h3 className="text-2xl font-bold text-white mb-4">Get matched!</h3>
-              <p className="text-gray-300">
-                Our algorithm finds trade circles where everyone gets what they want.
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Stats Section */}
-      <section className="px-6 py-20">
-        <div className="max-w-7xl mx-auto">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
-            <div>
-              <h2 className="text-4xl font-bold text-white mb-8">
-                Join the Trading Revolution
-              </h2>
-              <div className="grid grid-cols-2 gap-8">
-                <div className="text-center">
-                  <div className="text-3xl font-bold text-green-500 mb-2">1,247</div>
-                  <div className="text-gray-400">Items listed</div>
-                </div>
-                <div className="text-center">
-                  <div className="text-3xl font-bold text-green-500 mb-2">389</div>
-                  <div className="text-gray-400">Trades completed</div>
-                </div>
-              </div>
-            </div>
-
-            {/* Trade Circle Visualization */}
-            <div className="relative max-w-md mx-auto">
-              <div className="relative w-80 h-80">
-                <div className="absolute inset-0 rounded-full border-4 border-green-500 opacity-30"></div>
-                
-                {/* User A */}
-                <div className="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-4">
-                  <div className="w-16 h-16 bg-[#111a11] border-2 border-green-500 rounded-full flex items-center justify-center">
-                    <span className="text-white font-bold">A</span>
-                  </div>
-                  <div className="text-sm text-gray-300 mt-2 text-center">Has: Book<br/>Wants: Game</div>
-                </div>
-                
-                {/* User B */}
-                <div className="absolute top-1/2 right-0 transform translate-x-4 -translate-y-1/2">
-                  <div className="w-16 h-16 bg-[#111a11] border-2 border-green-500 rounded-full flex items-center justify-center">
-                    <span className="text-white font-bold">B</span>
-                  </div>
-                  <div className="text-sm text-gray-300 mt-2 text-center">Has: Phone<br/>Wants: Book</div>
-                </div>
-                
-                {/* User C */}
-                <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 translate-y-4">
-                  <div className="w-16 h-16 bg-[#111a11] border-2 border-green-500 rounded-full flex items-center justify-center">
-                    <span className="text-white font-bold">C</span>
-                  </div>
-                  <div className="text-sm text-gray-300 mt-2 text-center">Has: Game<br/>Wants: Phone</div>
-                </div>
-                
-                {/* Arrows */}
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <div className="text-green-500 text-6xl font-thin">
-                    ↻
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* CTA Section */}
-      <section className="px-6 py-20 bg-[#111a11]">
-        <div className="max-w-7xl mx-auto text-center">
-          <h2 className="text-4xl font-bold text-white mb-6">
-            Ready to Start Trading?
-          </h2>
-          <p className="text-xl text-gray-300 mb-8">
-            Cast your bait, swipe to catch, and get matched instantly
-          </p>
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, delay: 0.6 }}
+        >
           <Link 
-            href="/register" 
-            className="inline-block bg-green-500 text-white px-8 py-4 text-lg rounded-lg hover:bg-green-600 transition-colors"
+            href="/register"
+            className="inline-block px-8 py-4 bg-[#22c55e] text-white text-xl font-bold rounded-xl hover:bg-green-600 transition-colors shadow-lg"
           >
             Start Trading
           </Link>
+        </motion.div>
+      </section>
+
+      {/* How It Works */}
+      <section className="px-6 py-20 bg-[#111a11] bg-opacity-50">
+        <div className="max-w-6xl mx-auto">
+          <motion.h2 
+            className="text-4xl font-bold text-center mb-16"
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+          >
+            How It Works
+          </motion.h2>
+          
+          <div className="grid md:grid-cols-3 gap-12">
+            {[
+              {
+                emoji: '🎣',
+                title: 'Cast Your Bait',
+                description: 'List items you don\'t need anymore. From gadgets to clothes, everything has value to someone.'
+              },
+              {
+                emoji: '⭕',
+                title: 'Create Your Circle',
+                description: 'Invite friends, family, or community members you trust. Trading works best with people you know.'
+              },
+              {
+                emoji: '🎉',
+                title: 'Get Matched!',
+                description: 'Our smart algorithm finds trade chains. You might trade with Alice to get what Bob has for Carol!'
+              }
+            ].map((step, i) => (
+              <motion.div
+                key={i}
+                className="text-center"
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8, delay: i * 0.2 }}
+              >
+                <div className="text-6xl mb-6">{step.emoji}</div>
+                <h3 className="text-2xl font-bold mb-4 text-[#22c55e]">{step.title}</h3>
+                <p className="text-[#8a9a8a] text-lg leading-relaxed">{step.description}</p>
+              </motion.div>
+            ))}
+          </div>
         </div>
       </section>
 
       {/* Footer */}
-      <footer className="px-6 py-8 border-t border-[#1a2a1a]">
-        <div className="max-w-7xl mx-auto text-center text-gray-400">
-          <p>&copy; 2024 Bartera. Built for the community, by the community.</p>
-        </div>
+      <footer className="p-6 text-center text-[#4a5a4a] border-t border-[#1a2a1a]">
+        <p>&copy; 2024 Bartera. Made with 💚 for sustainable trading.</p>
       </footer>
     </div>
-  )
+  );
 }

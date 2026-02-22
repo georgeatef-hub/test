@@ -1,219 +1,223 @@
-'use client'
+'use client';
 
-import { useState, useRef, useEffect } from 'react'
+import { useState, useRef, useEffect } from 'react';
+import { Item } from '@/types';
 
 interface SwipeCardProps {
-  item: {
-    id: string
-    title: string
-    description?: string | null
-    category?: { name: string; icon: string | null } | null
-    condition?: string | null
-    user: { name: string; city?: string | null }
-    wantCount: number
-    images: string[]
-  }
-  onSwipeLeft: () => void
-  onSwipeRight: () => void
-  isTop: boolean // only top card is interactive
+  item: Item;
+  onSwipeLeft: (itemId: string) => void;
+  onSwipeRight: (itemId: string) => void;
+  isTop: boolean;
 }
 
 export default function SwipeCard({ item, onSwipeLeft, onSwipeRight, isTop }: SwipeCardProps) {
-  const [isDragging, setIsDragging] = useState(false)
-  const [dragStart, setDragStart] = useState({ x: 0, y: 0 })
-  const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 })
-  const [isAnimating, setIsAnimating] = useState(false)
-  const cardRef = useRef<HTMLDivElement>(null)
+  const [isDragging, setIsDragging] = useState(false);
+  const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
+  const [startPos, setStartPos] = useState({ x: 0, y: 0 });
+  const cardRef = useRef<HTMLDivElement>(null);
 
-  const handleStart = (clientX: number, clientY: number) => {
-    if (!isTop || isAnimating) return
-    setIsDragging(true)
-    setDragStart({ x: clientX, y: clientY })
-  }
-
-  const handleMove = (clientX: number, clientY: number) => {
-    if (!isDragging || !isTop) return
-    
-    const deltaX = clientX - dragStart.x
-    const deltaY = clientY - dragStart.y
-    setDragOffset({ x: deltaX, y: deltaY })
-  }
-
-  const handleEnd = () => {
-    if (!isDragging || !isTop) return
-    setIsDragging(false)
-
-    const threshold = 100
-    const { x } = dragOffset
-
-    if (Math.abs(x) > threshold) {
-      // Animate card off screen
-      setIsAnimating(true)
-      if (x > 0) {
-        // Swipe right
-        onSwipeRight()
-      } else {
-        // Swipe left
-        onSwipeLeft()
-      }
-    } else {
-      // Snap back
-      setDragOffset({ x: 0, y: 0 })
-    }
-  }
-
-  // Mouse events
-  const handleMouseDown = (e: React.MouseEvent) => {
-    e.preventDefault()
-    handleStart(e.clientX, e.clientY)
-  }
-
-  const handleMouseMove = (e: MouseEvent) => {
-    handleMove(e.clientX, e.clientY)
-  }
-
-  const handleMouseUp = () => {
-    handleEnd()
-  }
-
-  // Touch events
-  const handleTouchStart = (e: React.TouchEvent) => {
-    const touch = e.touches[0]
-    handleStart(touch.clientX, touch.clientY)
-  }
-
-  const handleTouchMove = (e: React.TouchEvent) => {
-    const touch = e.touches[0]
-    handleMove(touch.clientX, touch.clientY)
-  }
-
-  const handleTouchEnd = () => {
-    handleEnd()
-  }
+  const SWIPE_THRESHOLD = 100;
+  const MAX_ROTATION = 15;
 
   useEffect(() => {
-    if (isDragging) {
-      document.addEventListener('mousemove', handleMouseMove)
-      document.addEventListener('mouseup', handleMouseUp)
-      
-      return () => {
-        document.removeEventListener('mousemove', handleMouseMove)
-        document.removeEventListener('mouseup', handleMouseUp)
-      }
-    }
-  }, [isDragging])
+    if (!isTop) return;
 
-  // Calculate rotation and opacity for visual feedback
-  const rotation = dragOffset.x * 0.1 // Slight rotation based on horizontal drag
-  const opacity = Math.abs(dragOffset.x) > 50 ? Math.min(Math.abs(dragOffset.x) / 150, 0.8) : 0
+    const card = cardRef.current;
+    if (!card) return;
+
+    const handleMouseDown = (e: MouseEvent) => {
+      if (e.button !== 0) return; // Only left click
+      e.preventDefault();
+      setIsDragging(true);
+      setStartPos({ x: e.clientX, y: e.clientY });
+    };
+
+    const handleTouchStart = (e: TouchEvent) => {
+      e.preventDefault();
+      setIsDragging(true);
+      const touch = e.touches[0];
+      setStartPos({ x: touch.clientX, y: touch.clientY });
+    };
+
+    card.addEventListener('mousedown', handleMouseDown);
+    card.addEventListener('touchstart', handleTouchStart);
+
+    return () => {
+      card.removeEventListener('mousedown', handleMouseDown);
+      card.removeEventListener('touchstart', handleTouchStart);
+    };
+  }, [isTop]);
+
+  useEffect(() => {
+    if (!isDragging) return;
+
+    const handleMouseMove = (e: MouseEvent) => {
+      const deltaX = e.clientX - startPos.x;
+      const deltaY = e.clientY - startPos.y;
+      setDragOffset({ x: deltaX, y: deltaY });
+    };
+
+    const handleTouchMove = (e: TouchEvent) => {
+      const touch = e.touches[0];
+      const deltaX = touch.clientX - startPos.x;
+      const deltaY = touch.clientY - startPos.y;
+      setDragOffset({ x: deltaX, y: deltaY });
+    };
+
+    const handleEnd = () => {
+      setIsDragging(false);
+      
+      // Check if we've swiped far enough
+      if (Math.abs(dragOffset.x) > SWIPE_THRESHOLD) {
+        if (dragOffset.x > 0) {
+          onSwipeRight(item.id);
+        } else {
+          onSwipeLeft(item.id);
+        }
+      }
+      
+      // Reset position
+      setDragOffset({ x: 0, y: 0 });
+    };
+
+    document.addEventListener('mousemove', handleMouseMove);
+    document.addEventListener('touchmove', handleTouchMove);
+    document.addEventListener('mouseup', handleEnd);
+    document.addEventListener('touchend', handleEnd);
+
+    return () => {
+      document.removeEventListener('mousemove', handleMouseMove);
+      document.removeEventListener('touchmove', handleTouchMove);
+      document.removeEventListener('mouseup', handleEnd);
+      document.removeEventListener('touchend', handleEnd);
+    };
+  }, [isDragging, startPos, dragOffset, item.id, onSwipeLeft, onSwipeRight]);
+
+  const rotation = (dragOffset.x / 100) * MAX_ROTATION;
+  const opacity = Math.abs(dragOffset.x) / SWIPE_THRESHOLD;
+  
+  // Calculate scale for cards in background
+  const scale = isTop ? 1 : 0.95;
+  const translateY = isTop ? 0 : 8;
 
   return (
     <div
       ref={cardRef}
-      className={`absolute inset-0 bg-[#111a11] border-2 border-[#1a2a1a] rounded-2xl shadow-2xl transition-transform duration-300 ${
-        isTop ? 'cursor-grab active:cursor-grabbing z-10' : 'z-0'
-      } ${isAnimating ? 'pointer-events-none' : ''}`}
+      className={`absolute inset-0 bg-[#111a11] border border-[#1a2a1a] rounded-xl shadow-2xl overflow-hidden transition-all duration-200 ${
+        isTop && !isDragging ? 'cursor-grab' : ''
+      } ${isDragging ? 'cursor-grabbing' : ''} ${isTop ? 'z-10' : 'z-0'}`}
       style={{
-        transform: isTop 
-          ? `translateX(${dragOffset.x}px) translateY(${dragOffset.y * 0.1}px) rotate(${rotation}deg)`
-          : 'scale(0.95) translateY(10px)',
-        transition: isAnimating ? 'transform 0.3s ease-out, opacity 0.3s ease-out' : isDragging ? 'none' : 'transform 0.3s ease-out'
+        transform: `translate(${dragOffset.x}px, ${dragOffset.y + translateY}px) rotate(${rotation}deg) scale(${scale})`,
+        transition: isDragging ? 'none' : 'transform 0.3s ease-out',
       }}
-      onMouseDown={isTop ? handleMouseDown : undefined}
-      onTouchStart={isTop ? handleTouchStart : undefined}
-      onTouchMove={isTop ? handleTouchMove : undefined}
-      onTouchEnd={isTop ? handleTouchEnd : undefined}
     >
-      {/* Color overlay based on swipe direction */}
-      {isTop && dragOffset.x !== 0 && (
+      {/* Swipe Overlays */}
+      {isTop && Math.abs(dragOffset.x) > 20 && (
         <>
           {/* Green overlay for right swipe */}
           <div
-            className="absolute inset-0 bg-green-500 rounded-2xl flex items-center justify-center pointer-events-none"
-            style={{
-              opacity: dragOffset.x > 50 ? opacity : 0,
-              transition: 'opacity 0.1s ease-out'
+            className="absolute inset-0 bg-[#22c55e] bg-opacity-80 flex items-center justify-center z-20"
+            style={{ 
+              opacity: dragOffset.x > 0 ? Math.min(opacity, 1) : 0,
             }}
           >
-            <div className="text-white text-6xl font-bold">✓</div>
+            <div className="text-6xl text-white font-bold">✓</div>
           </div>
-
+          
           {/* Red overlay for left swipe */}
           <div
-            className="absolute inset-0 bg-red-500 rounded-2xl flex items-center justify-center pointer-events-none"
-            style={{
-              opacity: dragOffset.x < -50 ? opacity : 0,
-              transition: 'opacity 0.1s ease-out'
+            className="absolute inset-0 bg-[#ef4444] bg-opacity-80 flex items-center justify-center z-20"
+            style={{ 
+              opacity: dragOffset.x < 0 ? Math.min(opacity, 1) : 0,
             }}
           >
-            <div className="text-white text-6xl font-bold">✗</div>
+            <div className="text-6xl text-white font-bold">✗</div>
           </div>
         </>
       )}
 
-      {/* Card content */}
-      <div className="p-6 h-full flex flex-col">
-        {/* Item image */}
-        <div className="h-48 bg-[#0a0f0a] rounded-xl mb-4 flex items-center justify-center border border-[#1a2a1a] overflow-hidden">
-          {item.images.length > 0 ? (
+      {/* Card Content */}
+      <div className="h-full flex flex-col">
+        {/* Item Image */}
+        <div className="flex-1 relative overflow-hidden">
+          {item.images && item.images.length > 0 ? (
             <img
               src={item.images[0]}
               alt={item.title}
-              className="w-full h-full object-cover rounded-xl"
-              onError={(e) => {
-                const target = e.target as HTMLImageElement
-                target.style.display = 'none'
-                const parent = target.parentElement
-                if (parent) {
-                  parent.innerHTML = `<div class="text-gray-500 text-6xl">${item.category?.icon || '📦'}</div>`
-                }
-              }}
+              className="w-full h-full object-cover"
+              draggable={false}
             />
           ) : (
-            <div className="text-gray-500 text-6xl">
-              {item.category?.icon || '📦'}
+            <div className="w-full h-full bg-[#1a2a1a] flex items-center justify-center">
+              <span className="text-6xl">📦</span>
+            </div>
+          )}
+          
+          {/* Condition Badge */}
+          <div className="absolute top-4 left-4">
+            <span className={`px-2 py-1 rounded-lg text-xs font-medium ${
+              item.condition === 'NEW' ? 'bg-[#22c55e] text-white' :
+              item.condition === 'LIKE_NEW' ? 'bg-[#22c55e] bg-opacity-80 text-white' :
+              item.condition === 'GOOD' ? 'bg-[#f59e0b] text-white' :
+              item.condition === 'FAIR' ? 'bg-[#f59e0b] bg-opacity-80 text-white' :
+              'bg-[#8a9a8a] text-white'
+            }`}>
+              {item.condition.replace('_', ' ')}
+            </span>
+          </div>
+
+          {/* Want Count */}
+          {item.wantCount > 0 && (
+            <div className="absolute top-4 right-4">
+              <span className="bg-[#f59e0b] text-white px-2 py-1 rounded-lg text-sm font-medium">
+                🔥 {item.wantCount} want this
+              </span>
             </div>
           )}
         </div>
 
-        {/* Item info */}
-        <h2 className="text-2xl font-bold text-white mb-2 line-clamp-2">
-          {item.title}
-        </h2>
-
-        {item.description && (
-          <p className="text-gray-400 text-sm mb-4 line-clamp-3 flex-1">
-            {item.description}
-          </p>
-        )}
-
-        {/* Badges */}
-        <div className="flex flex-wrap gap-2 mb-4">
-          {item.category && (
-            <span className="bg-[#0a0f0a] border border-[#1a2a1a] text-gray-300 px-3 py-1 rounded-full text-sm">
-              {item.category.icon} {item.category.name}
-            </span>
-          )}
-          {item.condition && (
-            <span className="bg-[#0a0f0a] border border-[#1a2a1a] text-gray-300 px-3 py-1 rounded-full text-sm">
-              {item.condition}
-            </span>
-          )}
-        </div>
-
-        {/* Owner info */}
-        <div className="mt-auto">
-          <div className="text-gray-400 text-sm mb-2">
-            by {item.user.name}
-            {item.user.city && ` • ${item.user.city}`}
+        {/* Item Details */}
+        <div className="p-6 space-y-4">
+          <div>
+            <h3 className="text-xl font-bold text-white mb-2">
+              {item.title}
+            </h3>
+            
+            {item.description && (
+              <p className="text-[#8a9a8a] text-sm line-clamp-2 mb-3">
+                {item.description}
+              </p>
+            )}
           </div>
-          
-          {/* Want count */}
-          <div className="text-amber-400 text-sm flex items-center">
-            🔥 {item.wantCount} {item.wantCount === 1 ? 'person wants' : 'people want'} this
+
+          {/* Tags */}
+          {item.tags && item.tags.length > 0 && (
+            <div className="flex flex-wrap gap-2">
+              {item.tags.map((tag) => (
+                <span
+                  key={tag}
+                  className="px-2 py-1 bg-[#22c55e] bg-opacity-20 text-[#22c55e] rounded-lg text-sm"
+                >
+                  {tag}
+                </span>
+              ))}
+            </div>
+          )}
+
+          {/* Owner Info */}
+          <div className="flex items-center justify-between pt-2 border-t border-[#1a2a1a]">
+            <div className="flex items-center space-x-3">
+              <div className="w-10 h-10 bg-[#22c55e] rounded-full flex items-center justify-center text-white font-bold">
+                {item.user.name[0].toUpperCase()}
+              </div>
+              <div>
+                <div className="text-white font-medium">{item.user.name}</div>
+                <div className="text-[#8a9a8a] text-sm">Owner</div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
     </div>
-  )
+  );
 }
