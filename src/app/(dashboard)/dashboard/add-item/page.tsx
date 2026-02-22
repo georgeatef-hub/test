@@ -64,7 +64,7 @@ export default function AddItemPage() {
         const data = await response.json()
         setError(data.error || 'Error adding bait')
       }
-    } catch (err) {
+    } catch {
       setError('Something went wrong. Please try again.')
     } finally {
       setLoading(false)

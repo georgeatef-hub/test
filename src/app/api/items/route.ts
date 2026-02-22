@@ -16,7 +16,7 @@ export async function GET(request: NextRequest) {
     const excludeOwn = searchParams.get('excludeOwn') === 'true'
     const mode = searchParams.get('mode') // 'swipe' mode
 
-    const where: any = {
+    const where: Record<string, unknown> = {
       status: ItemStatus.AVAILABLE,
     }
 

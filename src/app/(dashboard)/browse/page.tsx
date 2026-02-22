@@ -19,7 +19,7 @@ interface Item {
     name: string
     city: string | null
   }
-  wantedBy: any[] // Will contain want record if user already wants this item
+  wantedBy: Record<string, unknown>[] // Will contain want record if user already wants this item
 }
 
 interface Category {

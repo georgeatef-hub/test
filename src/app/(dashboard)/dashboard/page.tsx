@@ -114,6 +114,7 @@ export default function DashboardPage() {
     return 75 + Math.min((itemCount - 10) / 10, 1) * 25
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const getWantStatus = (_want: Want) => {
     // For now, return placeholder status since we don't have cycle analysis
     const random = Math.random()

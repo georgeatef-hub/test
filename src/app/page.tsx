@@ -124,7 +124,7 @@ export default function HomePage() {
               </div>
               <h3 className="text-2xl font-bold text-white mb-4">Cast your bait</h3>
               <p className="text-gray-300">
-                List items you don't need anymore. Your "bait" attracts others to trade with you.
+                List items you don&apos;t need anymore. Your &quot;bait&quot; attracts others to trade with you.
               </p>
             </div>
             
