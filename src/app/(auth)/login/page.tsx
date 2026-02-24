@@ -27,8 +27,8 @@ export default function LoginPage() {
       if (result?.error) {
         setError('Invalid email or password')
       } else {
-        // Redirect to dashboard after successful login
-        router.push('/dashboard')
+        // Redirect to home feed after successful login
+        router.push('/home')
         router.refresh()
       }
     } catch {
@@ -39,7 +39,7 @@ export default function LoginPage() {
   }
 
   const handleGoogleSignIn = () => {
-    signIn('google', { callbackUrl: '/dashboard' })
+    signIn('google', { callbackUrl: '/home' })
   }
 
   return (

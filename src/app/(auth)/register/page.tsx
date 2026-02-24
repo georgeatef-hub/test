@@ -42,7 +42,7 @@ export default function RegisterPage() {
         })
 
         if (result?.ok) {
-          router.push('/dashboard')
+          router.push('/home')
           router.refresh()
         } else {
           // Registration succeeded but login failed, redirect to login
@@ -60,7 +60,7 @@ export default function RegisterPage() {
   }
 
   const handleGoogleSignIn = () => {
-    signIn('google', { callbackUrl: '/dashboard' })
+    signIn('google', { callbackUrl: '/home' })
   }
 
   return (

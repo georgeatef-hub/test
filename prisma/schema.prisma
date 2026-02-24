@@ -56,6 +56,8 @@ model User {
   tradeMembers    TradeMember[]
   circlesCreated  Circle[]       @relation("CircleAdmin")
   circleMemberships CircleMember[]
+  likes           Like[]
+  comments        Comment[]
 }
 
 model Circle {
@@ -107,6 +109,8 @@ model Item {
   swipes      Swipe[]
   givenInTrades  TradeMember[] @relation("GivenItem")
   receivedInTrades TradeMember[] @relation("ReceivedItem")
+  likes       Like[]
+  comments    Comment[]
 
   @@index([userId])
   @@index([status])
@@ -162,4 +166,24 @@ model TradeMember {
 
   @@unique([tradeId, userId])
   @@index([userId])
+}
+
+model Like {
+  id        String   @id @default(cuid())
+  userId    String
+  itemId    String
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  item      Item     @relation(fields: [itemId], references: [id], onDelete: Cascade)
+  @@unique([userId, itemId])
+}
+
+model Comment {
+  id        String   @id @default(cuid())
+  text      String
+  userId    String
+  itemId    String
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  item      Item     @relation(fields: [itemId], references: [id], onDelete: Cascade)
 }

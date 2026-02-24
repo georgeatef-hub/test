@@ -39,7 +39,11 @@ export interface Item {
   userId: string;
   user: User;
   wantCount: number;
+  likeCount: number;
+  commentCount: number;
   createdAt: Date;
+  likes?: Like[];
+  comments?: Comment[];
 }
 
 export interface Swipe {
@@ -126,5 +130,37 @@ export interface CircleCardProps {
 
 export interface TradeVisualizationProps {
   trade: Trade;
+  currentUserId: string;
+}
+
+export interface Like {
+  id: string;
+  userId: string;
+  itemId: string;
+  createdAt: Date;
+  user: User;
+}
+
+export interface Comment {
+  id: string;
+  text: string;
+  userId: string;
+  itemId: string;
+  createdAt: Date;
+  user: User;
+}
+
+// Feed and Social Components
+export interface FeedItem extends Item {
+  circles?: Circle[];
+  isLikedByCurrentUser: boolean;
+  isWantedByCurrentUser: boolean;
+}
+
+export interface FeedPostProps {
+  item: FeedItem;
+  onLike: (itemId: string) => void;
+  onWant: (itemId: string) => void;
+  onComment: (itemId: string) => void;
   currentUserId: string;
 }
