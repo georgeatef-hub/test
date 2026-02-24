@@ -41,7 +41,7 @@ export default function ItemCard({
   return (
     <div className={`card p-6 ${className}`}>
       {/* Item Image */}
-      <div className="aspect-square bg-[#0a0f0a] rounded-lg mb-4 flex items-center justify-center border border-[#1a2a1a]">
+      <div className="aspect-square bg-[#fafafa] rounded-lg mb-4 flex items-center justify-center border border-[#dbdbdb]">
         {images.length > 0 ? (
           <img
             src={images[0]}
@@ -63,10 +63,10 @@ export default function ItemCard({
 
       {/* Item Info */}
       <div className="flex-1">
-        <h3 className="font-semibold text-white text-lg mb-2">{title}</h3>
+        <h3 className="font-semibold text-gray-900 text-lg mb-2">{title}</h3>
         
         {description && (
-          <p className="text-gray-400 text-sm mb-3 line-clamp-3">
+          <p className="text-gray-500 text-sm mb-3 line-clamp-3">
             {description}
           </p>
         )}
@@ -100,8 +100,8 @@ export default function ItemCard({
                 disabled={actionLoading}
                 className={`flex-1 py-2 px-4 rounded-lg font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed ${
                   isWanted
-                    ? 'bg-green-500 text-white hover:bg-green-600'
-                    : 'bg-transparent border border-green-500 text-green-500 hover:bg-green-500 hover:text-white'
+                    ? 'bg-green-500 text-gray-900 hover:bg-green-600'
+                    : 'bg-transparent border border-green-500 text-green-500 hover:bg-green-500 hover:text-gray-900'
                 }`}
               >
                 {actionLoading 
@@ -116,7 +116,7 @@ export default function ItemCard({
             {onRemove && (
               <button
                 onClick={() => onRemove(id)}
-                className="px-3 py-2 text-red-500 hover:text-red-400 border border-red-500 rounded-lg hover:bg-red-500 hover:bg-opacity-10 transition-colors"
+                className="px-3 py-2 text-red-500 hover:text-red-500 border border-red-500 rounded-lg hover:bg-red-500 hover:bg-opacity-10 transition-colors"
               >
                 Remove
               </button>

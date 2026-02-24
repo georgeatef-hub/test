@@ -125,11 +125,11 @@ export default function FeedPost({ item, onLike, onWant, onComment, currentUserI
   }
 
   return (
-    <div className="bg-[#111a11] border border-[#1a2a1a] rounded-xl overflow-hidden mb-4">
+    <div className="bg-white border border-[#dbdbdb] rounded-xl overflow-hidden mb-4">
       {/* Header */}
       <div className="flex items-center justify-between p-4 pb-2">
         <div className="flex items-center space-x-3">
-          <div className="w-10 h-10 rounded-full bg-[#1a2a1a] flex items-center justify-center">
+          <div className="w-10 h-10 rounded-full bg-[#f5f5f5] flex items-center justify-center">
             {item.user.image ? (
               <Image
                 src={item.user.image}
@@ -146,7 +146,7 @@ export default function FeedPost({ item, onLike, onWant, onComment, currentUserI
           </div>
           <div>
             <div className="flex items-center space-x-2">
-              <span className="font-medium text-white">{item.user.name}</span>
+              <span className="font-medium text-gray-900">{item.user.name}</span>
               {item.circles && item.circles.length > 0 && (
                 <span className="text-xs text-[#8a9a8a]">
                   · {item.circles[0].name}
@@ -172,7 +172,7 @@ export default function FeedPost({ item, onLike, onWant, onComment, currentUserI
           />
         ) : (
           <div 
-            className="w-full h-full bg-[#1a2a1a] flex items-center justify-center cursor-pointer"
+            className="w-full h-full bg-[#f5f5f5] flex items-center justify-center cursor-pointer"
             onClick={() => window.open(`/items/${item.id}`, '_blank')}
           >
             <span className="text-4xl">📦</span>
@@ -181,7 +181,7 @@ export default function FeedPost({ item, onLike, onWant, onComment, currentUserI
         
         {/* Condition badge */}
         {item.condition && (
-          <div className={`absolute top-3 left-3 px-2 py-1 rounded text-xs font-medium text-white ${getConditionBadgeColor(item.condition)}`}>
+          <div className={`absolute top-3 left-3 px-2 py-1 rounded text-xs font-medium text-gray-900 ${getConditionBadgeColor(item.condition)}`}>
             {formatCondition(item.condition)}
           </div>
         )}
@@ -248,7 +248,7 @@ export default function FeedPost({ item, onLike, onWant, onComment, currentUserI
 
         {/* Item title and description */}
         <Link href={`/items/${item.id}`} className="block">
-          <h3 className="font-semibold text-white hover:text-[#22c55e] transition-colors mb-1">
+          <h3 className="font-semibold text-gray-900 hover:text-[#22c55e] transition-colors mb-1">
             {item.title}
           </h3>
           {item.description && (

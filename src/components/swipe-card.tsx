@@ -103,7 +103,7 @@ export default function SwipeCard({ item, onSwipeLeft, onSwipeRight, isTop }: Sw
   return (
     <div
       ref={cardRef}
-      className={`absolute inset-0 bg-[#111a11] border border-[#1a2a1a] rounded-xl shadow-2xl overflow-hidden transition-all duration-200 ${
+      className={`absolute inset-0 bg-white border border-[#dbdbdb] rounded-xl shadow-2xl overflow-hidden transition-all duration-200 ${
         isTop && !isDragging ? 'cursor-grab' : ''
       } ${isDragging ? 'cursor-grabbing' : ''} ${isTop ? 'z-10' : 'z-0'}`}
       style={{
@@ -121,7 +121,7 @@ export default function SwipeCard({ item, onSwipeLeft, onSwipeRight, isTop }: Sw
               opacity: dragOffset.x > 0 ? Math.min(opacity, 1) : 0,
             }}
           >
-            <div className="text-6xl text-white font-bold">✓</div>
+            <div className="text-6xl text-gray-900 font-bold">✓</div>
           </div>
           
           {/* Red overlay for left swipe */}
@@ -131,7 +131,7 @@ export default function SwipeCard({ item, onSwipeLeft, onSwipeRight, isTop }: Sw
               opacity: dragOffset.x < 0 ? Math.min(opacity, 1) : 0,
             }}
           >
-            <div className="text-6xl text-white font-bold">✗</div>
+            <div className="text-6xl text-gray-900 font-bold">✗</div>
           </div>
         </>
       )}
@@ -148,7 +148,7 @@ export default function SwipeCard({ item, onSwipeLeft, onSwipeRight, isTop }: Sw
               draggable={false}
             />
           ) : (
-            <div className="w-full h-full bg-[#1a2a1a] flex items-center justify-center">
+            <div className="w-full h-full bg-[#f5f5f5] flex items-center justify-center">
               <span className="text-6xl">📦</span>
             </div>
           )}
@@ -156,11 +156,11 @@ export default function SwipeCard({ item, onSwipeLeft, onSwipeRight, isTop }: Sw
           {/* Condition Badge */}
           <div className="absolute top-4 left-4">
             <span className={`px-2 py-1 rounded-lg text-xs font-medium ${
-              item.condition === 'NEW' ? 'bg-[#22c55e] text-white' :
-              item.condition === 'LIKE_NEW' ? 'bg-[#22c55e] bg-opacity-80 text-white' :
-              item.condition === 'GOOD' ? 'bg-[#f59e0b] text-white' :
-              item.condition === 'FAIR' ? 'bg-[#f59e0b] bg-opacity-80 text-white' :
-              'bg-[#8a9a8a] text-white'
+              item.condition === 'NEW' ? 'bg-[#22c55e] text-gray-900' :
+              item.condition === 'LIKE_NEW' ? 'bg-[#22c55e] bg-opacity-80 text-gray-900' :
+              item.condition === 'GOOD' ? 'bg-[#f59e0b] text-gray-900' :
+              item.condition === 'FAIR' ? 'bg-[#f59e0b] bg-opacity-80 text-gray-900' :
+              'bg-[#8a9a8a] text-gray-900'
             }`}>
               {item.condition.replace('_', ' ')}
             </span>
@@ -169,7 +169,7 @@ export default function SwipeCard({ item, onSwipeLeft, onSwipeRight, isTop }: Sw
           {/* Want Count */}
           {item.wantCount > 0 && (
             <div className="absolute top-4 right-4">
-              <span className="bg-[#f59e0b] text-white px-2 py-1 rounded-lg text-sm font-medium">
+              <span className="bg-[#f59e0b] text-gray-900 px-2 py-1 rounded-lg text-sm font-medium">
                 🔥 {item.wantCount} want this
               </span>
             </div>
@@ -179,7 +179,7 @@ export default function SwipeCard({ item, onSwipeLeft, onSwipeRight, isTop }: Sw
         {/* Item Details */}
         <div className="p-6 space-y-4">
           <div>
-            <h3 className="text-xl font-bold text-white mb-2">
+            <h3 className="text-xl font-bold text-gray-900 mb-2">
               {item.title}
             </h3>
             
@@ -205,13 +205,13 @@ export default function SwipeCard({ item, onSwipeLeft, onSwipeRight, isTop }: Sw
           )}
 
           {/* Owner Info */}
-          <div className="flex items-center justify-between pt-2 border-t border-[#1a2a1a]">
+          <div className="flex items-center justify-between pt-2 border-t border-[#dbdbdb]">
             <div className="flex items-center space-x-3">
-              <div className="w-10 h-10 bg-[#22c55e] rounded-full flex items-center justify-center text-white font-bold">
+              <div className="w-10 h-10 bg-[#22c55e] rounded-full flex items-center justify-center text-gray-900 font-bold">
                 {item.user.name[0].toUpperCase()}
               </div>
               <div>
-                <div className="text-white font-medium">{item.user.name}</div>
+                <div className="text-gray-900 font-medium">{item.user.name}</div>
                 <div className="text-[#8a9a8a] text-sm">Owner</div>
               </div>
             </div>

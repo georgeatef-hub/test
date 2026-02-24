@@ -19,7 +19,7 @@ export default function LandingPage() {
 
   if (status === 'loading') {
     return (
-      <div className="min-h-screen bg-[#0a0f0a] flex items-center justify-center">
+      <div className="min-h-screen bg-[#fafafa] flex items-center justify-center">
         <div className="text-[#22c55e] text-lg">Loading...</div>
       </div>
     )
@@ -29,7 +29,7 @@ export default function LandingPage() {
     return null // Will redirect
   }
   return (
-    <div className="min-h-screen bg-[#0a0f0a] text-white">
+    <div className="min-h-screen bg-[#fafafa] text-gray-900">
       {/* Navigation */}
       <nav className="p-6 flex justify-between items-center">
         <div className="text-xl font-bold text-[#22c55e]">
@@ -38,13 +38,13 @@ export default function LandingPage() {
         <div className="space-x-4">
           <Link 
             href="/login"
-            className="px-4 py-2 text-[#8a9a8a] hover:text-white transition-colors"
+            className="px-4 py-2 text-[#8a9a8a] hover:text-gray-900 transition-colors"
           >
             Login
           </Link>
           <Link 
             href="/register"
-            className="px-6 py-2 bg-[#22c55e] text-white rounded-xl font-medium hover:bg-green-600 transition-colors"
+            className="px-6 py-2 bg-[#22c55e] text-gray-900 rounded-xl font-medium hover:bg-green-600 transition-colors"
           >
             Sign Up
           </Link>
@@ -87,7 +87,7 @@ export default function LandingPage() {
             {[0, 1, 2].map((i) => (
               <motion.div
                 key={i}
-                className="absolute w-full h-full bg-[#111a11] rounded-xl border border-[#1a2a1a] shadow-lg"
+                className="absolute w-full h-full bg-white rounded-xl border border-[#dbdbdb] shadow-lg"
                 style={{
                   zIndex: 3 - i,
                   transform: `translateY(${i * 8}px) scale(${1 - i * 0.05})`,
@@ -103,7 +103,7 @@ export default function LandingPage() {
                 }}
               >
                 <div className="p-6 h-full flex flex-col">
-                  <div className="w-full h-48 bg-[#1a2a1a] rounded-lg mb-4 flex items-center justify-center">
+                  <div className="w-full h-48 bg-[#f5f5f5] rounded-lg mb-4 flex items-center justify-center">
                     <span className="text-4xl">📱</span>
                   </div>
                   <h3 className="text-lg font-semibold mb-2">iPhone 12</h3>
@@ -132,7 +132,7 @@ export default function LandingPage() {
         >
           <Link 
             href="/register"
-            className="inline-block px-8 py-4 bg-[#22c55e] text-white text-xl font-bold rounded-xl hover:bg-green-600 transition-colors shadow-lg"
+            className="inline-block px-8 py-4 bg-[#22c55e] text-gray-900 text-xl font-bold rounded-xl hover:bg-green-600 transition-colors shadow-lg"
           >
             Start Trading
           </Link>
@@ -140,7 +140,7 @@ export default function LandingPage() {
       </section>
 
       {/* How It Works */}
-      <section className="px-6 py-20 bg-[#111a11] bg-opacity-50">
+      <section className="px-6 py-20 bg-white bg-opacity-50">
         <div className="max-w-6xl mx-auto">
           <motion.h2 
             className="text-4xl font-bold text-center mb-16"
@@ -186,7 +186,7 @@ export default function LandingPage() {
       </section>
 
       {/* Footer */}
-      <footer className="p-6 text-center text-[#4a5a4a] border-t border-[#1a2a1a]">
+      <footer className="p-6 text-center text-[#4a5a4a] border-t border-[#dbdbdb]">
         <p>&copy; 2024 Bartera. Made with 💚 for sustainable trading.</p>
       </footer>
     </div>

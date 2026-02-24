@@ -64,7 +64,7 @@ export default function MatchesPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#0a0f0a] flex items-center justify-center">
+      <div className="min-h-screen bg-[#fafafa] flex items-center justify-center">
         <div className="text-[#22c55e] text-lg">Loading your matches...</div>
       </div>
     );
@@ -76,29 +76,29 @@ export default function MatchesPage() {
   const completedTrades = trades.filter(trade => trade.status === 'COMPLETED');
 
   return (
-    <div className="min-h-screen bg-[#0a0f0a] px-4 py-6 md:px-8">
+    <div className="min-h-screen bg-[#fafafa] px-4 py-6 md:px-8">
       <div className="max-w-4xl mx-auto">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-white mb-2">Your Matches 🎉</h1>
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">Your Matches 🎉</h1>
           <p className="text-[#8a9a8a]">Trade cycles and completed exchanges</p>
         </div>
 
         {/* Active Trades */}
         {activeTrades.length > 0 && (
           <div className="mb-12">
-            <h2 className="text-xl font-bold text-white mb-6">Active Trades</h2>
+            <h2 className="text-xl font-bold text-gray-900 mb-6">Active Trades</h2>
             <div className="space-y-6">
               {activeTrades.map((trade) => {
                 const myMember = getMyTradeMember(trade);
                 const daysLeft = getTradeDeadline(trade);
                 
                 return (
-                  <div key={trade.id} className="bg-[#111a11] border border-[#1a2a1a] rounded-xl p-6">
+                  <div key={trade.id} className="bg-white border border-[#dbdbdb] rounded-xl p-6">
                     {/* Trade Header */}
                     <div className="flex items-start justify-between mb-6">
                       <div>
-                        <h3 className="text-lg font-semibold text-white mb-1">
+                        <h3 className="text-lg font-semibold text-gray-900 mb-1">
                           Trade in {trade.circle.name}
                         </h3>
                         <p className="text-[#8a9a8a] text-sm">
@@ -131,13 +131,13 @@ export default function MatchesPage() {
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                         {trade.members.map((member) => (
                           <div key={member.id} className="flex items-center space-x-3">
-                            <div className={`w-6 h-6 rounded-full flex items-center justify-center text-white text-sm ${
+                            <div className={`w-6 h-6 rounded-full flex items-center justify-center text-gray-900 text-sm ${
                               member.isCompleted ? 'bg-[#22c55e]' : 'bg-[#8a9a8a]'
                             }`}>
                               {member.isCompleted ? '✅' : '⏳'}
                             </div>
                             <div>
-                              <div className="text-white font-medium">{member.user.name}</div>
+                              <div className="text-gray-900 font-medium">{member.user.name}</div>
                               <div className="text-xs text-[#8a9a8a]">
                                 Giving: {member.item.title}
                               </div>
@@ -151,7 +151,7 @@ export default function MatchesPage() {
                     {myMember && !myMember.isCompleted && (
                       <button
                         onClick={() => handleMarkComplete(trade.id)}
-                        className="w-full px-4 py-3 bg-[#22c55e] text-white rounded-lg font-medium hover:bg-green-600 transition-colors"
+                        className="w-full px-4 py-3 bg-[#22c55e] text-gray-900 rounded-lg font-medium hover:bg-green-600 transition-colors"
                       >
                         ✅ Mark My Part Complete
                       </button>
@@ -172,18 +172,18 @@ export default function MatchesPage() {
         {/* Completed Trades */}
         {completedTrades.length > 0 && (
           <div className="mb-8">
-            <h2 className="text-xl font-bold text-white mb-6">Completed Trades</h2>
+            <h2 className="text-xl font-bold text-gray-900 mb-6">Completed Trades</h2>
             <div className="space-y-4">
               {completedTrades.map((trade) => {
                 const myMember = getMyTradeMember(trade);
                 
                 return (
-                  <div key={trade.id} className="bg-[#111a11] border border-[#1a2a1a] rounded-xl p-4">
+                  <div key={trade.id} className="bg-white border border-[#dbdbdb] rounded-xl p-4">
                     <div className="flex items-center justify-between">
                       <div className="flex items-center space-x-4">
                         <div className="text-2xl">✅</div>
                         <div>
-                          <h3 className="font-semibold text-white">
+                          <h3 className="font-semibold text-gray-900">
                             Trade completed in {trade.circle.name}
                           </h3>
                           <p className="text-sm text-[#8a9a8a]">
@@ -206,20 +206,20 @@ export default function MatchesPage() {
         {activeTrades.length === 0 && completedTrades.length === 0 && (
           <div className="text-center py-16">
             <div className="text-6xl mb-6">🎣</div>
-            <h2 className="text-2xl font-bold text-white mb-4">No matches yet!</h2>
+            <h2 className="text-2xl font-bold text-gray-900 mb-4">No matches yet!</h2>
             <p className="text-[#8a9a8a] mb-8 max-w-md mx-auto">
               Keep swiping to find items you want. Our algorithm will create trade cycles when opportunities arise.
             </p>
             <div className="space-y-4">
               <Link
                 href="/circles"
-                className="inline-block px-6 py-3 bg-[#22c55e] text-white rounded-xl font-medium hover:bg-green-600 transition-colors mr-4"
+                className="inline-block px-6 py-3 bg-[#22c55e] text-gray-900 rounded-xl font-medium hover:bg-green-600 transition-colors mr-4"
               >
                 Start Swiping
               </Link>
               <Link
                 href="/dashboard/add-item"
-                className="inline-block px-6 py-3 bg-[#111a11] border border-[#1a2a1a] text-white rounded-xl font-medium hover:bg-[#1a2a1a] transition-colors"
+                className="inline-block px-6 py-3 bg-white border border-[#dbdbdb] text-gray-900 rounded-xl font-medium hover:bg-[#f5f5f5] transition-colors"
               >
                 Add More Items
               </Link>

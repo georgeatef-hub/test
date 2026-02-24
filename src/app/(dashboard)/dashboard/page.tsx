@@ -55,7 +55,7 @@ export default function DashboardPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#0a0f0a] flex items-center justify-center">
+      <div className="min-h-screen bg-[#fafafa] flex items-center justify-center">
         <div className="text-[#22c55e] text-lg">Loading your fishing stats...</div>
       </div>
     );
@@ -67,11 +67,11 @@ export default function DashboardPage() {
   , circles[0]);
 
   return (
-    <div className="min-h-screen bg-[#0a0f0a] px-4 py-6 md:px-8">
+    <div className="min-h-screen bg-[#fafafa] px-4 py-6 md:px-8">
       <div className="max-w-6xl mx-auto">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-white mb-2">
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">
             Welcome back, {session?.user?.name}! 🎣
           </h1>
           <p className="text-[#8a9a8a]">Ready to make some trades?</p>
@@ -79,7 +79,7 @@ export default function DashboardPage() {
 
         {/* Bait Score Section */}
         <div className="mb-8">
-          <div className="bg-[#111a11] rounded-xl border border-[#1a2a1a] p-6">
+          <div className="bg-white rounded-xl border border-[#dbdbdb] p-6">
             <div className="flex items-center justify-between mb-4">
               <div>
                 <div className="flex items-center space-x-3 mb-2">
@@ -95,7 +95,7 @@ export default function DashboardPage() {
                 </div>
                 
                 {/* Progress Bar */}
-                <div className="w-full bg-[#1a2a1a] rounded-full h-2 mb-2">
+                <div className="w-full bg-[#f5f5f5] rounded-full h-2 mb-2">
                   <div 
                     className="bg-[#22c55e] h-2 rounded-full transition-all duration-500"
                     style={{ 
@@ -110,7 +110,7 @@ export default function DashboardPage() {
               
               <Link
                 href="/dashboard/add-item"
-                className="bg-[#22c55e] text-white px-4 py-2 rounded-lg font-medium hover:bg-green-600 transition-colors"
+                className="bg-[#22c55e] text-gray-900 px-4 py-2 rounded-lg font-medium hover:bg-green-600 transition-colors"
               >
                 + Add Bait
               </Link>
@@ -121,7 +121,7 @@ export default function DashboardPage() {
         {/* Your Circles Section */}
         <div className="mb-8">
           <div className="flex items-center justify-between mb-4">
-            <h2 className="text-xl font-bold text-white">Your Circles</h2>
+            <h2 className="text-xl font-bold text-gray-900">Your Circles</h2>
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -129,10 +129,10 @@ export default function DashboardPage() {
               <Link
                 key={circle.id}
                 href={`/circles/${circle.id}`}
-                className="bg-[#111a11] border border-[#1a2a1a] rounded-xl p-4 hover:bg-[#1a2a1a] transition-colors group"
+                className="bg-white border border-[#dbdbdb] rounded-xl p-4 hover:bg-[#f5f5f5] transition-colors group"
               >
                 <div className="flex items-start justify-between mb-3">
-                  <h3 className="font-semibold text-white group-hover:text-[#22c55e] transition-colors">
+                  <h3 className="font-semibold text-gray-900 group-hover:text-[#22c55e] transition-colors">
                     {circle.name}
                   </h3>
                   <div className="text-[#8a9a8a] group-hover:text-[#22c55e] transition-colors">
@@ -153,11 +153,11 @@ export default function DashboardPage() {
             ))}
             
             {/* Create Circle Card */}
-            <button className="bg-[#111a11] border border-[#1a2a1a] border-dashed rounded-xl p-4 hover:bg-[#1a2a1a] transition-colors group text-center">
+            <button className="bg-white border border-[#dbdbdb] border-dashed rounded-xl p-4 hover:bg-[#f5f5f5] transition-colors group text-center">
               <div className="text-3xl text-[#22c55e] mb-2 group-hover:scale-110 transition-transform">
                 +
               </div>
-              <p className="text-[#8a9a8a] group-hover:text-white transition-colors">
+              <p className="text-[#8a9a8a] group-hover:text-gray-900 transition-colors">
                 Create Circle
               </p>
             </button>
@@ -167,10 +167,10 @@ export default function DashboardPage() {
         {/* Your Bait Section */}
         <div className="mb-8">
           <div className="flex items-center justify-between mb-4">
-            <h2 className="text-xl font-bold text-white">Your Bait</h2>
+            <h2 className="text-xl font-bold text-gray-900">Your Bait</h2>
             <Link
               href="/dashboard/add-item"
-              className="text-[#22c55e] text-sm hover:text-green-400 transition-colors"
+              className="text-[#22c55e] text-sm hover:text-green-600 transition-colors"
             >
               + Add more
             </Link>
@@ -181,9 +181,9 @@ export default function DashboardPage() {
               {items.map((item) => (
                 <div
                   key={item.id}
-                  className="flex-shrink-0 bg-[#111a11] border border-[#1a2a1a] rounded-xl p-3 w-40"
+                  className="flex-shrink-0 bg-white border border-[#dbdbdb] rounded-xl p-3 w-40"
                 >
-                  <div className="w-full h-24 bg-[#1a2a1a] rounded-lg mb-2 flex items-center justify-center">
+                  <div className="w-full h-24 bg-[#f5f5f5] rounded-lg mb-2 flex items-center justify-center">
                     {item.images.length > 0 ? (
                       <img
                         src={item.images[0]}
@@ -194,7 +194,7 @@ export default function DashboardPage() {
                       <span className="text-2xl">📦</span>
                     )}
                   </div>
-                  <h3 className="font-medium text-sm text-white truncate mb-1">
+                  <h3 className="font-medium text-sm text-gray-900 truncate mb-1">
                     {item.title}
                   </h3>
                   {item.wantCount > 0 && (
@@ -206,12 +206,12 @@ export default function DashboardPage() {
               ))}
             </div>
           ) : (
-            <div className="bg-[#111a11] border border-[#1a2a1a] border-dashed rounded-xl p-8 text-center">
+            <div className="bg-white border border-[#dbdbdb] border-dashed rounded-xl p-8 text-center">
               <div className="text-4xl mb-4">🎣</div>
               <p className="text-[#8a9a8a] mb-4">No bait cast yet!</p>
               <Link
                 href="/dashboard/add-item"
-                className="bg-[#22c55e] text-white px-6 py-2 rounded-lg font-medium hover:bg-green-600 transition-colors"
+                className="bg-[#22c55e] text-gray-900 px-6 py-2 rounded-lg font-medium hover:bg-green-600 transition-colors"
               >
                 Cast Your First Bait
               </Link>
@@ -221,19 +221,19 @@ export default function DashboardPage() {
 
         {/* Quick Stats */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-          <div className="bg-[#111a11] rounded-xl border border-[#1a2a1a] p-4 text-center">
+          <div className="bg-white rounded-xl border border-[#dbdbdb] p-4 text-center">
             <div className="text-2xl font-bold text-[#22c55e]">{items.length}</div>
             <div className="text-sm text-[#8a9a8a]">Items</div>
           </div>
-          <div className="bg-[#111a11] rounded-xl border border-[#1a2a1a] p-4 text-center">
+          <div className="bg-white rounded-xl border border-[#dbdbdb] p-4 text-center">
             <div className="text-2xl font-bold text-[#f59e0b]">{dashboardData?.catchesCount || 0}</div>
             <div className="text-sm text-[#8a9a8a]">Catches</div>
           </div>
-          <div className="bg-[#111a11] rounded-xl border border-[#1a2a1a] p-4 text-center">
+          <div className="bg-white rounded-xl border border-[#dbdbdb] p-4 text-center">
             <div className="text-2xl font-bold text-[#22c55e]">{dashboardData?.tradesCompleted || 0}</div>
             <div className="text-sm text-[#8a9a8a]">Trades</div>
           </div>
-          <div className="bg-[#111a11] rounded-xl border border-[#1a2a1a] p-4 text-center">
+          <div className="bg-white rounded-xl border border-[#dbdbdb] p-4 text-center">
             <div className="text-2xl font-bold text-[#22c55e]">{dashboardData?.streakDays || 0}</div>
             <div className="text-sm text-[#8a9a8a]">Day Streak</div>
           </div>
@@ -244,7 +244,7 @@ export default function DashboardPage() {
           <div className="text-center">
             <Link
               href={`/circles/${mostActiveCircle.id}/swipe`}
-              className="inline-block bg-[#22c55e] text-white px-8 py-3 rounded-xl text-lg font-bold hover:bg-green-600 transition-colors shadow-lg"
+              className="inline-block bg-[#22c55e] text-gray-900 px-8 py-3 rounded-xl text-lg font-bold hover:bg-green-600 transition-colors shadow-lg"
             >
               Start Swiping →
             </Link>

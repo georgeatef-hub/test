@@ -131,7 +131,7 @@ export default function CircleSwipePage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#0a0f0a] flex items-center justify-center">
+      <div className="min-h-screen bg-[#fafafa] flex items-center justify-center">
         <div className="text-[#22c55e] text-lg">Loading swipe cards...</div>
       </div>
     );
@@ -142,19 +142,19 @@ export default function CircleSwipePage() {
   const hasMoreItems = currentIndex < items.length;
 
   return (
-    <div className="min-h-screen bg-[#0a0f0a] flex flex-col">
+    <div className="min-h-screen bg-[#fafafa] flex flex-col">
       {/* Header */}
-      <div className="p-4 border-b border-[#1a2a1a]">
+      <div className="p-4 border-b border-[#dbdbdb]">
         <div className="flex items-center justify-between">
           <Link
             href={`/circles/${circleId}`}
-            className="text-[#8a9a8a] hover:text-white transition-colors"
+            className="text-[#8a9a8a] hover:text-gray-900 transition-colors"
           >
             ← Back
           </Link>
           
           <div className="text-center">
-            <h1 className="text-lg font-bold text-white">{circleName}</h1>
+            <h1 className="text-lg font-bold text-gray-900">{circleName}</h1>
             <p className="text-sm text-[#8a9a8a]">
               {items.length - currentIndex} items remaining
             </p>
@@ -195,20 +195,20 @@ export default function CircleSwipePage() {
           <div className="h-full flex items-center justify-center text-center">
             <div>
               <div className="text-6xl mb-6">🎣</div>
-              <h2 className="text-2xl font-bold text-white mb-4">You&apos;ve seen everything!</h2>
+              <h2 className="text-2xl font-bold text-gray-900 mb-4">You&apos;ve seen everything!</h2>
               <p className="text-[#8a9a8a] mb-8 max-w-md">
                 Invite more friends or add more bait to keep the trading flowing.
               </p>
               <div className="space-y-3">
                 <Link
                   href={`/circles/${circleId}`}
-                  className="block px-6 py-3 bg-[#22c55e] text-white rounded-xl font-medium hover:bg-green-600 transition-colors"
+                  className="block px-6 py-3 bg-[#22c55e] text-gray-900 rounded-xl font-medium hover:bg-green-600 transition-colors"
                 >
                   📤 Invite Friends
                 </Link>
                 <Link
                   href="/dashboard/add-item"
-                  className="block px-6 py-3 bg-[#111a11] border border-[#1a2a1a] text-white rounded-xl font-medium hover:bg-[#1a2a1a] transition-colors"
+                  className="block px-6 py-3 bg-white border border-[#dbdbdb] text-gray-900 rounded-xl font-medium hover:bg-[#f5f5f5] transition-colors"
                 >
                   🎣 Add More Bait
                 </Link>
@@ -220,13 +220,13 @@ export default function CircleSwipePage() {
 
       {/* Bottom Controls */}
       {hasMoreItems && (
-        <div className="p-6 border-t border-[#1a2a1a]">
+        <div className="p-6 border-t border-[#dbdbdb]">
           <div className="flex items-center justify-center space-x-6">
             {/* Pass Button */}
             <button
               onClick={() => handleButtonSwipe('LEFT')}
               disabled={swiping}
-              className="w-16 h-16 bg-[#ef4444] rounded-full flex items-center justify-center text-white text-2xl hover:bg-red-600 transition-colors shadow-lg disabled:opacity-50"
+              className="w-16 h-16 bg-[#ef4444] rounded-full flex items-center justify-center text-gray-900 text-2xl hover:bg-red-600 transition-colors shadow-lg disabled:opacity-50"
             >
               ✗
             </button>
@@ -235,7 +235,7 @@ export default function CircleSwipePage() {
             <button
               onClick={handleUndo}
               disabled={!canUndo}
-              className="w-12 h-12 bg-[#8a9a8a] rounded-full flex items-center justify-center text-white hover:bg-[#9aaa9a] transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
+              className="w-12 h-12 bg-[#8a9a8a] rounded-full flex items-center justify-center text-gray-900 hover:bg-[#9aaa9a] transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
             >
               ↩️
             </button>
@@ -244,7 +244,7 @@ export default function CircleSwipePage() {
             <button
               onClick={() => handleButtonSwipe('RIGHT')}
               disabled={swiping}
-              className="w-16 h-16 bg-[#22c55e] rounded-full flex items-center justify-center text-white text-2xl hover:bg-green-600 transition-colors shadow-lg disabled:opacity-50"
+              className="w-16 h-16 bg-[#22c55e] rounded-full flex items-center justify-center text-gray-900 text-2xl hover:bg-green-600 transition-colors shadow-lg disabled:opacity-50"
             >
               ✓
             </button>

@@ -135,7 +135,7 @@ export default function CircleDetailPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#0a0f0a] flex items-center justify-center">
+      <div className="min-h-screen bg-[#fafafa] flex items-center justify-center">
         <div className="text-[#22c55e] text-lg">Loading circle...</div>
       </div>
     );
@@ -143,11 +143,11 @@ export default function CircleDetailPage() {
 
   if (!circle) {
     return (
-      <div className="min-h-screen bg-[#0a0f0a] flex items-center justify-center">
+      <div className="min-h-screen bg-[#fafafa] flex items-center justify-center">
         <div className="text-center">
           <div className="text-4xl mb-4">⭕</div>
-          <h2 className="text-xl text-white mb-2">Circle not found</h2>
-          <Link href="/circles" className="text-[#22c55e] hover:text-green-400">
+          <h2 className="text-xl text-gray-900 mb-2">Circle not found</h2>
+          <Link href="/circles" className="text-[#22c55e] hover:text-green-600">
             Back to circles
           </Link>
         </div>
@@ -156,20 +156,20 @@ export default function CircleDetailPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#0a0f0a] px-4 py-6 md:px-8">
+    <div className="min-h-screen bg-[#fafafa] px-4 py-6 md:px-8">
       <div className="max-w-4xl mx-auto">
         {/* Header */}
         <div className="mb-8">
           <div className="flex items-center space-x-4 mb-4">
             <Link
               href="/circles"
-              className="text-[#8a9a8a] hover:text-white transition-colors"
+              className="text-[#8a9a8a] hover:text-gray-900 transition-colors"
             >
               ← Back to circles
             </Link>
           </div>
 
-          <div className="bg-[#111a11] border border-[#1a2a1a] rounded-xl p-6">
+          <div className="bg-white border border-[#dbdbdb] rounded-xl p-6">
             {editMode ? (
               // Edit Mode
               <div className="space-y-4">
@@ -177,13 +177,13 @@ export default function CircleDetailPage() {
                   type="text"
                   value={editName}
                   onChange={(e) => setEditName(e.target.value)}
-                  className="text-2xl font-bold bg-[#0a0f0a] border border-[#1a2a1a] rounded-lg px-3 py-2 text-white w-full focus:border-[#22c55e] focus:outline-none"
+                  className="text-2xl font-bold bg-[#fafafa] border border-[#dbdbdb] rounded-lg px-3 py-2 text-gray-900 w-full focus:border-[#22c55e] focus:outline-none"
                   maxLength={50}
                 />
                 <textarea
                   value={editDescription}
                   onChange={(e) => setEditDescription(e.target.value)}
-                  className="w-full bg-[#0a0f0a] border border-[#1a2a1a] rounded-lg px-3 py-2 text-[#8a9a8a] resize-none focus:border-[#22c55e] focus:outline-none"
+                  className="w-full bg-[#fafafa] border border-[#dbdbdb] rounded-lg px-3 py-2 text-[#8a9a8a] resize-none focus:border-[#22c55e] focus:outline-none"
                   placeholder="Circle description..."
                   rows={2}
                   maxLength={200}
@@ -191,7 +191,7 @@ export default function CircleDetailPage() {
                 <div className="flex space-x-3">
                   <button
                     onClick={handleUpdateCircle}
-                    className="px-4 py-2 bg-[#22c55e] text-white rounded-lg hover:bg-green-600 transition-colors"
+                    className="px-4 py-2 bg-[#22c55e] text-gray-900 rounded-lg hover:bg-green-600 transition-colors"
                   >
                     Save
                   </button>
@@ -201,7 +201,7 @@ export default function CircleDetailPage() {
                       setEditName(circle.name);
                       setEditDescription(circle.description || '');
                     }}
-                    className="px-4 py-2 bg-[#1a2a1a] text-[#8a9a8a] rounded-lg hover:bg-[#2a3a2a] transition-colors"
+                    className="px-4 py-2 bg-[#f5f5f5] text-[#8a9a8a] rounded-lg hover:bg-[#2a3a2a] transition-colors"
                   >
                     Cancel
                   </button>
@@ -212,7 +212,7 @@ export default function CircleDetailPage() {
               <div>
                 <div className="flex items-start justify-between mb-4">
                   <div>
-                    <h1 className="text-3xl font-bold text-white mb-2">
+                    <h1 className="text-3xl font-bold text-gray-900 mb-2">
                       {circle.name}
                       {isAdmin && (
                         <span className="ml-3 px-2 py-1 bg-[#22c55e] bg-opacity-20 text-[#22c55e] text-sm rounded-lg">
@@ -233,14 +233,14 @@ export default function CircleDetailPage() {
                   <div className="flex space-x-3">
                     <button
                       onClick={() => setShowInviteModal(true)}
-                      className="px-4 py-2 bg-[#22c55e] text-white rounded-lg hover:bg-green-600 transition-colors"
+                      className="px-4 py-2 bg-[#22c55e] text-gray-900 rounded-lg hover:bg-green-600 transition-colors"
                     >
                       📤 Invite
                     </button>
                     {isAdmin && (
                       <button
                         onClick={() => setEditMode(true)}
-                        className="px-4 py-2 bg-[#111a11] border border-[#1a2a1a] text-white rounded-lg hover:bg-[#1a2a1a] transition-colors"
+                        className="px-4 py-2 bg-white border border-[#dbdbdb] text-gray-900 rounded-lg hover:bg-[#f5f5f5] transition-colors"
                       >
                         ✏️ Edit
                       </button>
@@ -248,10 +248,10 @@ export default function CircleDetailPage() {
                   </div>
                 </div>
 
-                <div className="pt-4 border-t border-[#1a2a1a]">
+                <div className="pt-4 border-t border-[#dbdbdb]">
                   <Link
                     href={`/circles/${circle.id}/swipe`}
-                    className="inline-block bg-[#22c55e] text-white px-6 py-3 rounded-xl font-bold hover:bg-green-600 transition-colors"
+                    className="inline-block bg-[#22c55e] text-gray-900 px-6 py-3 rounded-xl font-bold hover:bg-green-600 transition-colors"
                   >
                     🎯 Swipe in this Circle →
                   </Link>
@@ -263,16 +263,16 @@ export default function CircleDetailPage() {
 
         {/* Members Section */}
         <div className="mb-8">
-          <h2 className="text-xl font-bold text-white mb-4">Members</h2>
-          <div className="bg-[#111a11] border border-[#1a2a1a] rounded-xl divide-y divide-[#1a2a1a]">
+          <h2 className="text-xl font-bold text-gray-900 mb-4">Members</h2>
+          <div className="bg-white border border-[#dbdbdb] rounded-xl divide-y divide-[#1a2a1a]">
             {circle.members?.map((member) => (
               <div key={member.id} className="p-4 flex items-center justify-between">
                 <div className="flex items-center space-x-3">
-                  <div className="w-10 h-10 bg-[#22c55e] rounded-full flex items-center justify-center text-white font-bold">
+                  <div className="w-10 h-10 bg-[#22c55e] rounded-full flex items-center justify-center text-gray-900 font-bold">
                     {member.user.name[0].toUpperCase()}
                   </div>
                   <div>
-                    <div className="text-white font-medium">
+                    <div className="text-gray-900 font-medium">
                       {member.user.name}
                       {member.userId === circle.adminId && (
                         <span className="ml-2 px-2 py-0.5 bg-[#22c55e] bg-opacity-20 text-[#22c55e] text-xs rounded">
@@ -300,14 +300,14 @@ export default function CircleDetailPage() {
         </div>
 
         {/* Settings Section */}
-        <div className="bg-[#111a11] border border-[#1a2a1a] rounded-xl p-6">
-          <h2 className="text-xl font-bold text-white mb-4">Settings</h2>
+        <div className="bg-white border border-[#dbdbdb] rounded-xl p-6">
+          <h2 className="text-xl font-bold text-gray-900 mb-4">Settings</h2>
           
           <div className="space-y-3">
             {!isAdmin && (
               <button
                 onClick={handleLeaveCircle}
-                className="w-full px-4 py-2 bg-[#ef4444] text-white rounded-lg hover:bg-red-600 transition-colors"
+                className="w-full px-4 py-2 bg-[#ef4444] text-gray-900 rounded-lg hover:bg-red-600 transition-colors"
               >
                 Leave Circle
               </button>
@@ -317,7 +317,7 @@ export default function CircleDetailPage() {
               <>
                 <button
                   onClick={() => setShowDeleteConfirm(true)}
-                  className="w-full px-4 py-2 bg-[#ef4444] text-white rounded-lg hover:bg-red-600 transition-colors"
+                  className="w-full px-4 py-2 bg-[#ef4444] text-gray-900 rounded-lg hover:bg-red-600 transition-colors"
                 >
                   Delete Circle
                 </button>
@@ -328,9 +328,9 @@ export default function CircleDetailPage() {
 
         {/* Delete Confirmation Modal */}
         {showDeleteConfirm && (
-          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-            <div className="bg-[#111a11] border border-[#1a2a1a] rounded-xl max-w-md w-full p-6">
-              <h3 className="text-lg font-bold text-white mb-4">Delete Circle</h3>
+          <div className="fixed inset-0 bg-white bg-opacity-50 flex items-center justify-center p-4 z-50">
+            <div className="bg-white border border-[#dbdbdb] rounded-xl max-w-md w-full p-6">
+              <h3 className="text-lg font-bold text-gray-900 mb-4">Delete Circle</h3>
               <p className="text-[#8a9a8a] mb-6">
                 Are you sure you want to delete &quot;{circle.name}&quot;? This action cannot be undone.
                 All members will be removed and ongoing trades will be cancelled.
@@ -338,13 +338,13 @@ export default function CircleDetailPage() {
               <div className="flex space-x-3">
                 <button
                   onClick={() => setShowDeleteConfirm(false)}
-                  className="flex-1 px-4 py-2 bg-[#1a2a1a] text-[#8a9a8a] rounded-lg hover:bg-[#2a3a2a] transition-colors"
+                  className="flex-1 px-4 py-2 bg-[#f5f5f5] text-[#8a9a8a] rounded-lg hover:bg-[#2a3a2a] transition-colors"
                 >
                   Cancel
                 </button>
                 <button
                   onClick={handleDeleteCircle}
-                  className="flex-1 px-4 py-2 bg-[#ef4444] text-white rounded-lg hover:bg-red-600 transition-colors"
+                  className="flex-1 px-4 py-2 bg-[#ef4444] text-gray-900 rounded-lg hover:bg-red-600 transition-colors"
                 >
                   Delete
                 </button>

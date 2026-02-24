@@ -14,18 +14,18 @@ export default function TopBar() {
   }
 
   return (
-    <div className="sticky top-0 bg-[#111a11] border-b border-[#1a2a1a] z-40">
+    <div className="sticky top-0 bg-white border-b border-[#dbdbdb] z-40">
       <div className="flex items-center justify-between px-4 py-3">
         {/* Logo */}
         <Link href="/" className="flex items-center space-x-2">
           <span className="text-xl font-bold text-[#22c55e]">🎣</span>
-          <span className="text-xl font-bold text-white">Bartera</span>
+          <span className="text-xl font-bold text-gray-900">Bartera</span>
         </Link>
 
         {/* Right side */}
         <div className="flex items-center space-x-4">
           {/* Notifications */}
-          <button className="text-[#8a9a8a] hover:text-white transition-colors">
+          <button className="text-[#8a9a8a] hover:text-gray-900 transition-colors">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
               <path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"></path>
               <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
@@ -39,7 +39,7 @@ export default function TopBar() {
                 onClick={() => setShowUserMenu(!showUserMenu)}
                 className="flex items-center space-x-2 focus:outline-none"
               >
-                <div className="w-8 h-8 rounded-full bg-[#1a2a1a] flex items-center justify-center overflow-hidden">
+                <div className="w-8 h-8 rounded-full bg-[#f5f5f5] flex items-center justify-center overflow-hidden">
                   {session.user.image ? (
                     <Image
                       src={session.user.image}
@@ -58,11 +58,11 @@ export default function TopBar() {
 
               {showUserMenu && (
                 <div 
-                  className="absolute right-0 mt-2 w-48 bg-[#111a11] border border-[#1a2a1a] rounded-lg shadow-lg py-1"
+                  className="absolute right-0 mt-2 w-48 bg-white border border-[#dbdbdb] rounded-lg shadow-lg py-1"
                   onBlur={() => setShowUserMenu(false)}
                 >
-                  <div className="px-3 py-2 border-b border-[#1a2a1a]">
-                    <div className="text-sm font-medium text-white">
+                  <div className="px-3 py-2 border-b border-[#dbdbdb]">
+                    <div className="text-sm font-medium text-gray-900">
                       {session.user.name}
                     </div>
                     <div className="text-xs text-[#8a9a8a]">
@@ -72,7 +72,7 @@ export default function TopBar() {
                   
                   <Link
                     href="/profile"
-                    className="block px-3 py-2 text-sm text-[#8a9a8a] hover:text-white hover:bg-[#1a2a1a] transition-colors"
+                    className="block px-3 py-2 text-sm text-[#8a9a8a] hover:text-gray-900 hover:bg-[#f5f5f5] transition-colors"
                     onClick={() => setShowUserMenu(false)}
                   >
                     View Profile
@@ -80,7 +80,7 @@ export default function TopBar() {
                   
                   <Link
                     href="/items/new"
-                    className="block px-3 py-2 text-sm text-[#8a9a8a] hover:text-white hover:bg-[#1a2a1a] transition-colors"
+                    className="block px-3 py-2 text-sm text-[#8a9a8a] hover:text-gray-900 hover:bg-[#f5f5f5] transition-colors"
                     onClick={() => setShowUserMenu(false)}
                   >
                     Post Item
@@ -88,20 +88,20 @@ export default function TopBar() {
                   
                   <Link
                     href="/circles"
-                    className="block px-3 py-2 text-sm text-[#8a9a8a] hover:text-white hover:bg-[#1a2a1a] transition-colors"
+                    className="block px-3 py-2 text-sm text-[#8a9a8a] hover:text-gray-900 hover:bg-[#f5f5f5] transition-colors"
                     onClick={() => setShowUserMenu(false)}
                   >
                     My Circles
                   </Link>
                   
-                  <div className="border-t border-[#1a2a1a] my-1"></div>
+                  <div className="border-t border-[#dbdbdb] my-1"></div>
                   
                   <button
                     onClick={() => {
                       setShowUserMenu(false)
                       handleSignOut()
                     }}
-                    className="block w-full text-left px-3 py-2 text-sm text-red-400 hover:text-red-300 hover:bg-[#1a2a1a] transition-colors"
+                    className="block w-full text-left px-3 py-2 text-sm text-red-500 hover:text-red-300 hover:bg-[#f5f5f5] transition-colors"
                   >
                     Sign Out
                   </button>

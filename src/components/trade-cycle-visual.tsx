@@ -17,20 +17,20 @@ export default function TradeCycleVisual({ trade, currentUserId }: TradeVisualiz
     }
 
     return (
-      <div className="bg-[#0a0f0a] border border-[#1a2a1a] rounded-lg p-4 mb-4">
+      <div className="bg-[#fafafa] border border-[#dbdbdb] rounded-lg p-4 mb-4">
         <div className="flex items-center justify-center space-x-6">
           {/* Current User */}
           <div className="text-center">
-            <div className="w-12 h-12 bg-[#22c55e] rounded-full flex items-center justify-center text-white font-bold mb-2">
+            <div className="w-12 h-12 bg-[#22c55e] rounded-full flex items-center justify-center text-gray-900 font-bold mb-2">
               {currentUserMember.user.name[0].toUpperCase()}
             </div>
-            <div className="text-sm text-white font-medium">You</div>
+            <div className="text-sm text-gray-900 font-medium">You</div>
             <div className="text-xs text-[#8a9a8a] mt-1">Give</div>
           </div>
 
           {/* Item 1 */}
           <div className="text-center">
-            <div className="w-16 h-16 bg-[#1a2a1a] rounded-lg flex items-center justify-center mb-2">
+            <div className="w-16 h-16 bg-[#f5f5f5] rounded-lg flex items-center justify-center mb-2">
               {currentUserMember.item.images.length > 0 ? (
                 <img
                   src={currentUserMember.item.images[0]}
@@ -41,7 +41,7 @@ export default function TradeCycleVisual({ trade, currentUserId }: TradeVisualiz
                 <span className="text-2xl">📦</span>
               )}
             </div>
-            <div className="text-xs text-white font-medium max-w-16 truncate">
+            <div className="text-xs text-gray-900 font-medium max-w-16 truncate">
               {currentUserMember.item.title}
             </div>
           </div>
@@ -51,28 +51,28 @@ export default function TradeCycleVisual({ trade, currentUserId }: TradeVisualiz
 
           {/* Other User */}
           <div className="text-center">
-            <div className="w-12 h-12 bg-[#22c55e] rounded-full flex items-center justify-center text-white font-bold mb-2">
+            <div className="w-12 h-12 bg-[#22c55e] rounded-full flex items-center justify-center text-gray-900 font-bold mb-2">
               {otherMember.user.name[0].toUpperCase()}
             </div>
-            <div className="text-sm text-white font-medium">{otherMember.user.name}</div>
+            <div className="text-sm text-gray-900 font-medium">{otherMember.user.name}</div>
             <div className="text-xs text-[#8a9a8a] mt-1">Receives</div>
           </div>
         </div>
 
         {/* Reverse flow */}
-        <div className="flex items-center justify-center space-x-6 mt-6 pt-6 border-t border-[#1a2a1a]">
+        <div className="flex items-center justify-center space-x-6 mt-6 pt-6 border-t border-[#dbdbdb]">
           {/* Other User gives */}
           <div className="text-center">
-            <div className="w-12 h-12 bg-[#22c55e] rounded-full flex items-center justify-center text-white font-bold mb-2">
+            <div className="w-12 h-12 bg-[#22c55e] rounded-full flex items-center justify-center text-gray-900 font-bold mb-2">
               {otherMember.user.name[0].toUpperCase()}
             </div>
-            <div className="text-sm text-white font-medium">{otherMember.user.name}</div>
+            <div className="text-sm text-gray-900 font-medium">{otherMember.user.name}</div>
             <div className="text-xs text-[#8a9a8a] mt-1">Give</div>
           </div>
 
           {/* Item 2 */}
           <div className="text-center">
-            <div className="w-16 h-16 bg-[#1a2a1a] rounded-lg flex items-center justify-center mb-2">
+            <div className="w-16 h-16 bg-[#f5f5f5] rounded-lg flex items-center justify-center mb-2">
               {otherMember.item.images.length > 0 ? (
                 <img
                   src={otherMember.item.images[0]}
@@ -83,7 +83,7 @@ export default function TradeCycleVisual({ trade, currentUserId }: TradeVisualiz
                 <span className="text-2xl">📦</span>
               )}
             </div>
-            <div className="text-xs text-white font-medium max-w-16 truncate">
+            <div className="text-xs text-gray-900 font-medium max-w-16 truncate">
               {otherMember.item.title}
             </div>
           </div>
@@ -93,10 +93,10 @@ export default function TradeCycleVisual({ trade, currentUserId }: TradeVisualiz
 
           {/* Current User receives */}
           <div className="text-center">
-            <div className="w-12 h-12 bg-[#22c55e] rounded-full flex items-center justify-center text-white font-bold mb-2">
+            <div className="w-12 h-12 bg-[#22c55e] rounded-full flex items-center justify-center text-gray-900 font-bold mb-2">
               {currentUserMember.user.name[0].toUpperCase()}
             </div>
-            <div className="text-sm text-white font-medium">You</div>
+            <div className="text-sm text-gray-900 font-medium">You</div>
             <div className="text-xs text-[#8a9a8a] mt-1">Receive</div>
           </div>
         </div>
@@ -111,7 +111,7 @@ export default function TradeCycleVisual({ trade, currentUserId }: TradeVisualiz
   const centerY = 150;
 
   return (
-    <div className="bg-[#0a0f0a] border border-[#1a2a1a] rounded-lg p-4 mb-4">
+    <div className="bg-[#fafafa] border border-[#dbdbdb] rounded-lg p-4 mb-4">
       <div className="relative w-80 h-80 mx-auto">
         <svg width="300" height="300" className="absolute inset-0">
           {/* Draw arrows between participants */}
@@ -163,18 +163,18 @@ export default function TradeCycleVisual({ trade, currentUserId }: TradeVisualiz
               style={{ left: x, top: y }}
             >
               <div className="text-center">
-                <div className={`w-16 h-16 rounded-full flex items-center justify-center text-white font-bold mb-2 ${
+                <div className={`w-16 h-16 rounded-full flex items-center justify-center text-gray-900 font-bold mb-2 ${
                   isCurrentUser ? 'bg-[#f59e0b]' : 'bg-[#22c55e]'
                 }`}>
                   {member.user.name[0].toUpperCase()}
                 </div>
-                <div className={`text-sm font-medium ${isCurrentUser ? 'text-[#f59e0b]' : 'text-white'}`}>
+                <div className={`text-sm font-medium ${isCurrentUser ? 'text-[#f59e0b]' : 'text-gray-900'}`}>
                   {isCurrentUser ? 'You' : member.user.name.split(' ')[0]}
                 </div>
                 
                 {/* Item being given */}
                 <div className="mt-2">
-                  <div className="w-12 h-12 bg-[#1a2a1a] rounded-lg flex items-center justify-center mx-auto mb-1">
+                  <div className="w-12 h-12 bg-[#f5f5f5] rounded-lg flex items-center justify-center mx-auto mb-1">
                     {member.item.images.length > 0 ? (
                       <img
                         src={member.item.images[0]}
@@ -196,7 +196,7 @@ export default function TradeCycleVisual({ trade, currentUserId }: TradeVisualiz
 
         {/* Center explanation */}
         <div className="absolute inset-0 flex items-center justify-center">
-          <div className="text-center bg-[#111a11] rounded-lg p-2 border border-[#1a2a1a]">
+          <div className="text-center bg-white rounded-lg p-2 border border-[#dbdbdb]">
             <div className="text-xs text-[#8a9a8a]">{trade.members.length}-way</div>
             <div className="text-xs text-[#8a9a8a]">trade</div>
           </div>
@@ -205,9 +205,9 @@ export default function TradeCycleVisual({ trade, currentUserId }: TradeVisualiz
 
       {/* Trade Summary */}
       {currentUserMember && (
-        <div className="mt-4 pt-4 border-t border-[#1a2a1a] text-center">
+        <div className="mt-4 pt-4 border-t border-[#dbdbdb] text-center">
           <div className="text-sm text-[#8a9a8a] mb-2">Your part in this trade:</div>
-          <div className="text-white">
+          <div className="text-gray-900">
             Give <span className="text-[#f59e0b] font-medium">{currentUserMember.item.title}</span> to{' '}
             <span className="text-[#22c55e] font-medium">{currentUserMember.receivesFromUser.name}</span>
             {' '}→{' '}

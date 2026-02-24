@@ -47,16 +47,16 @@ export default function InviteModal({ inviteCode, circleName, onClose }: InviteM
   };
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-      <div className="bg-[#111a11] border border-[#1a2a1a] rounded-xl max-w-md w-full p-6">
+    <div className="fixed inset-0 bg-white bg-opacity-50 flex items-center justify-center p-4 z-50">
+      <div className="bg-white border border-[#dbdbdb] rounded-xl max-w-md w-full p-6">
         <div className="text-center mb-6">
           <div className="text-4xl mb-3">📤</div>
-          <h2 className="text-xl font-bold text-white mb-2">Invite Friends</h2>
+          <h2 className="text-xl font-bold text-gray-900 mb-2">Invite Friends</h2>
           <p className="text-[#8a9a8a]">Share this code to invite people to &quot;{circleName}&quot;</p>
         </div>
 
         {/* Invite Code */}
-        <div className="bg-[#0a0f0a] border border-[#1a2a1a] rounded-lg p-4 mb-4">
+        <div className="bg-[#fafafa] border border-[#dbdbdb] rounded-lg p-4 mb-4">
           <div className="text-center mb-3">
             <div className="text-2xl font-mono font-bold text-[#22c55e] mb-2">
               {inviteCode}
@@ -75,7 +75,7 @@ export default function InviteModal({ inviteCode, circleName, onClose }: InviteM
         </div>
 
         {/* Invite Link */}
-        <div className="bg-[#0a0f0a] border border-[#1a2a1a] rounded-lg p-4 mb-6">
+        <div className="bg-[#fafafa] border border-[#dbdbdb] rounded-lg p-4 mb-6">
           <p className="text-xs text-[#8a9a8a] mb-2 text-center">Or share this link:</p>
           <div className="break-all text-xs text-[#22c55e] mb-2 text-center">
             {inviteLink}
@@ -96,21 +96,21 @@ export default function InviteModal({ inviteCode, circleName, onClose }: InviteM
         <div className="space-y-3">
           <button
             onClick={shareViaSystem}
-            className="w-full px-4 py-3 bg-[#22c55e] text-white rounded-lg hover:bg-green-600 transition-colors font-medium"
+            className="w-full px-4 py-3 bg-[#22c55e] text-gray-900 rounded-lg hover:bg-green-600 transition-colors font-medium"
           >
             📱 Share Invite
           </button>
           
           <button
             onClick={onClose}
-            className="w-full px-4 py-2 bg-[#1a2a1a] text-[#8a9a8a] rounded-lg hover:bg-[#2a3a2a] transition-colors"
+            className="w-full px-4 py-2 bg-[#f5f5f5] text-[#8a9a8a] rounded-lg hover:bg-[#2a3a2a] transition-colors"
           >
             Done
           </button>
         </div>
 
         {/* Tips */}
-        <div className="mt-6 pt-4 border-t border-[#1a2a1a]">
+        <div className="mt-6 pt-4 border-t border-[#dbdbdb]">
           <p className="text-xs text-[#4a5a4a] text-center">
             💡 Friends can enter the code in the app or click the link to join instantly
           </p>

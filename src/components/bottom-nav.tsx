@@ -47,14 +47,14 @@ export default function BottomNav() {
   ]
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 bg-[#111a11] border-t border-[#1a2a1a] safe-area-pb z-50">
+    <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-[#dbdbdb] safe-area-pb z-50">
       <div className="flex items-center justify-around py-2">
         {navItems.map((item) => (
           <Link key={item.href} href={item.href} className="relative">
             <motion.div
               className={`flex flex-col items-center space-y-1 p-2 rounded-lg transition-colors ${
                 item.isSpecial 
-                  ? 'bg-[#22c55e] text-white'
+                  ? 'bg-[#22c55e] text-gray-900'
                   : isActive(item.href)
                   ? 'text-[#22c55e]'
                   : 'text-[#8a9a8a]'
@@ -64,7 +64,7 @@ export default function BottomNav() {
               <div className={`text-lg ${item.isSpecial ? 'text-xl' : ''}`}>
                 {isActive(item.href) ? item.activeIcon : item.icon}
               </div>
-              <span className={`text-xs font-medium ${item.isSpecial ? 'text-white' : ''}`}>
+              <span className={`text-xs font-medium ${item.isSpecial ? 'text-gray-900' : ''}`}>
                 {item.label}
               </span>
             </motion.div>

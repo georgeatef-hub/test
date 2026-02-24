@@ -64,14 +64,14 @@ export default function RegisterPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#0a0f0a] flex items-center justify-center px-4">
+    <div className="min-h-screen bg-[#fafafa] flex items-center justify-center px-4">
       <div className="max-w-md w-full">
         {/* Logo */}
         <div className="text-center mb-8">
-          <Link href="/" className="text-3xl font-bold text-white">
+          <Link href="/" className="text-3xl font-bold text-gray-900">
             Bar<span className="text-green-500">tera</span>
           </Link>
-          <p className="text-gray-400 mt-2">Create your account</p>
+          <p className="text-gray-500 mt-2">Create your account</p>
         </div>
 
         {/* Register Form */}
@@ -84,7 +84,7 @@ export default function RegisterPage() {
 
           <form onSubmit={handleSubmit} className="space-y-6">
             <div>
-              <label htmlFor="name" className="block text-sm font-medium text-gray-300 mb-2">
+              <label htmlFor="name" className="block text-sm font-medium text-gray-600 mb-2">
                 Full Name
               </label>
               <input
@@ -93,13 +93,13 @@ export default function RegisterPage() {
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 required
-                className="w-full px-3 py-2 bg-[#0a0f0a] border border-[#1a2a1a] rounded-md text-white placeholder-gray-500 focus:outline-none focus:border-green-500"
+                className="w-full px-3 py-2 bg-[#fafafa] border border-[#dbdbdb] rounded-md text-gray-900 placeholder-gray-400 focus:outline-none focus:border-green-400"
                 placeholder="Enter your full name"
               />
             </div>
 
             <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-300 mb-2">
+              <label htmlFor="email" className="block text-sm font-medium text-gray-600 mb-2">
                 Email
               </label>
               <input
@@ -108,13 +108,13 @@ export default function RegisterPage() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
-                className="w-full px-3 py-2 bg-[#0a0f0a] border border-[#1a2a1a] rounded-md text-white placeholder-gray-500 focus:outline-none focus:border-green-500"
+                className="w-full px-3 py-2 bg-[#fafafa] border border-[#dbdbdb] rounded-md text-gray-900 placeholder-gray-400 focus:outline-none focus:border-green-400"
                 placeholder="Enter your email"
               />
             </div>
 
             <div>
-              <label htmlFor="password" className="block text-sm font-medium text-gray-300 mb-2">
+              <label htmlFor="password" className="block text-sm font-medium text-gray-600 mb-2">
                 Password
               </label>
               <input
@@ -124,13 +124,13 @@ export default function RegisterPage() {
                 onChange={(e) => setPassword(e.target.value)}
                 required
                 minLength={6}
-                className="w-full px-3 py-2 bg-[#0a0f0a] border border-[#1a2a1a] rounded-md text-white placeholder-gray-500 focus:outline-none focus:border-green-500"
+                className="w-full px-3 py-2 bg-[#fafafa] border border-[#dbdbdb] rounded-md text-gray-900 placeholder-gray-400 focus:outline-none focus:border-green-400"
                 placeholder="Enter your password (min. 6 characters)"
               />
             </div>
 
             <div>
-              <label htmlFor="city" className="block text-sm font-medium text-gray-300 mb-2">
+              <label htmlFor="city" className="block text-sm font-medium text-gray-600 mb-2">
                 City <span className="text-gray-500">(optional)</span>
               </label>
               <input
@@ -138,7 +138,7 @@ export default function RegisterPage() {
                 type="text"
                 value={city}
                 onChange={(e) => setCity(e.target.value)}
-                className="w-full px-3 py-2 bg-[#0a0f0a] border border-[#1a2a1a] rounded-md text-white placeholder-gray-500 focus:outline-none focus:border-green-500"
+                className="w-full px-3 py-2 bg-[#fafafa] border border-[#dbdbdb] rounded-md text-gray-900 placeholder-gray-400 focus:outline-none focus:border-green-400"
                 placeholder="Enter your city"
               />
             </div>
@@ -155,16 +155,16 @@ export default function RegisterPage() {
           <div className="mt-6">
             <div className="relative">
               <div className="absolute inset-0 flex items-center">
-                <div className="w-full border-t border-[#1a2a1a]" />
+                <div className="w-full border-t border-[#dbdbdb]" />
               </div>
               <div className="relative flex justify-center text-sm">
-                <span className="px-2 bg-[#111a11] text-gray-400">Or continue with</span>
+                <span className="px-2 bg-white text-gray-500">Or continue with</span>
               </div>
             </div>
 
             <button
               onClick={handleGoogleSignIn}
-              className="mt-4 w-full flex justify-center items-center px-4 py-2 border border-[#1a2a1a] rounded-md bg-[#0a0f0a] text-white hover:bg-[#111a11] transition-colors"
+              className="mt-4 w-full flex justify-center items-center px-4 py-2 border border-[#dbdbdb] rounded-md bg-[#fafafa] text-gray-900 hover:bg-white transition-colors"
             >
               <svg className="w-5 h-5 mr-2" viewBox="0 0 24 24">
                 <path fill="currentColor" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
@@ -176,9 +176,9 @@ export default function RegisterPage() {
             </button>
           </div>
 
-          <p className="mt-6 text-center text-gray-400">
+          <p className="mt-6 text-center text-gray-500">
             Already have an account?{' '}
-            <Link href="/login" className="text-green-500 hover:text-green-400">
+            <Link href="/login" className="text-green-500 hover:text-green-600">
               Sign in
             </Link>
           </p>

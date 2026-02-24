@@ -88,14 +88,14 @@ export default function AddItemPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#0a0f0a] px-4 py-6 md:px-8">
+    <div className="min-h-screen bg-[#fafafa] px-4 py-6 md:px-8">
       <div className="max-w-2xl mx-auto">
         {/* Header */}
         <div className="mb-8">
           <div className="flex items-center space-x-4 mb-4">
             <Link
               href="/dashboard"
-              className="text-[#8a9a8a] hover:text-white transition-colors"
+              className="text-[#8a9a8a] hover:text-gray-900 transition-colors"
             >
               ← Back to dashboard
             </Link>
@@ -103,13 +103,13 @@ export default function AddItemPage() {
           
           <div className="text-center">
             <div className="text-4xl mb-4">🎣</div>
-            <h1 className="text-3xl font-bold text-white mb-2">Cast Your Bait</h1>
+            <h1 className="text-3xl font-bold text-gray-900 mb-2">Cast Your Bait</h1>
             <p className="text-[#8a9a8a]">List an item you&apos;d like to trade</p>
           </div>
         </div>
 
         {/* Form */}
-        <div className="bg-[#111a11] border border-[#1a2a1a] rounded-xl p-6">
+        <div className="bg-white border border-[#dbdbdb] rounded-xl p-6">
           <form onSubmit={handleSubmit} className="space-y-6">
             {/* Title */}
             <div>
@@ -120,7 +120,7 @@ export default function AddItemPage() {
                 type="text"
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
-                className="w-full px-4 py-3 bg-[#0a0f0a] border border-[#1a2a1a] rounded-lg text-white placeholder-[#4a5a4a] focus:border-[#22c55e] focus:outline-none"
+                className="w-full px-4 py-3 bg-[#fafafa] border border-[#dbdbdb] rounded-lg text-gray-900 placeholder-[#4a5a4a] focus:border-[#22c55e] focus:outline-none"
                 placeholder="e.g., iPhone 12 Pro, Vintage Leather Jacket"
                 maxLength={100}
                 required
@@ -142,7 +142,7 @@ export default function AddItemPage() {
                       type="url"
                       value={url}
                       onChange={(e) => handleImageUrlChange(index, e.target.value)}
-                      className="flex-1 px-4 py-2 bg-[#0a0f0a] border border-[#1a2a1a] rounded-lg text-white placeholder-[#4a5a4a] focus:border-[#22c55e] focus:outline-none"
+                      className="flex-1 px-4 py-2 bg-[#fafafa] border border-[#dbdbdb] rounded-lg text-gray-900 placeholder-[#4a5a4a] focus:border-[#22c55e] focus:outline-none"
                       placeholder="https://example.com/image.jpg"
                     />
                     {imageUrls.length > 1 && (
@@ -160,7 +160,7 @@ export default function AddItemPage() {
                   <button
                     type="button"
                     onClick={addImageUrlField}
-                    className="px-4 py-2 bg-[#1a2a1a] text-[#8a9a8a] rounded-lg hover:bg-[#2a3a2a] transition-colors text-sm"
+                    className="px-4 py-2 bg-[#f5f5f5] text-[#8a9a8a] rounded-lg hover:bg-[#2a3a2a] transition-colors text-sm"
                   >
                     + Add Photo URL
                   </button>
@@ -179,7 +179,7 @@ export default function AddItemPage() {
               <select
                 value={condition}
                 onChange={(e) => setCondition(e.target.value)}
-                className="w-full px-4 py-3 bg-[#0a0f0a] border border-[#1a2a1a] rounded-lg text-white focus:border-[#22c55e] focus:outline-none"
+                className="w-full px-4 py-3 bg-[#fafafa] border border-[#dbdbdb] rounded-lg text-gray-900 focus:border-[#22c55e] focus:outline-none"
                 required
               >
                 {CONDITIONS.map((cond) => (
@@ -199,7 +199,7 @@ export default function AddItemPage() {
                 type="text"
                 value={tagsInput}
                 onChange={(e) => setTagsInput(e.target.value)}
-                className="w-full px-4 py-3 bg-[#0a0f0a] border border-[#1a2a1a] rounded-lg text-white placeholder-[#4a5a4a] focus:border-[#22c55e] focus:outline-none"
+                className="w-full px-4 py-3 bg-[#fafafa] border border-[#dbdbdb] rounded-lg text-gray-900 placeholder-[#4a5a4a] focus:border-[#22c55e] focus:outline-none"
                 placeholder="electronics, apple, smartphone"
               />
               <p className="text-xs text-[#4a5a4a] mt-1">
@@ -231,7 +231,7 @@ export default function AddItemPage() {
               <textarea
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
-                className="w-full px-4 py-3 bg-[#0a0f0a] border border-[#1a2a1a] rounded-lg text-white placeholder-[#4a5a4a] focus:border-[#22c55e] focus:outline-none resize-none"
+                className="w-full px-4 py-3 bg-[#fafafa] border border-[#dbdbdb] rounded-lg text-gray-900 placeholder-[#4a5a4a] focus:border-[#22c55e] focus:outline-none resize-none"
                 placeholder="Tell people more about your item, why you're trading it, any details that matter..."
                 rows={4}
                 maxLength={500}
@@ -253,7 +253,7 @@ export default function AddItemPage() {
               <button
                 type="submit"
                 disabled={loading || !title.trim()}
-                className="w-full px-6 py-4 bg-[#22c55e] text-white rounded-xl text-lg font-bold hover:bg-green-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-full px-6 py-4 bg-[#22c55e] text-gray-900 rounded-xl text-lg font-bold hover:bg-green-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {loading ? 'Casting Your Bait...' : '🎣 Cast Your Bait'}
               </button>
@@ -262,8 +262,8 @@ export default function AddItemPage() {
         </div>
 
         {/* Tips */}
-        <div className="mt-8 bg-[#111a11] border border-[#1a2a1a] rounded-xl p-6">
-          <h3 className="text-lg font-semibold text-white mb-4">💡 Tips for Great Bait</h3>
+        <div className="mt-8 bg-white border border-[#dbdbdb] rounded-xl p-6">
+          <h3 className="text-lg font-semibold text-gray-900 mb-4">💡 Tips for Great Bait</h3>
           <ul className="space-y-2 text-[#8a9a8a] text-sm">
             <li>• Use clear, well-lit photos showing the item&apos;s condition</li>
             <li>• Be honest about condition - trust builds better trades</li>

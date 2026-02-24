@@ -65,7 +65,7 @@ export default function ProfilePage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#0a0f0a]">
+      <div className="min-h-screen bg-[#fafafa]">
         <TopBar />
         <div className="flex items-center justify-center py-20">
           <div className="text-[#22c55e]">Loading profile...</div>
@@ -77,10 +77,10 @@ export default function ProfilePage() {
 
   if (!profile) {
     return (
-      <div className="min-h-screen bg-[#0a0f0a]">
+      <div className="min-h-screen bg-[#fafafa]">
         <TopBar />
         <div className="flex items-center justify-center py-20">
-          <div className="text-red-400">Failed to load profile</div>
+          <div className="text-red-500">Failed to load profile</div>
         </div>
         <BottomNav />
       </div>
@@ -88,7 +88,7 @@ export default function ProfilePage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#0a0f0a]">
+    <div className="min-h-screen bg-[#fafafa]">
       <TopBar />
       
       <div className="pb-20 max-w-md mx-auto">
@@ -96,7 +96,7 @@ export default function ProfilePage() {
         <div className="p-6">
           <div className="flex items-start space-x-4 mb-6">
             {/* Avatar */}
-            <div className="w-20 h-20 rounded-full bg-[#1a2a1a] flex items-center justify-center overflow-hidden">
+            <div className="w-20 h-20 rounded-full bg-[#f5f5f5] flex items-center justify-center overflow-hidden">
               {profile.image ? (
                 <Image
                   src={profile.image}
@@ -114,13 +114,13 @@ export default function ProfilePage() {
 
             {/* Profile Info */}
             <div className="flex-1">
-              <h1 className="text-xl font-bold text-white mb-1">{profile.name}</h1>
+              <h1 className="text-xl font-bold text-gray-900 mb-1">{profile.name}</h1>
               <p className="text-[#8a9a8a] text-sm mb-3">{profile.email}</p>
               
               {/* Stats */}
               <div className="flex space-x-6 text-center">
                 <div>
-                  <div className="text-lg font-bold text-white">{profile.itemsPosted}</div>
+                  <div className="text-lg font-bold text-gray-900">{profile.itemsPosted}</div>
                   <div className="text-xs text-[#8a9a8a]">Items</div>
                 </div>
                 <div>
@@ -139,11 +139,11 @@ export default function ProfilePage() {
           <div className="flex space-x-3 mb-6">
             <Link
               href="/items/new"
-              className="flex-1 bg-[#22c55e] text-white py-2 px-4 rounded-lg text-center font-semibold"
+              className="flex-1 bg-[#22c55e] text-gray-900 py-2 px-4 rounded-lg text-center font-semibold"
             >
               Post Item
             </Link>
-            <button className="flex-1 bg-[#111a11] border border-[#1a2a1a] text-white py-2 px-4 rounded-lg font-semibold">
+            <button className="flex-1 bg-white border border-[#dbdbdb] text-gray-900 py-2 px-4 rounded-lg font-semibold">
               Edit Profile
             </button>
           </div>
@@ -157,7 +157,7 @@ export default function ProfilePage() {
                   <Link
                     key={circle.id}
                     href={`/circles/${circle.id}`}
-                    className="bg-[#111a11] border border-[#1a2a1a] text-[#22c55e] px-3 py-1 rounded-full text-xs font-medium hover:bg-[#1a2a1a] transition-colors"
+                    className="bg-white border border-[#dbdbdb] text-[#22c55e] px-3 py-1 rounded-full text-xs font-medium hover:bg-[#f5f5f5] transition-colors"
                   >
                     {circle.name}
                   </Link>
@@ -165,7 +165,7 @@ export default function ProfilePage() {
                 {profile.circles.length > 3 && (
                   <Link
                     href="/circles"
-                    className="bg-[#111a11] border border-[#1a2a1a] text-[#8a9a8a] px-3 py-1 rounded-full text-xs font-medium hover:bg-[#1a2a1a] transition-colors"
+                    className="bg-white border border-[#dbdbdb] text-[#8a9a8a] px-3 py-1 rounded-full text-xs font-medium hover:bg-[#f5f5f5] transition-colors"
                   >
                     +{profile.circles.length - 3} more
                   </Link>
@@ -176,13 +176,13 @@ export default function ProfilePage() {
         </div>
 
         {/* Tabs */}
-        <div className="border-b border-[#1a2a1a] px-6">
+        <div className="border-b border-[#dbdbdb] px-6">
           <div className="flex space-x-8">
             <button
               onClick={() => setActiveTab('posts')}
               className={`py-3 text-sm font-medium border-b-2 transition-colors ${
                 activeTab === 'posts'
-                  ? 'border-[#22c55e] text-white'
+                  ? 'border-[#22c55e] text-gray-900'
                   : 'border-transparent text-[#8a9a8a]'
               }`}
             >
@@ -192,7 +192,7 @@ export default function ProfilePage() {
               onClick={() => setActiveTab('circles')}
               className={`py-3 text-sm font-medium border-b-2 transition-colors ${
                 activeTab === 'circles'
-                  ? 'border-[#22c55e] text-white'
+                  ? 'border-[#22c55e] text-gray-900'
                   : 'border-transparent text-[#8a9a8a]'
               }`}
             >
@@ -215,7 +215,7 @@ export default function ProfilePage() {
                   >
                     <Link
                       href={`/items/${item.id}`}
-                      className="block aspect-square bg-[#1a2a1a] rounded-lg overflow-hidden relative group"
+                      className="block aspect-square bg-[#f5f5f5] rounded-lg overflow-hidden relative group"
                     >
                       {item.images && item.images.length > 0 ? (
                         <Image
@@ -231,8 +231,8 @@ export default function ProfilePage() {
                       )}
                       
                       {/* Overlay with stats */}
-                      <div className="absolute inset-0 bg-black bg-opacity-50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                        <div className="text-white text-xs text-center">
+                      <div className="absolute inset-0 bg-white bg-opacity-50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                        <div className="text-gray-900 text-xs text-center">
                           <div>❤️ {item.likeCount || 0}</div>
                           <div>🎣 {item.wantCount || 0}</div>
                         </div>
@@ -244,11 +244,11 @@ export default function ProfilePage() {
             ) : (
               <div className="text-center py-12">
                 <div className="text-4xl mb-4">📦</div>
-                <h3 className="text-lg font-bold text-white mb-2">No items yet</h3>
+                <h3 className="text-lg font-bold text-gray-900 mb-2">No items yet</h3>
                 <p className="text-[#8a9a8a] mb-4">Share your first item with your circles</p>
                 <Link
                   href="/items/new"
-                  className="inline-block bg-[#22c55e] text-white px-6 py-2 rounded-lg font-semibold"
+                  className="inline-block bg-[#22c55e] text-gray-900 px-6 py-2 rounded-lg font-semibold"
                 >
                   Post Your First Item
                 </Link>
@@ -266,11 +266,11 @@ export default function ProfilePage() {
                   >
                     <Link
                       href={`/circles/${circle.id}`}
-                      className="block bg-[#111a11] border border-[#1a2a1a] rounded-lg p-4 hover:bg-[#1a2a1a] transition-colors"
+                      className="block bg-white border border-[#dbdbdb] rounded-lg p-4 hover:bg-[#f5f5f5] transition-colors"
                     >
                       <div className="flex items-center justify-between">
                         <div>
-                          <h3 className="font-semibold text-white mb-1">{circle.name}</h3>
+                          <h3 className="font-semibold text-gray-900 mb-1">{circle.name}</h3>
                           <p className="text-[#8a9a8a] text-sm">
                             {circle.memberCount} members · {circle.itemCount} items
                           </p>
@@ -284,11 +284,11 @@ export default function ProfilePage() {
             ) : (
               <div className="text-center py-12">
                 <div className="text-4xl mb-4">⭕</div>
-                <h3 className="text-lg font-bold text-white mb-2">No circles yet</h3>
+                <h3 className="text-lg font-bold text-gray-900 mb-2">No circles yet</h3>
                 <p className="text-[#8a9a8a] mb-4">Join or create circles to start trading</p>
                 <Link
                   href="/circles"
-                  className="inline-block bg-[#22c55e] text-white px-6 py-2 rounded-lg font-semibold"
+                  className="inline-block bg-[#22c55e] text-gray-900 px-6 py-2 rounded-lg font-semibold"
                 >
                   Explore Circles
                 </Link>
