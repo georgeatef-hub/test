@@ -5,61 +5,113 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
 
 :root {
-  --background: #fafafa;
-  --card: #ffffff;
-  --border: #dbdbdb;
-  --accent: #22c55e;
-  --accent-hover: #16a34a;
-  --want: #f59e0b;
-  --want-hover: #d97706;
-  --like: #ef4444;
-  --muted: #737373;
-  --foreground: #262626;
-  --secondary: #f5f5f5;
+  --ig-background: #fafafa;
+  --ig-card: #ffffff;
+  --ig-border: #dbdbdb;
+  --ig-border-light: #efefef;
+  --ig-primary: #262626;
+  --ig-secondary: #737373;
+  --ig-tertiary: #8e8e8e;
+  --ig-link: #00376b;
+  --ig-like: #ed4956;
+  --ig-want: #f59e0b;
+  --ig-want-active: #d97706;
 }
 
 body {
-  background-color: var(--background);
-  color: var(--foreground);
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background-color: var(--ig-background);
+  color: var(--ig-primary);
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
+  line-height: 1.4;
 }
 
-.card {
-  background-color: var(--card);
-  border: 1px solid var(--border);
-  border-radius: 0.5rem;
+/* Instagram-style logo font */
+.logo-font {
+  font-family: 'Billabong', cursive, sans-serif;
+  font-size: 24px;
+  font-weight: normal;
 }
 
-.btn-primary {
-  background-color: var(--accent);
-  color: #ffffff;
-  padding: 0.5rem 1rem;
-  border-radius: 0.5rem;
-  border: none;
-  cursor: pointer;
+/* Instagram typography */
+.ig-username {
+  font-size: 14px;
   font-weight: 600;
-  transition: background-color 0.2s;
+  color: var(--ig-primary);
 }
 
-.btn-primary:hover {
-  background-color: var(--accent-hover);
+.ig-caption {
+  font-size: 14px;
+  font-weight: 400;
+  color: var(--ig-primary);
 }
 
-.btn-secondary {
-  background-color: transparent;
-  color: var(--foreground);
-  padding: 0.5rem 1rem;
-  border-radius: 0.5rem;
-  border: 1px solid var(--border);
-  cursor: pointer;
-  font-weight: 500;
-  transition: all 0.2s;
+.ig-small {
+  font-size: 12px;
+  color: var(--ig-secondary);
 }
 
-.btn-secondary:hover {
-  background-color: var(--secondary);
-  border-color: var(--accent);
+.ig-timestamp {
+  font-size: 10px;
+  font-weight: 400;
+  color: var(--ig-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.2px;
+}
+
+.ig-link {
+  color: var(--ig-link);
+  text-decoration: none;
+}
+
+.ig-like-count {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--ig-primary);
+}
+
+/* Instagram gradient ring for stories */
+.ig-story-ring {
+  background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
+  border-radius: 50%;
+  padding: 2px;
+}
+
+.ig-story-ring-inner {
+  background: white;
+  border-radius: 50%;
+  padding: 2px;
+}
+
+/* Instagram button styles */
+.ig-button-primary {
+  background: var(--ig-primary);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 8px 16px;
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.ig-button-secondary {
+  background: transparent;
+  color: var(--ig-primary);
+  border: 1px solid var(--ig-border);
+  border-radius: 6px;
+  padding: 8px 16px;
+  font-weight: 600;
+  font-size: 14px;
+}
+
+/* Hide scrollbars but keep functionality */
+.hide-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
 }
 
 @layer utilities {

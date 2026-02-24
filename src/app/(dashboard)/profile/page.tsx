@@ -4,7 +4,6 @@ import { useState, useEffect } from 'react'
 import { useSession } from 'next-auth/react'
 import Image from 'next/image'
 import Link from 'next/link'
-import { motion } from 'framer-motion'
 import TopBar from '@/components/top-bar'
 import BottomNav from '@/components/bottom-nav'
 import { User, Item, Circle } from '@/types'
@@ -21,7 +20,7 @@ export default function ProfilePage() {
   const { data: session } = useSession()
   const [profile, setProfile] = useState<ProfileData | null>(null)
   const [loading, setLoading] = useState(true)
-  const [activeTab, setActiveTab] = useState<'posts' | 'circles'>('posts')
+  const [activeTab, setActiveTab] = useState<'grid' | 'list'>('grid')
 
   useEffect(() => {
     if (session?.user) {
@@ -65,10 +64,12 @@ export default function ProfilePage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#fafafa]">
+      <div className="min-h-screen bg-ig-background">
         <TopBar />
-        <div className="flex items-center justify-center py-20">
-          <div className="text-[#22c55e]">Loading profile...</div>
+        <div style={{ marginTop: '44px', marginBottom: '48px' }}>
+          <div className="flex items-center justify-center py-20">
+            <div className="text-ig-primary">Loading profile...</div>
+          </div>
         </div>
         <BottomNav />
       </div>
@@ -77,10 +78,12 @@ export default function ProfilePage() {
 
   if (!profile) {
     return (
-      <div className="min-h-screen bg-[#fafafa]">
+      <div className="min-h-screen bg-ig-background">
         <TopBar />
-        <div className="flex items-center justify-center py-20">
-          <div className="text-red-500">Failed to load profile</div>
+        <div style={{ marginTop: '44px', marginBottom: '48px' }}>
+          <div className="flex items-center justify-center py-20">
+            <div className="text-red-500">Failed to load profile</div>
+          </div>
         </div>
         <BottomNav />
       </div>
@@ -88,213 +91,231 @@ export default function ProfilePage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#fafafa]">
+    <div className="min-h-screen bg-ig-background">
       <TopBar />
       
-      <div className="pb-20 max-w-md mx-auto">
-        {/* Profile Header */}
-        <div className="p-6">
-          <div className="flex items-start space-x-4 mb-6">
-            {/* Avatar */}
-            <div className="w-20 h-20 rounded-full bg-[#f5f5f5] flex items-center justify-center overflow-hidden">
-              {profile.image ? (
-                <Image
-                  src={profile.image}
-                  alt={profile.name}
-                  width={80}
-                  height={80}
-                  className="object-cover"
-                />
-              ) : (
-                <span className="text-[#22c55e] font-bold text-2xl">
-                  {profile.name.charAt(0).toUpperCase()}
-                </span>
-              )}
-            </div>
-
-            {/* Profile Info */}
-            <div className="flex-1">
-              <h1 className="text-xl font-bold text-gray-900 mb-1">{profile.name}</h1>
-              <p className="text-[#8a9a8a] text-sm mb-3">{profile.email}</p>
-              
-              {/* Stats */}
-              <div className="flex space-x-6 text-center">
-                <div>
-                  <div className="text-lg font-bold text-gray-900">{profile.itemsPosted}</div>
-                  <div className="text-xs text-[#8a9a8a]">Items</div>
-                </div>
-                <div>
-                  <div className="text-lg font-bold text-[#f59e0b]">{profile.wantsReceived}</div>
-                  <div className="text-xs text-[#8a9a8a]">Wants</div>
-                </div>
-                <div>
-                  <div className="text-lg font-bold text-[#22c55e]">{profile.tradesCompleted}</div>
-                  <div className="text-xs text-[#8a9a8a]">Trades</div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Action Buttons */}
-          <div className="flex space-x-3 mb-6">
-            <Link
-              href="/items/new"
-              className="flex-1 bg-[#22c55e] text-gray-900 py-2 px-4 rounded-lg text-center font-semibold"
-            >
-              Post Item
-            </Link>
-            <button className="flex-1 bg-white border border-[#dbdbdb] text-gray-900 py-2 px-4 rounded-lg font-semibold">
-              Edit Profile
-            </button>
-          </div>
-
-          {/* Circles */}
-          {profile.circles && profile.circles.length > 0 && (
-            <div className="mb-6">
-              <div className="text-sm font-medium text-[#8a9a8a] mb-2">Circles</div>
-              <div className="flex flex-wrap gap-2">
-                {profile.circles.slice(0, 3).map((circle) => (
-                  <Link
-                    key={circle.id}
-                    href={`/circles/${circle.id}`}
-                    className="bg-white border border-[#dbdbdb] text-[#22c55e] px-3 py-1 rounded-full text-xs font-medium hover:bg-[#f5f5f5] transition-colors"
-                  >
-                    {circle.name}
-                  </Link>
-                ))}
-                {profile.circles.length > 3 && (
-                  <Link
-                    href="/circles"
-                    className="bg-white border border-[#dbdbdb] text-[#8a9a8a] px-3 py-1 rounded-full text-xs font-medium hover:bg-[#f5f5f5] transition-colors"
-                  >
-                    +{profile.circles.length - 3} more
-                  </Link>
+      <div style={{ marginTop: '44px', marginBottom: '48px' }}>
+        <div className="max-w-md mx-auto bg-white">
+          {/* Profile Header - Instagram style */}
+          <div className="p-4">
+            <div className="flex items-start mb-4">
+              {/* Avatar - 77px Instagram size */}
+              <div className="w-[77px] h-[77px] rounded-full overflow-hidden mr-7">
+                {profile.image ? (
+                  <Image
+                    src={profile.image}
+                    alt={profile.name}
+                    width={77}
+                    height={77}
+                    className="w-full h-full object-cover"
+                  />
+                ) : (
+                  <div className="w-full h-full bg-gradient-to-br from-gray-400 to-gray-600 flex items-center justify-center">
+                    <span className="text-white font-bold text-2xl">
+                      {profile.name.charAt(0).toUpperCase()}
+                    </span>
+                  </div>
                 )}
               </div>
+
+              {/* Stats */}
+              <div className="flex-1">
+                <div className="flex justify-around text-center mb-4">
+                  <div>
+                    <div className="text-lg font-bold text-ig-primary">{profile.itemsPosted}</div>
+                    <div className="text-sm text-ig-primary">posts</div>
+                  </div>
+                  <div>
+                    <div className="text-lg font-bold text-ig-primary">{profile.wantsReceived}</div>
+                    <div className="text-sm text-ig-primary">wants</div>
+                  </div>
+                  <div>
+                    <div className="text-lg font-bold text-ig-primary">{profile.tradesCompleted}</div>
+                    <div className="text-sm text-ig-primary">trades</div>
+                  </div>
+                </div>
+
+                {/* Edit Profile button */}
+                <button className="w-full ig-button-secondary py-1.5 text-sm">
+                  Edit Profile
+                </button>
+              </div>
             </div>
-          )}
-        </div>
 
-        {/* Tabs */}
-        <div className="border-b border-[#dbdbdb] px-6">
-          <div className="flex space-x-8">
-            <button
-              onClick={() => setActiveTab('posts')}
-              className={`py-3 text-sm font-medium border-b-2 transition-colors ${
-                activeTab === 'posts'
-                  ? 'border-[#22c55e] text-gray-900'
-                  : 'border-transparent text-[#8a9a8a]'
-              }`}
-            >
-              📦 Posts ({profile.itemsPosted})
-            </button>
-            <button
-              onClick={() => setActiveTab('circles')}
-              className={`py-3 text-sm font-medium border-b-2 transition-colors ${
-                activeTab === 'circles'
-                  ? 'border-[#22c55e] text-gray-900'
-                  : 'border-transparent text-[#8a9a8a]'
-              }`}
-            >
-              ⭕ Circles ({profile.circles?.length || 0})
-            </button>
-          </div>
-        </div>
+            {/* Name and bio */}
+            <div className="mb-4">
+              <div className="font-semibold text-sm text-ig-primary mb-1">
+                {profile.name}
+              </div>
+              <div className="text-sm text-ig-primary">
+                Trading enthusiast 🎣
+              </div>
+            </div>
 
-        {/* Tab Content */}
-        <div className="p-6">
-          {activeTab === 'posts' ? (
-            profile.items && profile.items.length > 0 ? (
-              <div className="grid grid-cols-3 gap-1">
-                {profile.items.map((item, index) => (
-                  <motion.div
-                    key={item.id}
-                    initial={{ opacity: 0, scale: 0.8 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    transition={{ delay: index * 0.05 }}
-                  >
+            {/* Circles as badges */}
+            {profile.circles && profile.circles.length > 0 && (
+              <div className="mb-4">
+                <div className="flex flex-wrap gap-1">
+                  {profile.circles.slice(0, 3).map((circle) => (
                     <Link
+                      key={circle.id}
+                      href={`/circles/${circle.id}`}
+                      className="bg-ig-border-light text-ig-primary px-2 py-1 rounded text-xs font-medium"
+                    >
+                      {circle.name}
+                    </Link>
+                  ))}
+                  {profile.circles.length > 3 && (
+                    <Link
+                      href="/circles"
+                      className="bg-ig-border-light text-ig-secondary px-2 py-1 rounded text-xs font-medium"
+                    >
+                      +{profile.circles.length - 3}
+                    </Link>
+                  )}
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* Tab navigation */}
+          <div className="border-t border-ig-border">
+            <div className="flex">
+              <button
+                onClick={() => setActiveTab('grid')}
+                className={`flex-1 flex items-center justify-center py-3 border-t-2 transition-colors ${
+                  activeTab === 'grid'
+                    ? 'border-ig-primary'
+                    : 'border-transparent'
+                }`}
+              >
+                <svg width="24" height="24" viewBox="0 0 24 24" fill={activeTab === 'grid' ? '#262626' : '#8e8e8e'} stroke="none">
+                  <rect x="3" y="3" width="7" height="7"/>
+                  <rect x="14" y="3" width="7" height="7"/>
+                  <rect x="14" y="14" width="7" height="7"/>
+                  <rect x="3" y="14" width="7" height="7"/>
+                </svg>
+              </button>
+              <button
+                onClick={() => setActiveTab('list')}
+                className={`flex-1 flex items-center justify-center py-3 border-t-2 transition-colors ${
+                  activeTab === 'list'
+                    ? 'border-ig-primary'
+                    : 'border-transparent'
+                }`}
+              >
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke={activeTab === 'list' ? '#262626' : '#8e8e8e'} strokeWidth="1.5">
+                  <line x1="8" y1="6" x2="21" y2="6"/>
+                  <line x1="8" y1="12" x2="21" y2="12"/>
+                  <line x1="8" y1="18" x2="21" y2="18"/>
+                  <line x1="3" y1="6" x2="3.01" y2="6"/>
+                  <line x1="3" y1="12" x2="3.01" y2="12"/>
+                  <line x1="3" y1="18" x2="3.01" y2="18"/>
+                </svg>
+              </button>
+            </div>
+          </div>
+
+          {/* Content */}
+          <div>
+            {profile.items && profile.items.length > 0 ? (
+              activeTab === 'grid' ? (
+                <div className="grid grid-cols-3 gap-px bg-ig-border-light">
+                  {profile.items.map((item) => (
+                    <Link
+                      key={item.id}
                       href={`/items/${item.id}`}
-                      className="block aspect-square bg-[#f5f5f5] rounded-lg overflow-hidden relative group"
+                      className="block aspect-square bg-white relative overflow-hidden"
                     >
                       {item.images && item.images.length > 0 ? (
                         <Image
                           src={item.images[0]}
                           alt={item.title}
                           fill
-                          className="object-cover group-hover:scale-105 transition-transform duration-200"
+                          className="object-cover hover:scale-105 transition-transform duration-200"
+                          sizes="(max-width: 768px) 33vw, 130px"
                         />
                       ) : (
-                        <div className="w-full h-full flex items-center justify-center">
+                        <div className="w-full h-full bg-ig-border-light flex items-center justify-center">
                           <span className="text-2xl">📦</span>
                         </div>
                       )}
                       
-                      {/* Overlay with stats */}
-                      <div className="absolute inset-0 bg-white bg-opacity-50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                        <div className="text-gray-900 text-xs text-center">
-                          <div>❤️ {item.likeCount || 0}</div>
-                          <div>🎣 {item.wantCount || 0}</div>
+                      {/* Hover overlay with stats */}
+                      <div className="absolute inset-0 bg-black bg-opacity-0 hover:bg-opacity-30 transition-all duration-200 flex items-center justify-center">
+                        <div className="text-white text-sm font-semibold opacity-0 hover:opacity-100 flex items-center space-x-4">
+                          <div className="flex items-center space-x-1">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="white">
+                              <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+                            </svg>
+                            <span>{item.likeCount || 0}</span>
+                          </div>
+                          <div className="flex items-center space-x-1">
+                            <span>🎣</span>
+                            <span>{item.wantCount || 0}</span>
+                          </div>
                         </div>
                       </div>
                     </Link>
-                  </motion.div>
-                ))}
-              </div>
-            ) : (
-              <div className="text-center py-12">
-                <div className="text-4xl mb-4">📦</div>
-                <h3 className="text-lg font-bold text-gray-900 mb-2">No items yet</h3>
-                <p className="text-[#8a9a8a] mb-4">Share your first item with your circles</p>
-                <Link
-                  href="/items/new"
-                  className="inline-block bg-[#22c55e] text-gray-900 px-6 py-2 rounded-lg font-semibold"
-                >
-                  Post Your First Item
-                </Link>
-              </div>
-            )
-          ) : (
-            profile.circles && profile.circles.length > 0 ? (
-              <div className="space-y-3">
-                {profile.circles.map((circle, index) => (
-                  <motion.div
-                    key={circle.id}
-                    initial={{ opacity: 0, x: -20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: index * 0.1 }}
-                  >
+                  ))}
+                </div>
+              ) : (
+                <div className="divide-y divide-ig-border-light">
+                  {profile.items.map((item) => (
                     <Link
-                      href={`/circles/${circle.id}`}
-                      className="block bg-white border border-[#dbdbdb] rounded-lg p-4 hover:bg-[#f5f5f5] transition-colors"
+                      key={item.id}
+                      href={`/items/${item.id}`}
+                      className="flex items-center p-4 hover:bg-gray-50"
                     >
-                      <div className="flex items-center justify-between">
-                        <div>
-                          <h3 className="font-semibold text-gray-900 mb-1">{circle.name}</h3>
-                          <p className="text-[#8a9a8a] text-sm">
-                            {circle.memberCount} members · {circle.itemCount} items
-                          </p>
+                      <div className="w-16 h-16 rounded bg-ig-border-light mr-4 overflow-hidden flex-shrink-0">
+                        {item.images && item.images.length > 0 ? (
+                          <Image
+                            src={item.images[0]}
+                            alt={item.title}
+                            width={64}
+                            height={64}
+                            className="w-full h-full object-cover"
+                          />
+                        ) : (
+                          <div className="w-full h-full flex items-center justify-center">
+                            <span className="text-xl">📦</span>
+                          </div>
+                        )}
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <div className="font-semibold text-sm text-ig-primary truncate">
+                          {item.title}
                         </div>
-                        <div className="text-[#22c55e]">→</div>
+                        <div className="text-sm text-ig-secondary truncate">
+                          {item.description || 'No description'}
+                        </div>
+                        <div className="flex items-center space-x-4 mt-1">
+                          <span className="text-xs text-ig-secondary">
+                            ❤️ {item.likeCount || 0}
+                          </span>
+                          <span className="text-xs text-ig-secondary">
+                            🎣 {item.wantCount || 0}
+                          </span>
+                        </div>
                       </div>
                     </Link>
-                  </motion.div>
-                ))}
-              </div>
+                  ))}
+                </div>
+              )
             ) : (
-              <div className="text-center py-12">
-                <div className="text-4xl mb-4">⭕</div>
-                <h3 className="text-lg font-bold text-gray-900 mb-2">No circles yet</h3>
-                <p className="text-[#8a9a8a] mb-4">Join or create circles to start trading</p>
+              <div className="text-center py-16">
+                <div className="text-6xl mb-4">📦</div>
+                <h3 className="text-lg font-bold text-ig-primary mb-2">No Posts Yet</h3>
+                <p className="text-ig-secondary mb-6">When you share photos, they will appear on your profile.</p>
                 <Link
-                  href="/circles"
-                  className="inline-block bg-[#22c55e] text-gray-900 px-6 py-2 rounded-lg font-semibold"
+                  href="/dashboard/add-item"
+                  className="inline-block bg-ig-link text-white px-6 py-2 rounded text-sm font-semibold"
                 >
-                  Explore Circles
+                  Share your first photo
                 </Link>
               </div>
-            )
-          )}
+            )}
+          </div>
         </div>
       </div>
 

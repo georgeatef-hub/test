@@ -16,15 +16,15 @@ export default function DashboardLayout({
     if (status === 'loading') return // Still loading
 
     if (!session) {
-      router.push('/auth/login')
+      router.push('/login')
       return
     }
   }, [session, status, router])
 
   if (status === 'loading') {
     return (
-      <div className="min-h-screen bg-[#fafafa] flex items-center justify-center">
-        <div className="text-[#22c55e] text-lg">Loading...</div>
+      <div className="min-h-screen bg-ig-background flex items-center justify-center">
+        <div className="text-ig-primary text-lg">Loading...</div>
       </div>
     )
   }
