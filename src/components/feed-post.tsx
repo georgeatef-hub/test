@@ -24,22 +24,16 @@ export default function FeedPost({ item, onLike, onWant, onComment, currentUserI
 
   const handleLike = async () => {
     if (isLiking || item.userId === currentUserId) return
-    
     setIsLiking(true)
     const wasLiked = isLiked
-
-    // Optimistic update
     setIsLiked(!wasLiked)
     setLocalLikeCount(prev => wasLiked ? prev - 1 : prev + 1)
-
     try {
       const response = await fetch(`/api/items/${item.id}/like`, {
         method: wasLiked ? 'DELETE' : 'POST',
         credentials: 'include'
       })
-
       if (!response.ok) {
-        // Revert on error
         setIsLiked(wasLiked)
         setLocalLikeCount(prev => wasLiked ? prev + 1 : prev - 1)
       } else {
@@ -49,32 +43,24 @@ export default function FeedPost({ item, onLike, onWant, onComment, currentUserI
         onLike(item.id)
       }
     } catch {
-      // Revert on error
       setIsLiked(wasLiked)
       setLocalLikeCount(prev => wasLiked ? prev + 1 : prev - 1)
     }
-    
     setIsLiking(false)
   }
 
   const handleWant = async () => {
     if (isWanting || item.userId === currentUserId) return
-    
     setIsWanting(true)
     const wasWanted = isWanted
-
-    // Optimistic update
     setIsWanted(!wasWanted)
     setLocalWantCount(prev => wasWanted ? prev - 1 : prev + 1)
-
     try {
       const response = await fetch(`/api/items/${item.id}/want`, {
         method: wasWanted ? 'DELETE' : 'POST',
         credentials: 'include'
       })
-
       if (!response.ok) {
-        // Revert on error
         setIsWanted(wasWanted)
         setLocalWantCount(prev => wasWanted ? prev + 1 : prev - 1)
       } else {
@@ -84,11 +70,9 @@ export default function FeedPost({ item, onLike, onWant, onComment, currentUserI
         onWant(item.id)
       }
     } catch {
-      // Revert on error
       setIsWanted(wasWanted)
       setLocalWantCount(prev => wasWanted ? prev + 1 : prev - 1)
     }
-    
     setIsWanting(false)
   }
 
@@ -98,22 +82,10 @@ export default function FeedPost({ item, onLike, onWant, onComment, currentUserI
     const minutes = Math.floor(diff / 60000)
     const hours = Math.floor(diff / 3600000)
     const days = Math.floor(diff / 86400000)
-
     if (minutes < 60) return `${minutes}m`
     if (hours < 24) return `${hours}h`
     if (days < 7) return `${days}d`
     return new Date(date).toLocaleDateString()
-  }
-
-  const getConditionBadgeColor = (condition: string) => {
-    switch (condition) {
-      case 'NEW': return 'bg-[#22c55e]'
-      case 'LIKE_NEW': return 'bg-[#10b981]'
-      case 'GOOD': return 'bg-[#f59e0b]'
-      case 'FAIR': return 'bg-[#f97316]'
-      case 'FOR_PARTS': return 'bg-[#6b7280]'
-      default: return 'bg-[#6b7280]'
-    }
   }
 
   const formatCondition = (condition: string) => {
@@ -125,154 +97,158 @@ export default function FeedPost({ item, onLike, onWant, onComment, currentUserI
   }
 
   return (
-    <div className="bg-white border border-[#dbdbdb] rounded-xl overflow-hidden mb-4">
-      {/* Header */}
-      <div className="flex items-center justify-between p-4 pb-2">
+    <div className="bg-white border-b border-[#efefef]">
+      {/* Header — Instagram style */}
+      <div className="flex items-center justify-between px-3 py-2.5">
         <div className="flex items-center space-x-3">
-          <div className="w-10 h-10 rounded-full bg-[#f5f5f5] flex items-center justify-center">
-            {item.user.image ? (
-              <Image
-                src={item.user.image}
-                alt={item.user.name}
-                width={40}
-                height={40}
-                className="rounded-full object-cover"
-              />
-            ) : (
-              <span className="text-[#22c55e] font-bold">
-                {item.user.name.charAt(0).toUpperCase()}
+          <div className="w-8 h-8 rounded-full bg-gradient-to-br from-yellow-400 via-red-500 to-purple-600 p-[2px]">
+            <div className="w-full h-full rounded-full bg-white p-[1px]">
+              <div className="w-full h-full rounded-full bg-gray-100 flex items-center justify-center overflow-hidden">
+                {item.user.image ? (
+                  <Image src={item.user.image} alt={item.user.name} width={30} height={30} className="rounded-full object-cover" />
+                ) : (
+                  <span className="text-xs font-semibold text-gray-600">
+                    {item.user.name.charAt(0).toUpperCase()}
+                  </span>
+                )}
+              </div>
+            </div>
+          </div>
+          <div className="flex items-center space-x-1">
+            <Link href={`/profile/${item.userId}`} className="text-sm font-semibold text-gray-900">
+              {item.user.name.toLowerCase().replace(/\s/g, '')}
+            </Link>
+            {item.circles && item.circles.length > 0 && (
+              <span className="text-xs text-gray-400 font-normal">
+                • {item.circles[0].name}
               </span>
             )}
           </div>
-          <div>
-            <div className="flex items-center space-x-2">
-              <span className="font-medium text-gray-900">{item.user.name}</span>
-              {item.circles && item.circles.length > 0 && (
-                <span className="text-xs text-[#8a9a8a]">
-                  · {item.circles[0].name}
-                </span>
-              )}
-            </div>
-            <div className="text-xs text-[#8a9a8a]">
-              {formatTimeAgo(new Date(item.createdAt))}
-            </div>
-          </div>
         </div>
+        <button className="text-gray-900">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+            <circle cx="12" cy="5" r="1.5"/>
+            <circle cx="12" cy="12" r="1.5"/>
+            <circle cx="12" cy="19" r="1.5"/>
+          </svg>
+        </button>
       </div>
 
-      {/* Image */}
+      {/* Image — full width, no padding, no rounded corners */}
       <div className="relative w-full aspect-square">
         {item.images && item.images.length > 0 ? (
-          <Image
-            src={item.images[0]}
-            alt={item.title}
-            fill
-            className="object-cover cursor-pointer"
-            onClick={() => window.open(`/items/${item.id}`, '_blank')}
-          />
+          <Link href={`/items/${item.id}`}>
+            <Image
+              src={item.images[0]}
+              alt={item.title}
+              fill
+              className="object-cover"
+            />
+          </Link>
         ) : (
-          <div 
-            className="w-full h-full bg-[#f5f5f5] flex items-center justify-center cursor-pointer"
-            onClick={() => window.open(`/items/${item.id}`, '_blank')}
-          >
-            <span className="text-4xl">📦</span>
-          </div>
-        )}
-        
-        {/* Condition badge */}
-        {item.condition && (
-          <div className={`absolute top-3 left-3 px-2 py-1 rounded text-xs font-medium text-gray-900 ${getConditionBadgeColor(item.condition)}`}>
-            {formatCondition(item.condition)}
-          </div>
+          <Link href={`/items/${item.id}`} className="block w-full h-full bg-gray-50 flex items-center justify-center">
+            <span className="text-6xl">📦</span>
+          </Link>
         )}
       </div>
 
-      {/* Actions */}
-      <div className="px-4 py-3">
-        <div className="flex items-center space-x-4 mb-2">
-          {/* Like Button */}
-          <motion.button
-            onClick={handleLike}
-            disabled={isLiking || item.userId === currentUserId}
-            className="flex items-center space-x-1 disabled:opacity-50"
-            whileTap={{ scale: 0.9 }}
-          >
-            <motion.div
-              animate={isLiked ? { scale: [1, 1.2, 1] } : {}}
-              transition={{ duration: 0.3 }}
-            >
-              <svg 
-                width="24" 
-                height="24" 
-                viewBox="0 0 24 24" 
-                fill={isLiked ? "#ef4444" : "none"}
-                stroke={isLiked ? "#ef4444" : "#8a9a8a"}
-                strokeWidth="2"
-                className="transition-colors"
-              >
-                <path d="20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
-              </svg>
-            </motion.div>
-            <span className="text-sm text-[#8a9a8a]">{localLikeCount}</span>
-          </motion.button>
+      {/* Action buttons — Instagram layout */}
+      <div className="px-3 pt-2.5">
+        <div className="flex items-center justify-between mb-2">
+          <div className="flex items-center space-x-4">
+            {/* Like */}
+            <motion.button onClick={handleLike} disabled={isLiking || item.userId === currentUserId} whileTap={{ scale: 0.85 }} className="disabled:opacity-40">
+              <motion.div animate={isLiked ? { scale: [1, 1.3, 1] } : {}} transition={{ duration: 0.3 }}>
+                <svg width="24" height="24" viewBox="0 0 24 24" fill={isLiked ? "#ef4444" : "none"} stroke={isLiked ? "#ef4444" : "#262626"} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+                </svg>
+              </motion.div>
+            </motion.button>
 
-          {/* Want Button */}
+            {/* Comment */}
+            <button onClick={() => onComment(item.id)}>
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#262626" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+              </svg>
+            </button>
+
+            {/* Share/Send */}
+            <button>
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#262626" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <line x1="22" y1="2" x2="11" y2="13"/>
+                <polygon points="22 2 15 22 11 13 2 9 22 2"/>
+              </svg>
+            </button>
+          </div>
+
+          {/* Want button — distinct, right side */}
           <motion.button
             onClick={handleWant}
             disabled={isWanting || item.userId === currentUserId}
-            className="flex items-center space-x-1 disabled:opacity-50"
-            whileTap={{ scale: 0.9 }}
+            whileTap={{ scale: 0.85 }}
+            className={`flex items-center space-x-1.5 px-3 py-1.5 rounded-full text-sm font-semibold transition-all disabled:opacity-40 ${
+              isWanted 
+                ? 'bg-amber-500 text-white' 
+                : 'bg-gray-100 text-gray-700 hover:bg-amber-50 hover:text-amber-600'
+            }`}
           >
-            <motion.div
-              animate={isWanted ? { scale: [1, 1.2, 1] } : {}}
-              transition={{ duration: 0.3 }}
-            >
-              <div className={`p-1 rounded transition-colors ${isWanted ? 'text-[#f59e0b]' : 'text-[#8a9a8a]'}`}>
-                🎣
-              </div>
-            </motion.div>
-            <span className="text-sm text-[#8a9a8a]">{localWantCount}</span>
+            <span>🎣</span>
+            <span>{isWanted ? 'Wanted' : 'Want'}</span>
           </motion.button>
-
-          {/* Comment Button */}
-          <button
-            onClick={() => onComment(item.id)}
-            className="flex items-center space-x-1"
-          >
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#8a9a8a" strokeWidth="2">
-              <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
-            </svg>
-            <span className="text-sm text-[#8a9a8a]">{item.commentCount}</span>
-          </button>
         </div>
 
-        {/* Item title and description */}
-        <Link href={`/items/${item.id}`} className="block">
-          <h3 className="font-semibold text-gray-900 hover:text-[#22c55e] transition-colors mb-1">
-            {item.title}
-          </h3>
-          {item.description && (
-            <p className="text-[#8a9a8a] text-sm mb-2 line-clamp-2">
-              {item.description}
-            </p>
-          )}
-        </Link>
-
-        {/* Tags */}
-        {item.tags && item.tags.length > 0 && (
-          <div className="flex flex-wrap gap-1">
-            {item.tags.slice(0, 3).map((tag, index) => (
-              <span key={index} className="text-xs text-[#22c55e]">
-                #{tag}
-              </span>
-            ))}
-            {item.tags.length > 3 && (
-              <span className="text-xs text-[#8a9a8a]">
-                +{item.tags.length - 3} more
-              </span>
+        {/* Like count */}
+        {(localLikeCount > 0 || localWantCount > 0) && (
+          <div className="flex items-center space-x-3 mb-1">
+            {localLikeCount > 0 && (
+              <span className="text-sm font-semibold text-gray-900">{localLikeCount} {localLikeCount === 1 ? 'like' : 'likes'}</span>
+            )}
+            {localWantCount > 0 && (
+              <span className="text-sm font-semibold text-amber-600">{localWantCount} {localWantCount === 1 ? 'want' : 'wants'}</span>
             )}
           </div>
         )}
+
+        {/* Caption — Instagram style: username + description */}
+        <div className="mb-1">
+          <Link href={`/items/${item.id}`} className="inline">
+            <span className="text-sm font-semibold text-gray-900 mr-1.5">
+              {item.user.name.toLowerCase().replace(/\s/g, '')}
+            </span>
+            <span className="text-sm text-gray-900">{item.title}</span>
+          </Link>
+          {item.description && (
+            <p className="text-sm text-gray-900 line-clamp-2 mt-0.5">{item.description}</p>
+          )}
+        </div>
+
+        {/* Tags */}
+        {item.tags && item.tags.length > 0 && (
+          <div className="mb-1">
+            {item.tags.slice(0, 4).map((tag, index) => (
+              <span key={index} className="text-sm text-[#00376b] mr-1">#{tag}</span>
+            ))}
+          </div>
+        )}
+
+        {/* View comments link */}
+        {item.commentCount > 0 && (
+          <button onClick={() => onComment(item.id)} className="text-sm text-gray-400 mb-1 block">
+            View all {item.commentCount} comments
+          </button>
+        )}
+
+        {/* Condition + Time */}
+        <div className="flex items-center space-x-2 pb-3">
+          {item.condition && (
+            <span className="text-[10px] uppercase tracking-wide text-gray-400 font-medium">
+              {formatCondition(item.condition)}
+            </span>
+          )}
+          <span className="text-[10px] uppercase tracking-wide text-gray-400">
+            {formatTimeAgo(new Date(item.createdAt))}
+          </span>
+        </div>
       </div>
     </div>
   )
