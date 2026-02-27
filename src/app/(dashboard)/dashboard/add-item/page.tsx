@@ -1,7 +1,8 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { useRouter } from 'next/navigation';
+import Image from 'next/image';
 import Link from 'next/link';
 
 const CONDITIONS = [
@@ -12,34 +13,60 @@ const CONDITIONS = [
   { value: 'FOR_PARTS', label: 'For Parts' },
 ];
 
+const CLOUD_NAME = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME || 'dfo6u6pw4';
+
 export default function AddItemPage() {
   const router = useRouter();
+  const fileInputRef = useRef<HTMLInputElement>(null);
   
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [condition, setCondition] = useState('GOOD');
   const [tagsInput, setTagsInput] = useState('');
-  const [imageUrls, setImageUrls] = useState<string[]>(['']);
+  const [imageUrls, setImageUrls] = useState<string[]>([]);
+  const [uploading, setUploading] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const handleImageUrlChange = (index: number, value: string) => {
-    const newUrls = [...imageUrls];
-    newUrls[index] = value;
-    setImageUrls(newUrls);
+  const uploadImage = async (file: File) => {
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('upload_preset', 'bartera_unsigned');
+    formData.append('folder', 'bartera/items');
+
+    const res = await fetch(`https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`, {
+      method: 'POST',
+      body: formData,
+    });
+
+    if (!res.ok) throw new Error('Upload failed');
+    const data = await res.json();
+    return data.secure_url as string;
   };
 
-  const addImageUrlField = () => {
-    if (imageUrls.length < 5) {
-      setImageUrls([...imageUrls, '']);
+  const handleFileSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (!files || files.length === 0) return;
+
+    const remainingSlots = 5 - imageUrls.length;
+    const filesToUpload = Array.from(files).slice(0, remainingSlots);
+
+    setUploading(true);
+    setError(null);
+
+    try {
+      const urls = await Promise.all(filesToUpload.map(uploadImage));
+      setImageUrls(prev => [...prev, ...urls]);
+    } catch {
+      setError('Failed to upload one or more images. Try again.');
+    } finally {
+      setUploading(false);
+      if (fileInputRef.current) fileInputRef.current.value = '';
     }
   };
 
-  const removeImageUrlField = (index: number) => {
-    if (imageUrls.length > 1) {
-      const newUrls = imageUrls.filter((_, i) => i !== index);
-      setImageUrls(newUrls);
-    }
+  const removeImage = (index: number) => {
+    setImageUrls(prev => prev.filter((_, i) => i !== index));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -133,41 +160,67 @@ export default function AddItemPage() {
             {/* Images */}
             <div>
               <label className="block text-sm font-medium text-[#8a9a8a] mb-2">
-                Photos (URLs) - Up to 5
+                Photos - Up to 5
               </label>
-              <div className="space-y-3">
-                {imageUrls.map((url, index) => (
-                  <div key={index} className="flex space-x-2">
-                    <input
-                      type="url"
-                      value={url}
-                      onChange={(e) => handleImageUrlChange(index, e.target.value)}
-                      className="flex-1 px-4 py-2 bg-[#fafafa] border border-[#dbdbdb] rounded-lg text-gray-900 placeholder-[#4a5a4a] focus:border-[#22c55e] focus:outline-none"
-                      placeholder="https://example.com/image.jpg"
-                    />
-                    {imageUrls.length > 1 && (
+              
+              {/* Image previews */}
+              {imageUrls.length > 0 && (
+                <div className="grid grid-cols-3 gap-2 mb-3">
+                  {imageUrls.map((url, index) => (
+                    <div key={index} className="relative aspect-square rounded-lg overflow-hidden border border-[#dbdbdb]">
+                      <Image
+                        src={url}
+                        alt={`Photo ${index + 1}`}
+                        fill
+                        className="object-cover"
+                        sizes="120px"
+                      />
                       <button
                         type="button"
-                        onClick={() => removeImageUrlField(index)}
-                        className="px-3 py-2 text-[#ef4444] hover:bg-[#ef4444] hover:bg-opacity-10 rounded-lg transition-colors"
+                        onClick={() => removeImage(index)}
+                        className="absolute top-1 right-1 w-6 h-6 bg-red-500 text-white rounded-full text-xs flex items-center justify-center"
                       >
-                        ✗
+                        ✕
                       </button>
-                    )}
-                  </div>
-                ))}
-                {imageUrls.length < 5 && (
-                  <button
-                    type="button"
-                    onClick={addImageUrlField}
-                    className="px-4 py-2 bg-[#f5f5f5] text-[#8a9a8a] rounded-lg hover:bg-[#2a3a2a] transition-colors text-sm"
-                  >
-                    + Add Photo URL
-                  </button>
-                )}
-              </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              {/* Upload button */}
+              {imageUrls.length < 5 && (
+                <button
+                  type="button"
+                  onClick={() => fileInputRef.current?.click()}
+                  disabled={uploading}
+                  className="w-full py-8 border-2 border-dashed border-[#dbdbdb] rounded-lg text-center hover:border-[#22c55e] transition-colors disabled:opacity-50"
+                >
+                  {uploading ? (
+                    <div className="text-[#8a9a8a]">
+                      <div className="text-2xl mb-2">⏳</div>
+                      <div>Uploading...</div>
+                    </div>
+                  ) : (
+                    <div className="text-[#8a9a8a]">
+                      <div className="text-3xl mb-2">📸</div>
+                      <div className="font-medium">Tap to add photos</div>
+                      <div className="text-xs mt-1">{imageUrls.length}/5 photos</div>
+                    </div>
+                  )}
+                </button>
+              )}
+              
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept="image/*"
+                multiple
+                onChange={handleFileSelect}
+                className="hidden"
+              />
+              
               <p className="text-xs text-[#4a5a4a] mt-2">
-                💡 Paste image URLs from the web. Good photos get more swipes!
+                📸 Good photos get more swipes! Add up to 5 photos.
               </p>
             </div>
 
