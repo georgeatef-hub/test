@@ -36,8 +36,12 @@ export default function JoinCircleModal({ onClose, onCircleJoined }: JoinCircleM
       
       if (response.ok) {
         const data = await response.json();
-        setPreview(data.preview);
-        setCircleId(data.circleId);
+        setPreview({
+          name: data.name,
+          memberCount: data.memberCount,
+          adminName: data.adminName,
+        });
+        setCircleId(data.id);
       } else {
         const errorData = await response.json();
         setError(errorData.error || 'Invalid invite code');
