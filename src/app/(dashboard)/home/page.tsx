@@ -5,7 +5,6 @@ import { useSession } from 'next-auth/react'
 import FeedPost from '@/components/feed-post'
 import StoriesRow from '@/components/stories-row'
 import TopBar from '@/components/top-bar'
-import BottomNav from '@/components/bottom-nav'
 import { FeedItem } from '@/types'
 
 export default function HomePage() {
@@ -265,7 +264,6 @@ export default function HomePage() {
         </div>
       </div>
 
-      <BottomNav />
     </div>
   )
 }

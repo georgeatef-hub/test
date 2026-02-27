@@ -3,6 +3,7 @@
 import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
 import { useEffect } from 'react'
+import BottomNav from '@/components/bottom-nav'
 
 export default function DashboardLayout({
   children,
@@ -33,5 +34,10 @@ export default function DashboardLayout({
     return null // Will redirect
   }
 
-  return <>{children}</>
+  return (
+    <>
+      <div className="pb-16">{children}</div>
+      <BottomNav />
+    </>
+  )
 }

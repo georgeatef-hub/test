@@ -101,7 +101,7 @@ export default function JoinCircleModal({ onClose, onCircleJoined }: JoinCircleM
                 disabled={loading || !inviteCode.trim()}
                 className="px-4 py-2 bg-[#22c55e] text-gray-900 rounded-lg hover:bg-green-600 transition-colors disabled:opacity-50 disabled:hover:bg-[#22c55e]"
               >
-                {loading ? '...' : 'Preview'}
+                {loading ? '...' : 'Look Up'}
               </button>
             </div>
             {error && (
@@ -134,7 +134,7 @@ export default function JoinCircleModal({ onClose, onCircleJoined }: JoinCircleM
           <div className="flex space-x-3 pt-4">
             <button
               onClick={onClose}
-              className="flex-1 px-4 py-2 bg-[#f5f5f5] text-[#8a9a8a] rounded-lg hover:bg-[#2a3a2a] transition-colors"
+              className="flex-1 px-4 py-2 bg-[#f5f5f5] text-[#8a9a8a] rounded-lg hover:bg-gray-200 transition-colors"
               disabled={loading}
             >
               Cancel
@@ -143,9 +143,9 @@ export default function JoinCircleModal({ onClose, onCircleJoined }: JoinCircleM
               <button
                 onClick={previewCircle}
                 disabled={loading || !inviteCode.trim()}
-                className="flex-1 px-4 py-2 bg-[#22c55e] text-gray-900 rounded-lg hover:bg-green-600 transition-colors disabled:opacity-50"
+                className="flex-1 px-4 py-2 bg-[#22c55e] text-white rounded-lg hover:bg-green-600 transition-colors disabled:opacity-50"
               >
-                {loading ? 'Loading...' : 'Preview Circle'}
+                {loading ? 'Loading...' : 'Join Circle'}
               </button>
             )}
           </div>

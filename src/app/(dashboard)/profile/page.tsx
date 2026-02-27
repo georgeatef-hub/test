@@ -5,7 +5,6 @@ import { useSession } from 'next-auth/react'
 import Image from 'next/image'
 import Link from 'next/link'
 import TopBar from '@/components/top-bar'
-import BottomNav from '@/components/bottom-nav'
 import { User, Item, Circle } from '@/types'
 
 interface ProfileData extends User {
@@ -71,7 +70,7 @@ export default function ProfilePage() {
             <div className="text-ig-primary">Loading profile...</div>
           </div>
         </div>
-        <BottomNav />
+
       </div>
     )
   }
@@ -85,7 +84,7 @@ export default function ProfilePage() {
             <div className="text-red-500">Failed to load profile</div>
           </div>
         </div>
-        <BottomNav />
+
       </div>
     )
   }
@@ -319,7 +318,7 @@ export default function ProfilePage() {
         </div>
       </div>
 
-      <BottomNav />
+
     </div>
   )
 }
