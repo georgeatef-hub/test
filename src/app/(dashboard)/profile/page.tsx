@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { useSession } from 'next-auth/react'
 import Image from 'next/image'
 import Link from 'next/link'
@@ -25,9 +25,9 @@ export default function ProfilePage() {
     if (session?.user) {
       fetchProfile()
     }
-  }, [session?.user])
+  }, [session?.user, fetchProfile])
 
-  const fetchProfile = async () => {
+  const fetchProfile = useCallback(async () => {
     try {
       setLoading(true)
       
@@ -59,7 +59,7 @@ export default function ProfilePage() {
     } finally {
       setLoading(false)
     }
-  }
+  }, [session?.user])
 
   if (loading) {
     return (

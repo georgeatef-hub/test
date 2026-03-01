@@ -66,7 +66,7 @@ export default function HomePage() {
 
   useEffect(() => {
     fetchFeed()
-  }, [])
+  }, [fetchFeed])
 
   useEffect(() => {
     // Filter feed items when user is selected

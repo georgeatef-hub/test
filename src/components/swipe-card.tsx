@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
+import Image from 'next/image';
 import { Item } from '@/types';
 
 interface SwipeCardProps {
@@ -141,10 +142,12 @@ export default function SwipeCard({ item, onSwipeLeft, onSwipeRight, isTop }: Sw
         {/* Item Image */}
         <div className="flex-1 relative overflow-hidden">
           {item.images && item.images.length > 0 ? (
-            <img
+            <Image
               src={item.images[0]}
               alt={item.title}
-              className="w-full h-full object-cover"
+              fill
+              className="object-cover"
+              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
               draggable={false}
             />
           ) : (

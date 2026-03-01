@@ -1,5 +1,7 @@
 'use client'
 
+import Image from 'next/image'
+
 interface ItemCardProps {
   id: string
   title: string
@@ -41,12 +43,14 @@ export default function ItemCard({
   return (
     <div className={`card p-6 ${className}`}>
       {/* Item Image */}
-      <div className="aspect-square bg-[#fafafa] rounded-lg mb-4 flex items-center justify-center border border-[#dbdbdb]">
+      <div className="aspect-square bg-[#fafafa] rounded-lg mb-4 flex items-center justify-center border border-[#dbdbdb] relative">
         {images.length > 0 ? (
-          <img
+          <Image
             src={images[0]}
             alt={title}
-            className="w-full h-full object-cover rounded-lg"
+            fill
+            className="object-cover rounded-lg"
+            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
             onError={(e) => {
               const target = e.target as HTMLImageElement
               target.style.display = 'none'

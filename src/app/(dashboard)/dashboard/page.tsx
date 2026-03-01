@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useSession } from 'next-auth/react';
+import Image from 'next/image';
 import Link from 'next/link';
 import { DashboardData, Circle, Item } from '@/types';
 
@@ -183,12 +184,14 @@ export default function DashboardPage() {
                   key={item.id}
                   className="flex-shrink-0 bg-white border border-[#dbdbdb] rounded-xl p-3 w-40"
                 >
-                  <div className="w-full h-24 bg-[#f5f5f5] rounded-lg mb-2 flex items-center justify-center">
+                  <div className="w-full h-24 bg-[#f5f5f5] rounded-lg mb-2 flex items-center justify-center relative">
                     {item.images.length > 0 ? (
-                      <img
+                      <Image
                         src={item.images[0]}
                         alt={item.title}
-                        className="w-full h-full object-cover rounded-lg"
+                        fill
+                        className="object-cover rounded-lg"
+                        sizes="(max-width: 768px) 50vw, (max-width: 1200px) 33vw, 25vw"
                       />
                     ) : (
                       <span className="text-2xl">📦</span>
