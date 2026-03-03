@@ -20,7 +20,7 @@ export default function LandingPage() {
   if (status === 'loading') {
     return (
       <div className="min-h-screen bg-[#fafafa] flex items-center justify-center">
-        <div className="text-[#22c55e] text-lg">Loading...</div>
+        <div className="text-[#FF6B4A] text-lg">Loading...</div>
       </div>
     )
   }
@@ -32,7 +32,7 @@ export default function LandingPage() {
     <div className="min-h-screen bg-[#fafafa] text-gray-900">
       {/* Navigation */}
       <nav className="p-6 flex justify-between items-center">
-        <div className="text-xl font-bold text-[#22c55e]">
+        <div className="text-xl font-bold text-[#FF6B4A]">
           Bartera 🎣
         </div>
         <div className="space-x-4">
@@ -44,7 +44,7 @@ export default function LandingPage() {
           </Link>
           <Link 
             href="/register"
-            className="px-6 py-2 bg-[#22c55e] text-gray-900 rounded-xl font-medium hover:bg-green-600 transition-colors"
+            className="px-6 py-2 bg-[#FF6B4A] text-gray-900 rounded-xl font-medium hover:bg-[#E55A41] transition-colors"
           >
             Sign Up
           </Link>
@@ -59,11 +59,11 @@ export default function LandingPage() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
         >
-          <span className="text-[#22c55e]">Swipe.</span>
+          <span className="text-[#FF6B4A]">Swipe.</span>
           <br />
-          <span className="text-[#22c55e]">Match.</span>
+          <span className="text-[#FF6B4A]">Match.</span>
           <br />
-          <span className="text-[#22c55e]">Trade.</span>
+          <span className="text-[#FF6B4A]">Trade.</span>
         </motion.h1>
         
         <motion.p 
@@ -108,13 +108,13 @@ export default function LandingPage() {
                   </div>
                   <h3 className="text-lg font-semibold mb-2">iPhone 12</h3>
                   <div className="flex gap-2 mb-2">
-                    <span className="px-2 py-1 bg-[#22c55e] bg-opacity-20 text-[#22c55e] text-xs rounded-lg">
+                    <span className="px-2 py-1 bg-[#FF6B4A] bg-opacity-20 text-[#FF6B4A] text-xs rounded-lg">
                       electronics
                     </span>
                   </div>
                   <div className="mt-auto flex items-center justify-between">
                     <div className="flex items-center space-x-2">
-                      <div className="w-6 h-6 bg-[#22c55e] rounded-full"></div>
+                      <div className="w-6 h-6 bg-[#FF6B4A] rounded-full"></div>
                       <span className="text-sm text-[#8a9a8a]">Alice</span>
                     </div>
                     <span className="text-sm text-[#f59e0b]">🔥 3 want this</span>
@@ -132,7 +132,7 @@ export default function LandingPage() {
         >
           <Link 
             href="/register"
-            className="inline-block px-8 py-4 bg-[#22c55e] text-gray-900 text-xl font-bold rounded-xl hover:bg-green-600 transition-colors shadow-lg"
+            className="inline-block px-8 py-4 bg-[#FF6B4A] text-gray-900 text-xl font-bold rounded-xl hover:bg-[#E55A41] transition-colors shadow-lg"
           >
             Start Trading
           </Link>
@@ -177,7 +177,7 @@ export default function LandingPage() {
                 transition={{ duration: 0.8, delay: i * 0.2 }}
               >
                 <div className="text-6xl mb-6">{step.emoji}</div>
-                <h3 className="text-2xl font-bold mb-4 text-[#22c55e]">{step.title}</h3>
+                <h3 className="text-2xl font-bold mb-4 text-[#FF6B4A]">{step.title}</h3>
                 <p className="text-[#8a9a8a] text-lg leading-relaxed">{step.description}</p>
               </motion.div>
             ))}
@@ -187,7 +187,7 @@ export default function LandingPage() {
 
       {/* Footer */}
       <footer className="p-6 text-center text-[#4a5a4a] border-t border-[#dbdbdb]">
-        <p>&copy; 2024 Bartera. Made with 💚 for sustainable trading.</p>
+        <p>&copy; 2024 Bartera. Made with 🧡 for sustainable trading.</p>
       </footer>
     </div>
   );

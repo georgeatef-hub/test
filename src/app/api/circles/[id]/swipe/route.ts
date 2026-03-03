@@ -27,38 +27,46 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
       return NextResponse.json({ error: "Not a member of this circle" }, { status: 403 })
     }
 
-    // Get items from circle members that user hasn't swiped on (or swiped LEFT and undone)
+    // Get circle member IDs to include their legacy (no circleId) items
+    const circleMembers = await prisma.circleMember.findMany({
+      where: { circleId },
+      select: { userId: true }
+    })
+    const memberUserIds = circleMembers.map(cm => cm.userId)
+
+    // Get items: posted to this circle OR legacy items from circle members
     const items = await prisma.item.findMany({
       where: {
         status: 'ACTIVE',
-        user: {
-          circleMemberships: {
-            some: { circleId }
-          },
-          NOT: { id: session.user.id } // Exclude own items
-        },
+        NOT: { userId: session.user.id }, // Exclude own items
         OR: [
-          // Items never swiped on
-          {
-            swipes: {
-              none: {
-                userId: session.user.id,
-                circleId
+          { circleId }, // Items posted to this specific circle
+          { circleId: null, userId: { in: memberUserIds } }, // Legacy items from members
+        ],
+        AND: {
+          OR: [
+            // Items never swiped on
+            {
+              swipes: {
+                none: {
+                  userId: session.user.id,
+                  circleId
+                }
+              }
+            },
+            // Items swiped LEFT and undone
+            {
+              swipes: {
+                some: {
+                  userId: session.user.id,
+                  circleId,
+                  direction: 'LEFT',
+                  undone: true
+                }
               }
             }
-          },
-          // Items swiped LEFT and undone
-          {
-            swipes: {
-              some: {
-                userId: session.user.id,
-                circleId,
-                direction: 'LEFT',
-                undone: true
-              }
-            }
-          }
-        ]
+          ]
+        }
       },
       include: {
         user: {
@@ -87,7 +95,8 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
     }))
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    return NextResponse.json(itemsWithWantCount.map(({ _count, ...item }) => item))
+    const responseItems = itemsWithWantCount.map(({ _count, ...item }) => item)
+    return NextResponse.json({ items: responseItems, totalCount: responseItems.length })
   } catch (error) {
     console.error("Error fetching swipeable items:", error)
     return NextResponse.json({ error: "Internal server error" }, { status: 500 })

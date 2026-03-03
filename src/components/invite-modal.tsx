@@ -58,15 +58,15 @@ export default function InviteModal({ inviteCode, circleName, onClose }: InviteM
         {/* Invite Code */}
         <div className="bg-[#fafafa] border border-[#dbdbdb] rounded-lg p-4 mb-4">
           <div className="text-center mb-3">
-            <div className="text-2xl font-mono font-bold text-[#22c55e] mb-2">
+            <div className="text-2xl font-mono font-bold text-[#FF6B4A] mb-2">
               {inviteCode}
             </div>
             <button
               onClick={() => copyToClipboard(inviteCode, 'code')}
-              className="text-sm text-[#8a9a8a] hover:text-[#22c55e] transition-colors"
+              className="text-sm text-[#8a9a8a] hover:text-[#FF6B4A] transition-colors"
             >
               {copied && copyType === 'code' ? (
-                <span className="text-[#22c55e]">✓ Copied!</span>
+                <span className="text-[#FF6B4A]">✓ Copied!</span>
               ) : (
                 'Click to copy code'
               )}
@@ -77,15 +77,15 @@ export default function InviteModal({ inviteCode, circleName, onClose }: InviteM
         {/* Invite Link */}
         <div className="bg-[#fafafa] border border-[#dbdbdb] rounded-lg p-4 mb-6">
           <p className="text-xs text-[#8a9a8a] mb-2 text-center">Or share this link:</p>
-          <div className="break-all text-xs text-[#22c55e] mb-2 text-center">
+          <div className="break-all text-xs text-[#FF6B4A] mb-2 text-center">
             {inviteLink}
           </div>
           <button
             onClick={() => copyToClipboard(inviteLink, 'link')}
-            className="w-full text-sm text-[#8a9a8a] hover:text-[#22c55e] transition-colors"
+            className="w-full text-sm text-[#8a9a8a] hover:text-[#FF6B4A] transition-colors"
           >
             {copied && copyType === 'link' ? (
-              <span className="text-[#22c55e]">✓ Copied link!</span>
+              <span className="text-[#FF6B4A]">✓ Copied link!</span>
             ) : (
               'Click to copy link'
             )}
@@ -96,7 +96,7 @@ export default function InviteModal({ inviteCode, circleName, onClose }: InviteM
         <div className="space-y-3">
           <button
             onClick={shareViaSystem}
-            className="w-full px-4 py-3 bg-[#22c55e] text-gray-900 rounded-lg hover:bg-green-600 transition-colors font-medium"
+            className="w-full px-4 py-3 bg-[#FF6B4A] text-gray-900 rounded-lg hover:bg-[#E55A41] transition-colors font-medium"
           >
             📱 Share Invite
           </button>

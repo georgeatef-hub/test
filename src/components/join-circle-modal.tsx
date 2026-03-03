@@ -96,14 +96,14 @@ export default function JoinCircleModal({ onClose, onCircleJoined }: JoinCircleM
                 type="text"
                 value={inviteCode}
                 onChange={handleCodeChange}
-                className="flex-1 px-3 py-2 bg-[#fafafa] border border-[#dbdbdb] rounded-lg text-gray-900 placeholder-[#4a5a4a] focus:border-[#22c55e] focus:outline-none font-mono text-center uppercase"
+                className="flex-1 px-3 py-2 bg-[#fafafa] border border-[#dbdbdb] rounded-lg text-gray-900 placeholder-[#4a5a4a] focus:border-[#FF6B4A] focus:outline-none font-mono text-center uppercase"
                 placeholder="ABCDEF123"
                 maxLength={12}
               />
               <button
                 onClick={previewCircle}
                 disabled={loading || !inviteCode.trim()}
-                className="px-4 py-2 bg-[#22c55e] text-gray-900 rounded-lg hover:bg-green-600 transition-colors disabled:opacity-50 disabled:hover:bg-[#22c55e]"
+                className="px-4 py-2 bg-[#FF6B4A] text-gray-900 rounded-lg hover:bg-[#E55A41] transition-colors disabled:opacity-50 disabled:hover:bg-[#FF6B4A]"
               >
                 {loading ? '...' : 'Look Up'}
               </button>
@@ -128,7 +128,7 @@ export default function JoinCircleModal({ onClose, onCircleJoined }: JoinCircleM
               <button
                 onClick={joinCircle}
                 disabled={loading}
-                className="w-full px-4 py-2 bg-[#22c55e] text-gray-900 rounded-lg hover:bg-green-600 transition-colors disabled:opacity-50"
+                className="w-full px-4 py-2 bg-[#FF6B4A] text-gray-900 rounded-lg hover:bg-[#E55A41] transition-colors disabled:opacity-50"
               >
                 {loading ? 'Joining...' : `Join ${preview.name}`}
               </button>
@@ -147,7 +147,7 @@ export default function JoinCircleModal({ onClose, onCircleJoined }: JoinCircleM
               <button
                 onClick={previewCircle}
                 disabled={loading || !inviteCode.trim()}
-                className="flex-1 px-4 py-2 bg-[#22c55e] text-white rounded-lg hover:bg-green-600 transition-colors disabled:opacity-50"
+                className="flex-1 px-4 py-2 bg-[#FF6B4A] text-white rounded-lg hover:bg-[#E55A41] transition-colors disabled:opacity-50"
               >
                 {loading ? 'Loading...' : 'Join Circle'}
               </button>

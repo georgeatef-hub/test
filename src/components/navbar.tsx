@@ -22,7 +22,7 @@ export default function Navbar() {
       <nav className="hidden md:block bg-[#fafafa] border-b border-[#dbdbdb] px-6 py-4">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           {/* Logo */}
-          <Link href="/dashboard" className="text-2xl font-bold text-[#22c55e]">
+          <Link href="/dashboard" className="text-2xl font-bold text-[#FF6B4A]">
             Bartera 🎣
           </Link>
 
@@ -32,7 +32,7 @@ export default function Navbar() {
               href="/dashboard"
               className={`px-4 py-2 rounded-lg font-medium transition-colors ${
                 isActive('/dashboard')
-                  ? 'bg-[#22c55e] text-gray-900'
+                  ? 'bg-[#FF6B4A] text-gray-900'
                   : 'text-[#8a9a8a] hover:text-gray-900'
               }`}
             >
@@ -42,7 +42,7 @@ export default function Navbar() {
               href="/circles"
               className={`px-4 py-2 rounded-lg font-medium transition-colors ${
                 pathname.startsWith('/circles')
-                  ? 'bg-[#22c55e] text-gray-900'
+                  ? 'bg-[#FF6B4A] text-gray-900'
                   : 'text-[#8a9a8a] hover:text-gray-900'
               }`}
             >
@@ -52,7 +52,7 @@ export default function Navbar() {
               href="/matches"
               className={`px-4 py-2 rounded-lg font-medium transition-colors ${
                 isActive('/matches')
-                  ? 'bg-[#22c55e] text-gray-900'
+                  ? 'bg-[#FF6B4A] text-gray-900'
                   : 'text-[#8a9a8a] hover:text-gray-900'
               }`}
             >
@@ -66,7 +66,7 @@ export default function Navbar() {
               onClick={() => setShowMenu(!showMenu)}
               className="flex items-center space-x-2 text-[#8a9a8a] hover:text-gray-900 transition-colors"
             >
-              <div className="w-8 h-8 bg-[#22c55e] rounded-full flex items-center justify-center text-gray-900 font-bold">
+              <div className="w-8 h-8 bg-[#FF6B4A] rounded-full flex items-center justify-center text-gray-900 font-bold">
                 {session?.user?.name?.[0]?.toUpperCase() || 'U'}
               </div>
               <span>{session?.user?.name}</span>
@@ -92,7 +92,7 @@ export default function Navbar() {
           <Link
             href="/dashboard"
             className={`flex flex-col items-center justify-center space-y-1 ${
-              isActive('/dashboard') ? 'text-[#22c55e]' : 'text-[#8a9a8a]'
+              isActive('/dashboard') ? 'text-[#FF6B4A]' : 'text-[#8a9a8a]'
             }`}
           >
             <span className="text-xl">📊</span>
@@ -102,7 +102,7 @@ export default function Navbar() {
           <Link
             href="/circles"
             className={`flex flex-col items-center justify-center space-y-1 ${
-              pathname.startsWith('/circles') ? 'text-[#22c55e]' : 'text-[#8a9a8a]'
+              pathname.startsWith('/circles') ? 'text-[#FF6B4A]' : 'text-[#8a9a8a]'
             }`}
           >
             <span className="text-xl">⭕</span>
@@ -112,7 +112,7 @@ export default function Navbar() {
           <Link
             href="/circles"
             className={`flex flex-col items-center justify-center space-y-1 ${
-              pathname.includes('/swipe') ? 'text-[#22c55e]' : 'text-[#8a9a8a]'
+              pathname.includes('/swipe') ? 'text-[#FF6B4A]' : 'text-[#8a9a8a]'
             }`}
           >
             <span className="text-xl">👆</span>
@@ -122,7 +122,7 @@ export default function Navbar() {
           <Link
             href="/matches"
             className={`flex flex-col items-center justify-center space-y-1 ${
-              isActive('/matches') ? 'text-[#22c55e]' : 'text-[#8a9a8a]'
+              isActive('/matches') ? 'text-[#FF6B4A]' : 'text-[#8a9a8a]'
             }`}
           >
             <span className="text-xl">🎉</span>

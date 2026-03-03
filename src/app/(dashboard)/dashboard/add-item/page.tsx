@@ -1,7 +1,7 @@
 'use client';
 
-import { useState, useRef } from 'react';
-import { useRouter } from 'next/navigation';
+import { useState, useRef, useEffect } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import Image from 'next/image';
 import Link from 'next/link';
 
@@ -15,8 +15,16 @@ const CONDITIONS = [
 
 const CLOUD_NAME = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME || 'dfo6u6pw4';
 
+interface Circle {
+  id: string;
+  name: string;
+  description?: string;
+  memberCount: number;
+}
+
 export default function AddItemPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const fileInputRef = useRef<HTMLInputElement>(null);
   
   const [title, setTitle] = useState('');
@@ -27,6 +35,41 @@ export default function AddItemPage() {
   const [uploading, setUploading] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [circles, setCircles] = useState<Circle[]>([]);
+  const [selectedCircleId, setSelectedCircleId] = useState<string>('');
+  const [circlesLoading, setCirclesLoading] = useState(true);
+
+  // Fetch user's circles on mount
+  useEffect(() => {
+    const fetchCircles = async () => {
+      try {
+        const response = await fetch('/api/circles', {
+          credentials: 'include',
+        });
+        if (response.ok) {
+          const fetchedCircles = await response.json();
+          setCircles(fetchedCircles);
+          
+          // Check for circle parameter in URL
+          const circleParam = searchParams.get('circle');
+          if (circleParam && fetchedCircles.some((c: Circle) => c.id === circleParam)) {
+            setSelectedCircleId(circleParam);
+          } else if (fetchedCircles.length > 0) {
+            // Auto-select first circle if available and no URL param
+            setSelectedCircleId(fetchedCircles[0].id);
+          }
+        } else {
+          setError('Failed to load circles');
+        }
+      } catch {
+        setError('Failed to load circles');
+      } finally {
+        setCirclesLoading(false);
+      }
+    };
+
+    fetchCircles();
+  }, [searchParams]);
 
   const uploadImage = async (file: File) => {
     const formData = new FormData();
@@ -71,7 +114,7 @@ export default function AddItemPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!title.trim()) return;
+    if (!title.trim() || !selectedCircleId) return;
 
     setLoading(true);
     setError(null);
@@ -98,6 +141,7 @@ export default function AddItemPage() {
           condition,
           tags,
           images,
+          circleId: selectedCircleId,
         }),
       });
 
@@ -147,7 +191,7 @@ export default function AddItemPage() {
                 type="text"
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
-                className="w-full px-4 py-3 bg-[#fafafa] border border-[#dbdbdb] rounded-lg text-gray-900 placeholder-[#4a5a4a] focus:border-[#22c55e] focus:outline-none"
+                className="w-full px-4 py-3 bg-[#fafafa] border border-[#dbdbdb] rounded-lg text-gray-900 placeholder-[#4a5a4a] focus:border-[#FF6B4A] focus:outline-none"
                 placeholder="e.g., iPhone 12 Pro, Vintage Leather Jacket"
                 maxLength={100}
                 required
@@ -155,6 +199,42 @@ export default function AddItemPage() {
               <div className="text-xs text-[#4a5a4a] mt-1">
                 {title.length}/100 characters
               </div>
+            </div>
+
+            {/* Circle Selector */}
+            <div>
+              <label className="block text-sm font-medium text-[#8a9a8a] mb-2">
+                Post to Circle *
+              </label>
+              {circlesLoading ? (
+                <div className="w-full px-4 py-3 bg-[#fafafa] border border-[#dbdbdb] rounded-lg text-[#8a9a8a]">
+                  Loading your circles...
+                </div>
+              ) : circles.length === 0 ? (
+                <div className="w-full px-4 py-3 bg-[#fafafa] border border-[#dbdbdb] rounded-lg text-[#8a9a8a]">
+                  You need to join a circle first!{' '}
+                  <Link href="/dashboard/circles" className="text-[#FF6B4A] hover:underline">
+                    Browse circles
+                  </Link>
+                </div>
+              ) : (
+                <select
+                  value={selectedCircleId}
+                  onChange={(e) => setSelectedCircleId(e.target.value)}
+                  className="w-full px-4 py-3 bg-[#fafafa] border border-[#dbdbdb] rounded-lg text-gray-900 focus:border-[#0EA5A5] focus:outline-none"
+                  required
+                >
+                  <option value="" disabled>Select a circle</option>
+                  {circles.map((circle) => (
+                    <option key={circle.id} value={circle.id}>
+                      {circle.name} ({circle.memberCount} members)
+                    </option>
+                  ))}
+                </select>
+              )}
+              <p className="text-xs text-[#4a5a4a] mt-1">
+                Your item will only be visible to members of this circle
+              </p>
             </div>
 
             {/* Images */}
@@ -193,7 +273,7 @@ export default function AddItemPage() {
                   type="button"
                   onClick={() => fileInputRef.current?.click()}
                   disabled={uploading}
-                  className="w-full py-8 border-2 border-dashed border-[#dbdbdb] rounded-lg text-center hover:border-[#22c55e] transition-colors disabled:opacity-50"
+                  className="w-full py-8 border-2 border-dashed border-[#dbdbdb] rounded-lg text-center hover:border-[#FF6B4A] transition-colors disabled:opacity-50"
                 >
                   {uploading ? (
                     <div className="text-[#8a9a8a]">
@@ -232,7 +312,7 @@ export default function AddItemPage() {
               <select
                 value={condition}
                 onChange={(e) => setCondition(e.target.value)}
-                className="w-full px-4 py-3 bg-[#fafafa] border border-[#dbdbdb] rounded-lg text-gray-900 focus:border-[#22c55e] focus:outline-none"
+                className="w-full px-4 py-3 bg-[#fafafa] border border-[#dbdbdb] rounded-lg text-gray-900 focus:border-[#FF6B4A] focus:outline-none"
                 required
               >
                 {CONDITIONS.map((cond) => (
@@ -252,7 +332,7 @@ export default function AddItemPage() {
                 type="text"
                 value={tagsInput}
                 onChange={(e) => setTagsInput(e.target.value)}
-                className="w-full px-4 py-3 bg-[#fafafa] border border-[#dbdbdb] rounded-lg text-gray-900 placeholder-[#4a5a4a] focus:border-[#22c55e] focus:outline-none"
+                className="w-full px-4 py-3 bg-[#fafafa] border border-[#dbdbdb] rounded-lg text-gray-900 placeholder-[#4a5a4a] focus:border-[#FF6B4A] focus:outline-none"
                 placeholder="electronics, apple, smartphone"
               />
               <p className="text-xs text-[#4a5a4a] mt-1">
@@ -266,7 +346,7 @@ export default function AddItemPage() {
                     return (
                       <span
                         key={index}
-                        className="px-2 py-1 bg-[#22c55e] bg-opacity-20 text-[#22c55e] rounded text-sm"
+                        className="px-2 py-1 bg-[#FF6B4A] bg-opacity-20 text-[#FF6B4A] rounded text-sm"
                       >
                         {cleanTag}
                       </span>
@@ -284,7 +364,7 @@ export default function AddItemPage() {
               <textarea
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
-                className="w-full px-4 py-3 bg-[#fafafa] border border-[#dbdbdb] rounded-lg text-gray-900 placeholder-[#4a5a4a] focus:border-[#22c55e] focus:outline-none resize-none"
+                className="w-full px-4 py-3 bg-[#fafafa] border border-[#dbdbdb] rounded-lg text-gray-900 placeholder-[#4a5a4a] focus:border-[#FF6B4A] focus:outline-none resize-none"
                 placeholder="Tell people more about your item, why you're trading it, any details that matter..."
                 rows={4}
                 maxLength={500}
@@ -305,8 +385,8 @@ export default function AddItemPage() {
             <div className="pt-4">
               <button
                 type="submit"
-                disabled={loading || !title.trim()}
-                className="w-full px-6 py-4 bg-[#22c55e] text-gray-900 rounded-xl text-lg font-bold hover:bg-green-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                disabled={loading || !title.trim() || !selectedCircleId || circles.length === 0}
+                className="w-full px-6 py-4 bg-[#FF6B4A] text-gray-900 rounded-xl text-lg font-bold hover:bg-[#E55A41] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {loading ? 'Casting Your Bait...' : '🎣 Cast Your Bait'}
               </button>

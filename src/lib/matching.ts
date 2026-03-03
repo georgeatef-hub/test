@@ -1,4 +1,5 @@
 import { prisma } from './prisma'
+import { createNotification } from './notifications'
 
 interface TradeEdge {
   fromUserId: string
@@ -236,6 +237,17 @@ export async function runMatchingAlgorithm(circleId: string): Promise<{
             givesItemId: givesEdge.itemId,
             receivesItemId: receivesEdge.itemId
           }
+        })
+      }
+
+      // Create notifications for all participants about the match
+      for (const userId of cycle.users) {
+        await createNotification({
+          userId: userId,
+          type: 'match',
+          title: 'Trade match found!',
+          body: `You\'re part of a ${cycle.users.length}-person trade cycle. Check your trades!`,
+          data: { tradeId: trade.id, circleId: circleId, cycleLength: cycle.users.length }
         })
       }
 

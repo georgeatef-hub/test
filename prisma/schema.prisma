@@ -58,6 +58,7 @@ model User {
   circleMemberships CircleMember[]
   likes           Like[]
   comments        Comment[]
+  notifications   Notification[]
 }
 
 model Circle {
@@ -73,6 +74,7 @@ model Circle {
   members     CircleMember[]
   swipes      Swipe[]
   trades      Trade[]
+  items       Item[]
 
   @@index([inviteCode])
 }
@@ -104,8 +106,10 @@ model Item {
   createdAt   DateTime     @default(now())
   updatedAt   DateTime     @updatedAt
   tradedAt    DateTime?
-
+  circleId    String?
+  
   user        User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  circle      Circle?      @relation(fields: [circleId], references: [id])
   swipes      Swipe[]
   givenInTrades  TradeMember[] @relation("GivenItem")
   receivedInTrades TradeMember[] @relation("ReceivedItem")
@@ -114,6 +118,7 @@ model Item {
 
   @@index([userId])
   @@index([status])
+  @@index([circleId])
 }
 
 model Swipe {
@@ -186,4 +191,20 @@ model Comment {
   createdAt DateTime @default(now())
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   item      Item     @relation(fields: [itemId], references: [id], onDelete: Cascade)
+}
+
+model Notification {
+  id        String   @id @default(cuid())
+  userId    String   // who receives the notification
+  type      String   // "want", "match", "trade_complete", "circle_invite", "circle_join"
+  title     String
+  body      String
+  read      Boolean  @default(false)
+  data      Json?    // extra data like { itemId, circleId, fromUserId }
+  createdAt DateTime @default(now())
+
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, read])
+  @@index([userId, createdAt])
 }

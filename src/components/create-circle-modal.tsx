@@ -89,7 +89,7 @@ export default function CreateCircleModal({ onClose, onCircleCreated }: CreateCi
                   type="text"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  className="w-full px-3 py-2 bg-[#fafafa] border border-[#dbdbdb] rounded-lg text-gray-900 placeholder-[#4a5a4a] focus:border-[#22c55e] focus:outline-none"
+                  className="w-full px-3 py-2 bg-[#fafafa] border border-[#dbdbdb] rounded-lg text-gray-900 placeholder-[#4a5a4a] focus:border-[#FF6B4A] focus:outline-none"
                   placeholder="e.g., Bay Area Traders"
                   maxLength={50}
                   required
@@ -103,7 +103,7 @@ export default function CreateCircleModal({ onClose, onCircleCreated }: CreateCi
                 <textarea
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
-                  className="w-full px-3 py-2 bg-[#fafafa] border border-[#dbdbdb] rounded-lg text-gray-900 placeholder-[#4a5a4a] focus:border-[#22c55e] focus:outline-none resize-none"
+                  className="w-full px-3 py-2 bg-[#fafafa] border border-[#dbdbdb] rounded-lg text-gray-900 placeholder-[#4a5a4a] focus:border-[#FF6B4A] focus:outline-none resize-none"
                   placeholder="What's this circle for?"
                   rows={3}
                   maxLength={200}
@@ -121,7 +121,7 @@ export default function CreateCircleModal({ onClose, onCircleCreated }: CreateCi
                 </button>
                 <button
                   type="submit"
-                  className="flex-1 px-4 py-2 bg-[#22c55e] text-gray-900 rounded-lg hover:bg-green-600 transition-colors disabled:opacity-50"
+                  className="flex-1 px-4 py-2 bg-[#FF6B4A] text-gray-900 rounded-lg hover:bg-[#E55A41] transition-colors disabled:opacity-50"
                   disabled={loading || !name.trim()}
                 >
                   {loading ? 'Creating...' : 'Create Circle'}
@@ -140,12 +140,12 @@ export default function CreateCircleModal({ onClose, onCircleCreated }: CreateCi
             
             <div className="bg-[#fafafa] border border-[#dbdbdb] rounded-lg p-4 mb-4">
               <div className="text-center mb-3">
-                <div className="text-3xl font-mono font-bold text-[#22c55e] mb-2">
+                <div className="text-3xl font-mono font-bold text-[#FF6B4A] mb-2">
                   {inviteCode}
                 </div>
                 <button
                   onClick={copyInviteCode}
-                  className="text-sm text-[#8a9a8a] hover:text-[#22c55e] transition-colors"
+                  className="text-sm text-[#8a9a8a] hover:text-[#FF6B4A] transition-colors"
                 >
                   {copied ? 'Copied! ✓' : 'Click to copy code'}
                 </button>
@@ -155,7 +155,7 @@ export default function CreateCircleModal({ onClose, onCircleCreated }: CreateCi
                 <p className="text-xs text-[#8a9a8a] mb-2 text-center">Or share this link:</p>
                 <button
                   onClick={copyInviteLink}
-                  className="w-full text-xs text-[#22c55e] hover:text-green-600 transition-colors break-all"
+                  className="w-full text-xs text-[#FF6B4A] hover:text-[#E55A41] transition-colors break-all"
                 >
                   {window.location.origin}/circles/join/{inviteCode}
                 </button>
@@ -164,7 +164,7 @@ export default function CreateCircleModal({ onClose, onCircleCreated }: CreateCi
             
             <button
               onClick={onClose}
-              className="w-full px-4 py-2 bg-[#22c55e] text-gray-900 rounded-lg hover:bg-green-600 transition-colors"
+              className="w-full px-4 py-2 bg-[#FF6B4A] text-gray-900 rounded-lg hover:bg-[#E55A41] transition-colors"
             >
               Done
             </button>

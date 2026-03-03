@@ -30,37 +30,20 @@ export async function GET(request: NextRequest) {
 
     const circleIds = userCircles.map(cm => cm.circleId)
 
-    if (circleIds.length === 0) {
-      return NextResponse.json({
-        items: [],
-        nextCursor: null,
-        hasMore: false
-      })
-    }
-
-    // Get members from these circles (people you share circles with)
-    const sharedCircleMembers = await prisma.circleMember.findMany({
-      where: {
-        circleId: { in: circleIds },
-        userId: { not: user.id } // Exclude current user
-      },
-      select: { userId: true, circleId: true }
-    })
-
-    const friendUserIds = Array.from(new Set(sharedCircleMembers.map(cm => cm.userId)))
-
-    if (friendUserIds.length === 0) {
-      return NextResponse.json({
-        items: [],
-        nextCursor: null,
-        hasMore: false
-      })
-    }
-
     // Build the query for feed items
+    // Show items from circles the user is a member of, OR items from circle members (legacy items without circleId)
+    const circleMembers = await prisma.circleMember.findMany({
+      where: { circleId: { in: circleIds } },
+      select: { userId: true }
+    })
+    const memberUserIds = Array.from(new Set(circleMembers.map(cm => cm.userId)))
+
     const whereClause = {
-      userId: { in: friendUserIds },
       status: 'ACTIVE' as const,
+      OR: [
+        { circleId: { in: circleIds } },
+        { circleId: null, userId: { in: memberUserIds } },
+      ],
       ...(cursor ? { createdAt: { lt: new Date(cursor) } } : {})
     }
 
@@ -98,15 +81,17 @@ export async function GET(request: NextRequest) {
     const enrichedItems = await Promise.all(
       feedItems.map(async (item) => {
         // Get circles this item's owner shares with current user
-        const sharedCircles = await prisma.circle.findMany({
-          where: {
-            id: { in: circleIds },
-            members: {
-              some: { userId: item.userId }
-            }
-          },
-          select: { id: true, name: true }
-        })
+        const sharedCircles = circleIds.length > 0
+          ? await prisma.circle.findMany({
+              where: {
+                id: { in: circleIds },
+                members: {
+                  some: { userId: item.userId }
+                }
+              },
+              select: { id: true, name: true }
+            })
+          : []
 
         return {
           id: item.id,
@@ -123,6 +108,7 @@ export async function GET(request: NextRequest) {
           wantCount: item._count.swipes,
           isLikedByCurrentUser: item.likes.length > 0,
           isWantedByCurrentUser: item.swipes.length > 0,
+          isOwnItem: item.userId === user.id,
           circles: sharedCircles
         }
       })

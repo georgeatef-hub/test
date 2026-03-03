@@ -155,6 +155,7 @@ export interface FeedItem extends Item {
   circles?: Circle[];
   isLikedByCurrentUser: boolean;
   isWantedByCurrentUser: boolean;
+  isOwnItem?: boolean;
 }
 
 export interface FeedPostProps {

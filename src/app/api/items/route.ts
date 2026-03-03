@@ -13,14 +13,32 @@ export async function POST(request: NextRequest) {
 
   try {
     const body = await request.json()
-    const { title, description, condition, tags, images } = body
+    const { title, description, condition, tags, images, circleId } = body
 
     if (!title || typeof title !== 'string') {
       return NextResponse.json({ error: "Title is required" }, { status: 400 })
     }
 
+    if (!circleId || typeof circleId !== 'string') {
+      return NextResponse.json({ error: "Circle is required" }, { status: 400 })
+    }
+
     if (!images || !Array.isArray(images) || images.length === 0) {
       return NextResponse.json({ error: "At least one image is required" }, { status: 400 })
+    }
+
+    // Verify user is a member of the circle
+    const membership = await prisma.circleMember.findUnique({
+      where: {
+        circleId_userId: {
+          circleId,
+          userId: session.user.id
+        }
+      }
+    })
+
+    if (!membership) {
+      return NextResponse.json({ error: "You are not a member of this circle" }, { status: 403 })
     }
 
     const item = await prisma.item.create({
@@ -30,7 +48,8 @@ export async function POST(request: NextRequest) {
         description: description || null,
         condition: condition as ItemCondition || null,
         tags: tags || [],
-        images
+        images,
+        circleId
       },
       include: {
         user: {

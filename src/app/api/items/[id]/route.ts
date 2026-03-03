@@ -27,11 +27,33 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
       return NextResponse.json({ error: "Item not found" }, { status: 404 })
     }
 
-    if (item.userId !== session.user.id) {
-      return NextResponse.json({ error: "You can only view your own items" }, { status: 403 })
-    }
+    // Count likes and wants
+    const [likeCount, wantCount, commentCount, isLiked, isWanted] = await Promise.all([
+      prisma.like.count({ where: { itemId } }),
+      prisma.swipe.count({ where: { itemId, direction: 'RIGHT' } }),
+      prisma.comment.count({ where: { itemId } }),
+      prisma.like.findFirst({ where: { itemId, userId: session.user.id } }).then(Boolean),
+      prisma.swipe.findFirst({ where: { itemId, userId: session.user.id, direction: 'RIGHT' } }).then(Boolean),
+    ])
 
-    return NextResponse.json(item)
+    // Get comments
+    const comments = await prisma.comment.findMany({
+      where: { itemId },
+      include: { user: { select: { id: true, name: true, image: true } } },
+      orderBy: { createdAt: 'desc' },
+      take: 20,
+    })
+
+    return NextResponse.json({
+      ...item,
+      likeCount,
+      wantCount,
+      commentCount,
+      isLikedByCurrentUser: isLiked,
+      isWantedByCurrentUser: isWanted,
+      comments,
+      isOwner: item.userId === session.user.id,
+    })
   } catch (error) {
     console.error("Error fetching item:", error)
     return NextResponse.json({ error: "Internal server error" }, { status: 500 })

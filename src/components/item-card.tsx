@@ -104,8 +104,8 @@ export default function ItemCard({
                 disabled={actionLoading}
                 className={`flex-1 py-2 px-4 rounded-lg font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed ${
                   isWanted
-                    ? 'bg-green-500 text-gray-900 hover:bg-green-600'
-                    : 'bg-transparent border border-green-500 text-green-500 hover:bg-green-500 hover:text-gray-900'
+                    ? 'bg-[#FF6B4A] text-gray-900 hover:bg-[#E55A41]'
+                    : 'bg-transparent border border-[#FF6B4A] text-[#FF6B4A] hover:bg-[#FF6B4A] hover:text-gray-900'
                 }`}
               >
                 {actionLoading 

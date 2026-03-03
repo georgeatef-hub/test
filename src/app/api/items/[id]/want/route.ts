@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
 import { prisma } from '@/lib/prisma'
+import { createNotification } from '@/lib/notifications'
 
 interface Params {
   id: string
@@ -96,6 +97,15 @@ export async function POST(request: NextRequest, { params }: { params: Params })
         }
       })
     }
+
+    // Create notification for item owner
+    await createNotification({
+      userId: item.userId, // item owner
+      type: 'want',
+      title: 'Someone wants your item!',
+      body: `${user.name} wants your "${item.title}"`,
+      data: { itemId: item.id, fromUserId: user.id }
+    })
 
     // Get updated want count (count of RIGHT swipes)
     const wantCount = await prisma.swipe.count({

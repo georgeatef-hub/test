@@ -83,7 +83,7 @@ export default function JoinCircleByCodePage() {
   if (loading) {
     return (
       <div className="min-h-screen bg-[#fafafa] flex items-center justify-center">
-        <div className="text-[#22c55e] text-lg">Loading invite...</div>
+        <div className="text-[#FF6B4A] text-lg">Loading invite...</div>
       </div>
     );
   }
@@ -97,7 +97,7 @@ export default function JoinCircleByCodePage() {
           <p className="text-[#8a9a8a] mb-8">
             You&apos;ve successfully joined {preview?.name}. Redirecting...
           </p>
-          <div className="inline-block w-8 h-8 border-4 border-[#22c55e] border-t-transparent rounded-full animate-spin"></div>
+          <div className="inline-block w-8 h-8 border-4 border-[#FF6B4A] border-t-transparent rounded-full animate-spin"></div>
         </div>
       </div>
     );
@@ -115,7 +115,7 @@ export default function JoinCircleByCodePage() {
           <div className="space-y-3">
             <Link
               href="/circles"
-              className="inline-block px-6 py-3 bg-[#22c55e] text-gray-900 rounded-xl font-medium hover:bg-green-600 transition-colors"
+              className="inline-block px-6 py-3 bg-[#FF6B4A] text-gray-900 rounded-xl font-medium hover:bg-[#E55A41] transition-colors"
             >
               Browse Circles
             </Link>
@@ -145,7 +145,7 @@ export default function JoinCircleByCodePage() {
         <div className="bg-white border border-[#dbdbdb] rounded-xl p-6">
           {/* Circle Preview */}
           <div className="text-center mb-6">
-            <div className="w-20 h-20 bg-[#22c55e] rounded-full flex items-center justify-center text-gray-900 text-2xl font-bold mx-auto mb-4">
+            <div className="w-20 h-20 bg-[#FF6B4A] rounded-full flex items-center justify-center text-gray-900 text-2xl font-bold mx-auto mb-4">
               ⭕
             </div>
             <h2 className="text-xl font-bold text-gray-900 mb-2">{preview.name}</h2>
@@ -158,14 +158,14 @@ export default function JoinCircleByCodePage() {
           {/* Invite Code Display */}
           <div className="bg-[#fafafa] border border-[#dbdbdb] rounded-lg p-3 mb-6 text-center">
             <div className="text-xs text-[#8a9a8a] mb-1">Invite Code</div>
-            <div className="text-lg font-mono text-[#22c55e] font-bold">{inviteCode}</div>
+            <div className="text-lg font-mono text-[#FF6B4A] font-bold">{inviteCode}</div>
           </div>
 
           {/* Join Button */}
           <button
             onClick={joinCircle}
             disabled={joining}
-            className="w-full px-6 py-3 bg-[#22c55e] text-gray-900 rounded-xl font-bold hover:bg-green-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed mb-4"
+            className="w-full px-6 py-3 bg-[#FF6B4A] text-gray-900 rounded-xl font-bold hover:bg-[#E55A41] transition-colors disabled:opacity-50 disabled:cursor-not-allowed mb-4"
           >
             {joining ? (
               <div className="flex items-center justify-center space-x-2">

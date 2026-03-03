@@ -21,7 +21,7 @@ export default function TradeCycleVisual({ trade, currentUserId }: TradeVisualiz
         <div className="flex items-center justify-center space-x-6">
           {/* Current User */}
           <div className="text-center">
-            <div className="w-12 h-12 bg-[#22c55e] rounded-full flex items-center justify-center text-gray-900 font-bold mb-2">
+            <div className="w-12 h-12 bg-[#FF6B4A] rounded-full flex items-center justify-center text-gray-900 font-bold mb-2">
               {currentUserMember.user.name[0].toUpperCase()}
             </div>
             <div className="text-sm text-gray-900 font-medium">You</div>
@@ -47,11 +47,11 @@ export default function TradeCycleVisual({ trade, currentUserId }: TradeVisualiz
           </div>
 
           {/* Arrow */}
-          <div className="text-[#22c55e] text-2xl">→</div>
+          <div className="text-[#FF6B4A] text-2xl">→</div>
 
           {/* Other User */}
           <div className="text-center">
-            <div className="w-12 h-12 bg-[#22c55e] rounded-full flex items-center justify-center text-gray-900 font-bold mb-2">
+            <div className="w-12 h-12 bg-[#FF6B4A] rounded-full flex items-center justify-center text-gray-900 font-bold mb-2">
               {otherMember.user.name[0].toUpperCase()}
             </div>
             <div className="text-sm text-gray-900 font-medium">{otherMember.user.name}</div>
@@ -63,7 +63,7 @@ export default function TradeCycleVisual({ trade, currentUserId }: TradeVisualiz
         <div className="flex items-center justify-center space-x-6 mt-6 pt-6 border-t border-[#dbdbdb]">
           {/* Other User gives */}
           <div className="text-center">
-            <div className="w-12 h-12 bg-[#22c55e] rounded-full flex items-center justify-center text-gray-900 font-bold mb-2">
+            <div className="w-12 h-12 bg-[#FF6B4A] rounded-full flex items-center justify-center text-gray-900 font-bold mb-2">
               {otherMember.user.name[0].toUpperCase()}
             </div>
             <div className="text-sm text-gray-900 font-medium">{otherMember.user.name}</div>
@@ -89,11 +89,11 @@ export default function TradeCycleVisual({ trade, currentUserId }: TradeVisualiz
           </div>
 
           {/* Arrow */}
-          <div className="text-[#22c55e] text-2xl">→</div>
+          <div className="text-[#FF6B4A] text-2xl">→</div>
 
           {/* Current User receives */}
           <div className="text-center">
-            <div className="w-12 h-12 bg-[#22c55e] rounded-full flex items-center justify-center text-gray-900 font-bold mb-2">
+            <div className="w-12 h-12 bg-[#FF6B4A] rounded-full flex items-center justify-center text-gray-900 font-bold mb-2">
               {currentUserMember.user.name[0].toUpperCase()}
             </div>
             <div className="text-sm text-gray-900 font-medium">You</div>
@@ -134,14 +134,14 @@ export default function TradeCycleVisual({ trade, currentUserId }: TradeVisualiz
                 {/* Arrow line */}
                 <path
                   d={`M ${startX} ${startY} Q ${centerX} ${centerY} ${endX} ${endY}`}
-                  stroke="#22c55e"
+                  stroke="#FF6B4A"
                   strokeWidth="2"
                   fill="none"
                 />
                 {/* Arrow head */}
                 <polygon
                   points={`${arrowX},${arrowY-5} ${arrowX+10},${arrowY} ${arrowX},${arrowY+5}`}
-                  fill="#22c55e"
+                  fill="#FF6B4A"
                   transform={`rotate(${(nextAngle * 180) / Math.PI + 90} ${arrowX} ${arrowY})`}
                 />
               </g>
@@ -164,7 +164,7 @@ export default function TradeCycleVisual({ trade, currentUserId }: TradeVisualiz
             >
               <div className="text-center">
                 <div className={`w-16 h-16 rounded-full flex items-center justify-center text-gray-900 font-bold mb-2 ${
-                  isCurrentUser ? 'bg-[#f59e0b]' : 'bg-[#22c55e]'
+                  isCurrentUser ? 'bg-[#f59e0b]' : 'bg-[#FF6B4A]'
                 }`}>
                   {member.user.name[0].toUpperCase()}
                 </div>
@@ -209,10 +209,10 @@ export default function TradeCycleVisual({ trade, currentUserId }: TradeVisualiz
           <div className="text-sm text-[#8a9a8a] mb-2">Your part in this trade:</div>
           <div className="text-gray-900">
             Give <span className="text-[#f59e0b] font-medium">{currentUserMember.item.title}</span> to{' '}
-            <span className="text-[#22c55e] font-medium">{currentUserMember.receivesFromUser.name}</span>
+            <span className="text-[#FF6B4A] font-medium">{currentUserMember.receivesFromUser.name}</span>
             {' '}→{' '}
-            Get <span className="text-[#22c55e] font-medium">{currentUserMember.receivesItem.title}</span> from{' '}
-            <span className="text-[#22c55e] font-medium">{currentUserMember.receivesFromUser.name}</span>
+            Get <span className="text-[#FF6B4A] font-medium">{currentUserMember.receivesItem.title}</span> from{' '}
+            <span className="text-[#FF6B4A] font-medium">{currentUserMember.receivesFromUser.name}</span>
           </div>
         </div>
       )}

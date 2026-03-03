@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server"
 import { getServerSession } from "next-auth"
 import { authOptions } from "@/lib/auth"
 import { prisma } from "@/lib/prisma"
+import { createNotification } from "@/lib/notifications"
 
 // POST /api/circles/[id]/join - Join circle by ID
 export async function POST(request: NextRequest, { params }: { params: { id: string } }) {
@@ -52,6 +53,23 @@ export async function POST(request: NextRequest, { params }: { params: { id: str
         userId: session.user.id
       }
     })
+
+    // Get current user info for notification
+    const currentUser = await prisma.user.findUnique({
+      where: { id: session.user.id },
+      select: { name: true }
+    })
+
+    // Create notification for circle admin (if not joining their own circle)
+    if (circle.adminId !== session.user.id && currentUser) {
+      await createNotification({
+        userId: circle.adminId,
+        type: 'circle_join',
+        title: 'Someone joined your circle!',
+        body: `${currentUser.name} joined "${circle.name}"`,
+        data: { circleId: circle.id, fromUserId: session.user.id }
+      })
+    }
 
     // Return updated circle info
     const updatedCircle = await prisma.circle.findUnique({

@@ -57,7 +57,7 @@ export default function DashboardPage() {
   if (loading) {
     return (
       <div className="min-h-screen bg-[#fafafa] flex items-center justify-center">
-        <div className="text-[#22c55e] text-lg">Loading your fishing stats...</div>
+        <div className="text-[#FF6B4A] text-lg">Loading your fishing stats...</div>
       </div>
     );
   }
@@ -86,7 +86,7 @@ export default function DashboardPage() {
                 <div className="flex items-center space-x-3 mb-2">
                   <span className="text-4xl">{dashboardData?.levelEmoji || '🐟'}</span>
                   <div>
-                    <h2 className="text-2xl font-bold text-[#22c55e]">
+                    <h2 className="text-2xl font-bold text-[#FF6B4A]">
                       {dashboardData?.fishingLevel || 'Rookie Fisher'}
                     </h2>
                     <p className="text-[#8a9a8a]">
@@ -98,7 +98,7 @@ export default function DashboardPage() {
                 {/* Progress Bar */}
                 <div className="w-full bg-[#f5f5f5] rounded-full h-2 mb-2">
                   <div 
-                    className="bg-[#22c55e] h-2 rounded-full transition-all duration-500"
+                    className="bg-[#FF6B4A] h-2 rounded-full transition-all duration-500"
                     style={{ 
                       width: `${Math.min((dashboardData?.baitScore || 0) % 100, 100)}%` 
                     }}
@@ -111,7 +111,7 @@ export default function DashboardPage() {
               
               <Link
                 href="/dashboard/add-item"
-                className="bg-[#22c55e] text-gray-900 px-4 py-2 rounded-lg font-medium hover:bg-green-600 transition-colors"
+                className="bg-[#FF6B4A] text-gray-900 px-4 py-2 rounded-lg font-medium hover:bg-[#E55A41] transition-colors"
               >
                 + Add Bait
               </Link>
@@ -133,10 +133,10 @@ export default function DashboardPage() {
                 className="bg-white border border-[#dbdbdb] rounded-xl p-4 hover:bg-[#f5f5f5] transition-colors group"
               >
                 <div className="flex items-start justify-between mb-3">
-                  <h3 className="font-semibold text-gray-900 group-hover:text-[#22c55e] transition-colors">
+                  <h3 className="font-semibold text-gray-900 group-hover:text-[#FF6B4A] transition-colors">
                     {circle.name}
                   </h3>
-                  <div className="text-[#8a9a8a] group-hover:text-[#22c55e] transition-colors">
+                  <div className="text-[#8a9a8a] group-hover:text-[#FF6B4A] transition-colors">
                     →
                   </div>
                 </div>
@@ -145,7 +145,7 @@ export default function DashboardPage() {
                   <p>{circle.memberCount} members</p>
                   <p>{circle.itemCount} items</p>
                   {circle.itemCount > 0 && (
-                    <span className="inline-block bg-[#22c55e] bg-opacity-20 text-[#22c55e] px-2 py-1 rounded text-xs">
+                    <span className="inline-block bg-[#FF6B4A] bg-opacity-20 text-[#FF6B4A] px-2 py-1 rounded text-xs">
                       New items available!
                     </span>
                   )}
@@ -155,7 +155,7 @@ export default function DashboardPage() {
             
             {/* Create Circle Card */}
             <button className="bg-white border border-[#dbdbdb] border-dashed rounded-xl p-4 hover:bg-[#f5f5f5] transition-colors group text-center">
-              <div className="text-3xl text-[#22c55e] mb-2 group-hover:scale-110 transition-transform">
+              <div className="text-3xl text-[#FF6B4A] mb-2 group-hover:scale-110 transition-transform">
                 +
               </div>
               <p className="text-[#8a9a8a] group-hover:text-gray-900 transition-colors">
@@ -171,7 +171,7 @@ export default function DashboardPage() {
             <h2 className="text-xl font-bold text-gray-900">Your Bait</h2>
             <Link
               href="/dashboard/add-item"
-              className="text-[#22c55e] text-sm hover:text-green-600 transition-colors"
+              className="text-[#FF6B4A] text-sm hover:text-[#E55A41] transition-colors"
             >
               + Add more
             </Link>
@@ -214,7 +214,7 @@ export default function DashboardPage() {
               <p className="text-[#8a9a8a] mb-4">No bait cast yet!</p>
               <Link
                 href="/dashboard/add-item"
-                className="bg-[#22c55e] text-gray-900 px-6 py-2 rounded-lg font-medium hover:bg-green-600 transition-colors"
+                className="bg-[#FF6B4A] text-gray-900 px-6 py-2 rounded-lg font-medium hover:bg-[#E55A41] transition-colors"
               >
                 Cast Your First Bait
               </Link>
@@ -225,7 +225,7 @@ export default function DashboardPage() {
         {/* Quick Stats */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
           <div className="bg-white rounded-xl border border-[#dbdbdb] p-4 text-center">
-            <div className="text-2xl font-bold text-[#22c55e]">{items.length}</div>
+            <div className="text-2xl font-bold text-[#FF6B4A]">{items.length}</div>
             <div className="text-sm text-[#8a9a8a]">Items</div>
           </div>
           <div className="bg-white rounded-xl border border-[#dbdbdb] p-4 text-center">
@@ -233,11 +233,11 @@ export default function DashboardPage() {
             <div className="text-sm text-[#8a9a8a]">Catches</div>
           </div>
           <div className="bg-white rounded-xl border border-[#dbdbdb] p-4 text-center">
-            <div className="text-2xl font-bold text-[#22c55e]">{dashboardData?.tradesCompleted || 0}</div>
+            <div className="text-2xl font-bold text-[#FF6B4A]">{dashboardData?.tradesCompleted || 0}</div>
             <div className="text-sm text-[#8a9a8a]">Trades</div>
           </div>
           <div className="bg-white rounded-xl border border-[#dbdbdb] p-4 text-center">
-            <div className="text-2xl font-bold text-[#22c55e]">{dashboardData?.streakDays || 0}</div>
+            <div className="text-2xl font-bold text-[#FF6B4A]">{dashboardData?.streakDays || 0}</div>
             <div className="text-sm text-[#8a9a8a]">Day Streak</div>
           </div>
         </div>
@@ -247,7 +247,7 @@ export default function DashboardPage() {
           <div className="text-center">
             <Link
               href={`/circles/${mostActiveCircle.id}/swipe`}
-              className="inline-block bg-[#22c55e] text-gray-900 px-8 py-3 rounded-xl text-lg font-bold hover:bg-green-600 transition-colors shadow-lg"
+              className="inline-block bg-[#FF6B4A] text-gray-900 px-8 py-3 rounded-xl text-lg font-bold hover:bg-[#E55A41] transition-colors shadow-lg"
             >
               Start Swiping →
             </Link>

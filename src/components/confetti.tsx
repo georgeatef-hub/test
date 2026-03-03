@@ -19,7 +19,7 @@ export default function Confetti({ active, duration = 3000 }: ConfettiProps) {
   }>>([]);
 
   useEffect(() => {
-    const colors = ['#22c55e', '#f59e0b', '#ef4444', '#3b82f6', '#8b5cf6', '#ec4899'];
+    const colors = ['#FF6B4A', '#f59e0b', '#ef4444', '#3b82f6', '#8b5cf6', '#ec4899'];
     if (!active) {
       setParticles([]);
       return;
