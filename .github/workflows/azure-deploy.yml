@@ -5,6 +5,10 @@ on:
     branches: [main]
   workflow_dispatch:
 
+env:
+  AZURE_WEBAPP_NAME: bartera-app
+  NODE_VERSION: '20'
+
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
@@ -15,7 +19,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: ${{ env.NODE_VERSION }}
           cache: 'npm'
 
       - name: Install dependencies
@@ -27,15 +31,22 @@ jobs:
       - name: Build Next.js
         run: npm run build
 
-      - name: Prepare standalone
+      - name: Prepare standalone package
         run: |
           cp server.js .next/standalone/
           cp -r .next/static .next/standalone/.next/static
           cp -r public .next/standalone/public 2>/dev/null || true
+          # Copy prisma schema + engine so prisma works in production
+          mkdir -p .next/standalone/node_modules/.prisma
+          cp -r node_modules/.prisma/client .next/standalone/node_modules/.prisma/client
+          mkdir -p .next/standalone/node_modules/@prisma
+          cp -r node_modules/@prisma/client .next/standalone/node_modules/@prisma/client
+          cp -r prisma .next/standalone/prisma
 
       - name: Deploy to Azure Web App
         uses: azure/webapps-deploy@v3
         with:
-          app-name: ${{ secrets.AZURE_WEBAPP_NAME }}
+          app-name: ${{ env.AZURE_WEBAPP_NAME }}
           publish-profile: ${{ secrets.AZURE_PUBLISH_PROFILE }}
           package: .next/standalone
+          startup-command: 'node server.js'
