@@ -31,21 +31,21 @@ jobs:
       - name: Build Next.js
         run: npm run build
 
-      - name: Prepare standalone package
+      - name: Create deployment package
         run: |
-          cp server.js .next/standalone/
-          cp -r .next/static .next/standalone/.next/static
-          cp -r public .next/standalone/public 2>/dev/null || true
-          mkdir -p .next/standalone/node_modules/.prisma
-          cp -r node_modules/.prisma/client .next/standalone/node_modules/.prisma/client
-          mkdir -p .next/standalone/node_modules/@prisma
-          cp -r node_modules/@prisma/client .next/standalone/node_modules/@prisma/client
-          cp -r prisma .next/standalone/prisma
-          cp web.config .next/standalone/web.config 2>/dev/null || true
+          # Include everything needed to run: node_modules, .next, public, config
+          mkdir -p deploy
+          cp -r .next deploy/.next
+          cp -r node_modules deploy/node_modules
+          cp -r public deploy/public 2>/dev/null || true
+          cp -r prisma deploy/prisma
+          cp package.json deploy/
+          cp server.js deploy/
+          cp web.config deploy/
 
       - name: Deploy to Azure Web App
         uses: azure/webapps-deploy@v3
         with:
           app-name: ${{ env.AZURE_WEBAPP_NAME }}
           publish-profile: ${{ secrets.AZURE_PUBLISH_PROFILE }}
-          package: .next/standalone
+          package: deploy
